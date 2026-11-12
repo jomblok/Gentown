@@ -40,35 +40,6 @@
   --ly-scale: 0.97;
 }
 
-  /* LAB: the controls on the left, the price curve on the right */
-  .gt-lab__ctl { display: grid; gap: var(--s-5); align-content: start; }
-  .gt-lab__ctl .section-head { margin-bottom: 0; }
-  .gt-lab__in { display: grid; gap: 10px; }
-  .gt-lab__row { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); font-size: var(--t-small); color: var(--p-muted); }
-  .gt-lab__row > span { display: inline-flex; align-items: center; gap: 8px; }
-  .gt-lab__row .gt-item { width: 24px; height: 24px; image-rendering: pixelated; }
-  .gt-lab__row b { color: var(--p-ink); font-weight: 500; }
-  .gt-lab input[type="range"] { display: block; margin: 0; width: 100%; accent-color: var(--p-accent); height: 24px; cursor: pointer; }
-  .gt-lab__out { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); margin: 0; padding: var(--s-4) 0; border-top: 1px solid var(--gt-line); border-bottom: 1px solid var(--gt-line); }
-  .gt-lab__out div { display: grid; gap: 4px; }
-  .gt-lab__out dt { font: 500 12px/1 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--p-muted); }
-  .gt-lab__out dd { margin: 0; font-size: clamp(1.6rem, 2.6vw, 2.2rem); line-height: 1.05; letter-spacing: -.02em; color: var(--p-ink); }
-  .gt-lab__out div:nth-child(2) dd { color: var(--p-accent); }
-  .gt-lab__why { margin: 0; color: var(--p-ink); min-height: 3em; }
-  .gt-lab__chart { margin: 0; align-self: stretch; display: flex; flex-direction: column; justify-content: center; padding: var(--s-5) var(--s-4) var(--s-4); border-radius: var(--r-card, 16px);
-    background: color-mix(in oklab, var(--p-ink) 4%, transparent); box-shadow: inset 0 0 0 1px var(--gt-line); }
-  .gt-lab__chart svg { display: block; width: 100%; height: auto; overflow: visible; }
-  .gt-lab__grid line { stroke: var(--gt-line); stroke-width: 1; }
-  .gt-lab__grid text, .gt-lab__ax, .gt-lab__tl { fill: var(--p-muted); font: 500 12px var(--font-mono); }
-  .gt-lab__band { fill: color-mix(in oklab, var(--p-accent) 18%, transparent); }
-  .gt-lab__mid { fill: none; stroke: var(--p-accent); stroke-width: 3; stroke-linejoin: round; }
-  .gt-lab__target { stroke: var(--p-muted); stroke-width: 1.5; stroke-dasharray: 4 5; }
-  .gt-lab__dot { transition: transform .3s var(--gt-out); }
-  .gt-lab__dot circle { fill: var(--p-accent); }
-  .gt-lab__dot .gt-lab__halo { fill: color-mix(in oklab, var(--p-accent) 25%, transparent); animation: gt-halo 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-  @keyframes gt-halo { 50% { transform: scale(1.35); opacity: .5; } }
-  @media (prefers-reduced-motion: reduce) { .gt-lab__dot { transition: none; } .gt-lab__dot .gt-lab__halo { animation: none; } }
-
   /* NEW: a bento of linked tiles; the light under the pointer is a radial gradient at --mx, --my (set on pointermove) */
   .gt-new__head { max-width: none; align-items: start; column-gap: var(--gutter); margin-bottom: var(--s-6); }
   .gt-new { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: minmax(0, 1.75fr) minmax(0, 1fr); gap: var(--gutter);
@@ -110,6 +81,83 @@
   }
   @media (prefers-reduced-motion: reduce) { .gt-nt, .gt-nt > img, .gt-nt::before { transition: none; } .gt-nt:hover { transform: none; } }
   .gt-proof { color: var(--p-ink); }
+
+  /* pixel icons (Pixelarticons, MIT, assets/pixel): square pixels, the accent colour */
+  .px-ic { width: 20px; height: 20px; flex: none; color: var(--p-accent); shape-rendering: crispEdges; }
+  .px-ic--l { width: 36px; height: 36px; }
+  .px-ic--k { width: 14px; height: 14px; vertical-align: -2px; margin-right: 6px; }
+  .gt-nt__i .px-ic { transition: transform .35s steps(3); }
+  .gt-nt:hover .gt-nt__i .px-ic { transform: translateY(-3px); }
+
+  /* WHY: one feature card (the Homeland, with its picture) and the other reasons as a list of rows beside it */
+  .gt-why__head { max-width: none; align-items: start; column-gap: var(--gutter); margin-bottom: var(--s-6); }
+  .gt-why { align-items: stretch; }
+  .gt-why__big { position: relative; overflow: hidden; isolation: isolate; display: flex; flex-direction: column; border-radius: var(--r-card, 16px);
+    background: color-mix(in oklab, var(--p-ink) 5%, var(--p-bg)); box-shadow: inset 0 0 0 1px var(--gt-line); transition: box-shadow .35s var(--gt-out); }
+  .gt-why__big::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0; transition: opacity .35s var(--gt-out);
+    background: radial-gradient(300px circle at var(--mx, 50%) var(--my, 30%), color-mix(in oklab, var(--p-accent) 20%, transparent), transparent 65%); }
+  .gt-why__big:hover::before { opacity: 1; }
+  .gt-why__big:hover { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--p-accent) 50%, transparent); }
+  .gt-why__pic { display: block; width: 100%; flex: 1 1 auto; min-height: 200px; object-fit: cover; border-bottom: 1px solid var(--gt-line); }
+  .gt-why__body { position: relative; z-index: 2; display: grid; gap: var(--s-3); padding: var(--s-5); }
+  .gt-why__n { margin: 0; display: flex; align-items: baseline; gap: 10px; }
+  .gt-why__n .gt-num { font-size: clamp(2rem, 3vw, 2.6rem); line-height: .9; letter-spacing: -.03em; color: var(--p-ink); }
+  .gt-why__u { display: inline-flex; align-items: center; gap: 6px; font: 500 12px/1 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--p-accent); }
+  .gt-why__u .px-ic { width: 16px; height: 16px; }
+  .gt-why h3 { margin: 0; text-wrap: balance; font: 500 var(--t-lead)/1.35 var(--font-text); letter-spacing: 0; } /* the FAQ's h3 size */
+  .gt-why__body > p:last-child, .gt-why__list li p:last-child { margin: 0; color: rgb(233 237 243 / .82); font-size: var(--t-small); line-height: 1.55; }
+  .gt-why__list { list-style: none; margin: 0; padding: 0; display: grid; align-content: stretch; }
+  .gt-why__list li { display: grid; grid-template-columns: minmax(0, 1fr) 56px; gap: var(--s-4); align-items: start; padding: var(--s-5) 0; border-top: 1px solid var(--gt-line); }
+  .gt-why__list li:last-child { border-bottom: 1px solid var(--gt-line); }
+  .gt-why__list li > div { display: grid; gap: 6px; }
+  .gt-why__i { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 12px; background: color-mix(in oklab, var(--p-accent) 14%, transparent); }
+  .gt-why__list li:hover .gt-why__i .px-ic { transform: translateY(-3px); }
+  .gt-why__i .px-ic { transition: transform .35s steps(3); }
+  @media (max-width: 639px) {
+    .gt-why__n .gt-num { font-size: 26px; }
+    .gt-why__pic { min-height: 0; flex: none; aspect-ratio: 4 / 5; } /* fills the two phone screens (one section gap like the rest) */
+    .gt-why__list li { grid-template-columns: minmax(0, 1fr) 44px; padding: var(--s-5) 0; }
+    .gt-why__i { width: 44px; height: 44px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .gt-why__big, .gt-why__i .px-ic { transition: none; } }
+
+  /* TALK: the chips on the left, the chat window on the right */
+  .gt-talk__l { display: grid; gap: var(--s-5); align-content: start; }
+  .gt-talk__l .section-head { margin-bottom: 0; }
+  .gt-talk__chips { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+  .gt-chip { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px 0 12px; border-radius: 999px; cursor: pointer;
+    border: 0; background: color-mix(in oklab, var(--p-ink) 6%, transparent); box-shadow: inset 0 0 0 1px var(--gt-line); color: var(--p-ink);
+    font: 500 var(--t-small)/1 var(--font-text); transition: background-color .25s var(--gt-out), box-shadow .25s var(--gt-out), transform var(--m-press, 90ms) var(--gt-out); }
+  .gt-chip:hover { background: color-mix(in oklab, var(--p-accent) 14%, transparent); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--p-accent) 50%, transparent); }
+  .gt-chip:active { transform: scale(.97); }
+  .gt-chip:focus-visible { outline: 2px solid var(--p-accent); outline-offset: 2px; }
+  .gt-chip[disabled] { opacity: .55; cursor: wait; }
+  .gt-talk__note { margin: 0; font-size: var(--t-small); color: var(--p-ink); }
+  .gt-chat { margin: 0; padding: 0; align-self: start; display: flex; flex-direction: column; align-items: stretch; justify-items: stretch; place-items: stretch; min-height: 0; border-radius: var(--r-card, 16px); overflow: hidden;
+    background: color-mix(in oklab, var(--p-ink) 4%, var(--p-bg)); box-shadow: inset 0 0 0 1px var(--gt-line), 0 30px 60px -30px rgb(0 0 0 / .6); }
+  .gt-chat__h { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--gt-line); }
+  .gt-chat__av { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 10px; background: color-mix(in oklab, var(--p-accent) 16%, transparent); }
+  .gt-chat__who { display: grid; gap: 2px; flex: 1; } .gt-chat__who b { font-weight: 600; } .gt-chat__who small { color: var(--p-muted); font-size: 13px; }
+  .gt-chat__on { font: 500 11px/1 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--p-muted); display: inline-flex; align-items: center; gap: 6px; }
+  .gt-chat__on::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: #3ecf8e; }
+  .gt-chat__log { flex: 1; list-style: none; margin: 0; padding: 18px 16px; display: flex; flex-direction: column; justify-content: flex-start; gap: 10px; overflow: hidden; }
+  .gt-chat__log .shelf { align-self: stretch; max-width: none; display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px;
+    background: color-mix(in oklab, var(--p-accent) 10%, transparent); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--p-accent) 30%, transparent); }
+  .gt-chat__log .shelf img { width: 32px; height: 32px; image-rendering: pixelated; }
+  .gt-chat__log .shelf > span:nth-child(2) { flex: 1; }
+  .gt-chat__log li { max-width: 80%; padding: 10px 14px; border-radius: 14px; font-size: var(--t-small); line-height: 1.5; }
+  .gt-chat__log .me { align-self: flex-end; background: var(--p-accent); color: var(--p-accent-ink, #04121f); border-bottom-right-radius: 4px; }
+  .gt-chat__log .them { align-self: flex-start; background: color-mix(in oklab, var(--p-ink) 9%, transparent); color: var(--p-ink); border-bottom-left-radius: 4px; }
+  .gt-chat__log .is-new { animation: gt-msg .45s var(--gt-out) both; }
+  @keyframes gt-msg { from { opacity: 0; transform: translateY(8px) scale(.98); } }
+  .gt-chat__log .typing { display: inline-flex; gap: 4px; padding: 14px; }
+  .gt-chat__log .typing i { width: 6px; height: 6px; border-radius: 1px; background: var(--p-muted); animation: gt-dot 1s steps(2) infinite; }
+  .gt-chat__log .typing i:nth-child(2) { animation-delay: .15s; } .gt-chat__log .typing i:nth-child(3) { animation-delay: .3s; }
+  @keyframes gt-dot { 50% { transform: translateY(-4px); background: var(--p-ink); } }
+  .gt-chat__in { display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px; border-top: 1px solid var(--gt-line); }
+  .gt-chat__in > span { flex: 1; color: var(--p-muted); font-size: var(--t-small); }
+  @media (max-width: 639px) { .gt-chat { min-height: 440px; } .gt-chat__in > span { display: none; } .gt-chat__in .btn { flex: 1; justify-content: center; } }
+  @media (prefers-reduced-motion: reduce) { .gt-chat__log .is-new, .gt-chat__log .typing i { animation: none; } .gt-chip { transition: none; } }
 </style>
 <script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
 <script src="assets/backgrounds/backgrounds.js"></script>
@@ -490,9 +538,10 @@
           </div>
         </div>
       </div>
+      <div class="nav__item"><a class="nav__link" href="#why">Why play</a></div>
       <div class="nav__item"><a class="nav__link" href="#market">Market</a></div>
+      <div class="nav__item"><a class="nav__link" href="#talk">Talk</a></div>
       <div class="nav__item"><a class="nav__link" href="#prices">Prices</a></div>
-      <div class="nav__item"><a class="nav__link" href="#lab">Lab</a></div>
       <div class="nav__item"><a class="nav__link" href="#work">Jobs</a></div>
       <div class="nav__item"><a class="nav__link" href="#new">New</a></div>
       <div class="nav__item"><a class="nav__link" href="#day">Day</a></div>
@@ -566,6 +615,53 @@
     </div></div>
   </section>
 
+  <!-- WHY: what makes people stay, four reasons with the number behind each (the numbers count up once on view; the
+       page holds the final number, so nothing waits on a script) -->
+  <section class="section" id="why" style="--hm: 2" aria-labelledby="why-h">
+    <div class="wrap">
+      <div class="section-head grid gt-why__head">
+        <h2 id="why-h" class="span-6">Four reasons to move in. <span class="muted">And stay for the next season.</span></h2>
+        <p class="span-6 start-7 gt-jobs-lead">A cozy island life sim where the market is alive: what you gather, others buy, and every price you see moved because somebody played.</p>
+      </div>
+      <div class="grid gt-why">
+        <ol class="span-6 gt-why__list">
+          <li>
+            <div>
+              <p class="gt-why__n"><span class="gt-num" data-count="4">4</span> <span class="gt-why__u">merchants</span></p>
+              <h3>AI shopkeepers at the market</h3>
+              <p>Sarah, Ben, Wendy and Jack are AI merchants with moods and a till. Ask, haggle, sell; prices follow their stock.</p>
+            </div>
+            <span class="gt-why__i gt-icon" aria-hidden="true"><svg class="px-ic px-ic--l" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 2h18v16H6v2H4v-2h2v-2h14V4H4v18H2V2h2zm5 7H7v2h2V9zm2 0h2v2h-2V9zm6 0h-2v2h2V9z" fill="currentColor"/></svg></span>
+          </li>
+          <li>
+            <div>
+              <p class="gt-why__n"><span class="gt-num" data-count="4">4</span> <span class="gt-why__u">per party</span></p>
+              <h3>Co-op Homelands for 4 friends</h3>
+              <p>Party up, visit each other, build and farm together, and swap goods face to face.</p>
+            </div>
+            <span class="gt-why__i gt-icon" aria-hidden="true"><svg class="px-ic px-ic--l" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11 0H5v2H3v6h2v2h6V8H5V2h6V0zm0 2h2v6h-2V2zM0 14h2v4h12v2H0v-6zm2 0h12v-2H2v2zm14 0h-2v6h2v-6zM15 0h4v2h-4V0zm4 8h-4v2h4V8zm0-6h2v6h-2V2zm5 12h-2v4h-4v2h6v-6zm-6-2h4v2h-4v-2z" fill="currentColor"/></svg></span>
+          </li>
+          <li>
+            <div>
+              <p class="gt-why__n"><span class="gt-num" data-count="0">0</span> <span class="gt-why__u">gas</span></p>
+              <h3>Items and coin on NEAR, 0 gas</h3>
+              <p>Items and coin are tokens on NEAR. Sign in with Google: no seed phrase, no pop-ups, no gas.</p>
+            </div>
+            <span class="gt-why__i gt-icon" aria-hidden="true"><svg class="px-ic px-ic--l" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 3H2v18h18v-4h2V7h-2V3h-2zm0 14v2H4V5h14v2h-8v10h8zm2-2h-8V9h8v6zm-4-4h-2v2h2v-2z" fill="currentColor"/></svg></span>
+          </li>
+        </ol>
+        <article class="tile gt-why__big span-6 start-7" data-spot>
+          <img class="gt-why__pic" src="img/islands.webp" alt="The floating islands of a Homeland, joined by plank bridges" loading="lazy">
+          <div class="gt-why__body">
+            <p class="gt-why__n"><span class="gt-num" data-count="9">9</span> <span class="gt-why__u"><svg class="px-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 2h14v4h6v16H2V2zm18 6h-4v2h2v2h-2v2h2v2h-2v2h2v2h2V8zm-6-4H4v16h2v-2h6v2h2V4zM6 6h2v2H6V6zm6 0h-2v2h2V6zm-6 4h2v2H6v-2zm6 0h-2v2h2v-2zm-6 4h2v2H6v-2zm6 0h-2v2h2v-2z" fill="currentColor"/></svg> islands of your own</span></p>
+            <h3>A Homeland that works while you sleep</h3>
+            <p>Raise a Town Hall, open new islands and hire workers. Sawmills, ponds and windmills keep producing while you are away, and the Storehouse keeps it all.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <!-- ISLANDS: the world across the wrap, six markers on it (layout.css .ly-spot): a tap, hover or focus opens what
        each part of a Homeland is for -->
   <section class="section" id="islands" aria-labelledby="islands-h">
@@ -614,6 +710,40 @@
     </div>
   </section>
 
+  <!-- TALK: the merchants are AI shopkeepers (dialogue.ts in the game); here a sample chat with Sarah whose answers use
+       the live shelf (/api/market). The page holds a whole first exchange; a question chip plays a new one with typing -->
+  <section class="section" id="talk" aria-labelledby="talk-h">
+    <div class="wrap grid grid--top gt-talk">
+      <div class="span-6 gt-talk__l">
+        <div class="section-head">
+          <h2 id="talk-h">AI merchants at the market. <span class="muted">Ask, haggle, sell.</span></h2>
+          <p>Every shopkeeper in town is an AI with a personality, a stall and a cash box. Ask what anything costs and they answer from their real stock. Push a greedy one too hard and she pushes back.</p>
+        </div>
+        <div class="gt-talk__chips" role="group" aria-label="Ask Sarah">
+          <button type="button" class="gt-chip" data-ask="price"><svg class="px-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 2H2v20h2V4h16v12H6v2H4v2h2v-2h16V2h-2z" fill="currentColor"/></svg> What’s fish worth today?</button>
+          <button type="button" class="gt-chip" data-ask="why"><svg class="px-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 6h8v8h-2v-4h-2V8h-4V6zm2 6v-2h2v2h-2zm-2 2v-2h2v2h-2zm-2 0h2v2h-2v-2zm-2-2h2v2h-2v-2zm-2 0v-2h2v2H8zm-2 2v-2h2v2H6zm-2 2v-2h2v2H4zm0 0v2H2v-2h2z" fill="currentColor"/></svg> Why did the price move?</button>
+          <button type="button" class="gt-chip" data-ask="wood"><svg class="px-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 2h12v2H6V2zM4 6V4h2v2H4zm0 12V6H2v12h2zm2 2v-2H4v2h2zm12 0v2H6v-2h12zm2-2v2h-2v-2h2zm0-12h2v12h-2V6zm0 0V4h-2v2h2zm-9-1h2v2h3v2h-6v2h6v6h-3v2h-2v-2H8v-2h6v-2H8V7h3V5z" fill="currentColor"/></svg> Will you buy my wood?</button>
+        </div>
+        <p class="gt-talk__note">A sample chat, with Sarah’s live prices. In the game she answers whatever you ask.</p>
+      </div>
+      <figure class="span-6 start-7 frame gt-chat" data-visual data-ui>
+        <div class="gt-chat__h">
+          <span class="gt-chat__av"><svg class="px-ic px-ic--l" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 3h16v2H4V3zm0 4h18v8h-2v6h-2v-6h-4v6H4v-6H2V7h2zm8 12v-4H6v4h6zm0-6h8V9H4v4h8z" fill="currentColor"/></svg></span>
+          <span class="gt-chat__who"><b>Sarah</b><small>Sarah’s Fish Stall · fair</small></span>
+          <span class="gt-chat__on">online</span>
+        </div>
+        <ol class="gt-chat__log" data-chat aria-live="polite">
+          <li class="shelf" data-chat-shelf><img src="img/item-fish.png" width="48" height="48" alt=""><span><b>Fish</b> on Sarah’s ice</span><span class="gt-num"><span data-shelf-ask>9</span> coin · <span data-shelf-stock>20</span>/<span data-shelf-target>20</span></span></li>
+          <li class="me">What’s fish worth today?</li>
+          <li class="them" data-chat-first>Fresh fish is 9 coin today. I keep about 20 on ice, so it’s a fair day to buy.</li>
+          <li class="me">Will you buy my wood?</li>
+          <li class="them" data-chat-wood>Wood? I’ll pay 5 coin a piece. I need it to grill fish. Bring it to my stall by the square.</li>
+        </ol>
+        <div class="gt-chat__in"><span>Ask Sarah anything in the game</span><a class="btn btn--primary" href="https://gentown.my.id/">Play now<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a></div>
+      </figure>
+    </div>
+  </section>
+
   <!-- PRICES: the paper window of the game's market: the seven goods' live prices (/api/market; economy/config.json's base
        prices until it answers) beside a recipe calculator, what a craft adds at the merchants' middle prices. The iris
        moment opens the paper ground. -->
@@ -653,47 +783,6 @@
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- LAB: the merchants' own pricing formula (economy/pricing.ts) as a toy: pick a merchant, move the stock on the shelf
-       and what players sold or bought, and the price, its curve and the buy-sell band follow -->
-  <section class="section" id="lab" aria-labelledby="lab-h">
-    <div class="wrap grid grid--top gt-lab">
-      <div class="span-6 gt-lab__ctl">
-        <div class="section-head">
-          <h2 id="lab-h">The merchants’ price lab. <span class="muted">Move the stock, watch the price.</span></h2>
-        </div>
-        <div class="gt-segs" role="tablist" aria-label="Merchant" data-lab-tabs>
-          <button type="button" role="tab" aria-selected="true" data-lab="sarah">Sarah · fair</button>
-          <button type="button" role="tab" aria-selected="false" tabindex="-1" data-lab="wendy">Wendy · greedy</button>
-          <button type="button" role="tab" aria-selected="false" tabindex="-1" data-lab="jack">Jack · generous</button>
-        </div>
-        <div class="gt-lab__in">
-          <label class="gt-lab__row" for="lab-stock"><span><span data-lab-good>Fish</span> on the shelf <img class="gt-item" data-lab-icon src="img/item-fish.png" width="48" height="48" alt=""></span><b class="gt-num"><span data-lab-stock-v>20</span> / <span data-lab-target>20</span></b></label>
-          <input id="lab-stock" type="range" min="0" max="60" value="20" data-lab-stock>
-          <label class="gt-lab__row" for="lab-demand"><span>Players sold minus bought today</span><b class="gt-num" data-lab-demand-v>0</b></label>
-          <input id="lab-demand" type="range" min="-20" max="20" value="0" data-lab-demand>
-        </div>
-        <dl class="gt-lab__out">
-          <div><dt>You buy at</dt><dd class="gt-num"><span data-lab-ask>9</span> coin</dd></div>
-          <div><dt>Middle</dt><dd class="gt-num"><span data-lab-mid>8</span> coin</dd></div>
-          <div><dt>You sell at</dt><dd class="gt-num"><span data-lab-bid>7</span> coin</dd></div>
-        </dl>
-        <p class="gt-lab__why" data-lab-why aria-live="polite">Stock is at its target: the base price holds.</p>
-      </div>
-      <figure class="span-6 start-7 frame gt-lab__chart" data-visual>
-        <svg viewBox="0 0 600 440" role="img" aria-labelledby="lab-chart-t" data-lab-chart>
-          <title id="lab-chart-t">The merchant's price for every stock level, with the buy and sell prices around it</title>
-          <g class="gt-lab__grid" data-lab-grid></g>
-          <path class="gt-lab__band" data-lab-band d=""/>
-          <path class="gt-lab__mid" data-lab-midline d=""/>
-          <line class="gt-lab__target" data-lab-tline x1="0" y1="24" x2="0" y2="392"/>
-          <text class="gt-lab__tl" data-lab-tlabel x="0" y="18">target</text>
-          <g class="gt-lab__dot" data-lab-dot><circle r="14" class="gt-lab__halo"/><circle r="6"/></g>
-          <text class="gt-lab__ax" x="300" y="434" text-anchor="middle">stock on the shelf</text>
-        </svg>
-      </figure>
     </div>
   </section>
 
@@ -755,26 +844,26 @@
       <div class="gt-new">
         <a class="tile gt-nt gt-nt--big" href="https://gentown.my.id/">
           <img src="img/carousel.webp" width="960" height="640" alt="The carousel on the village square at dusk, its striped canopy over six painted horses" loading="lazy">
-          <span class="gt-nt__b"><span class="gt-nt__k">🎠 Village square</span><h3>Ride the carousel<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></h3><p>Climb on a horse and the camera goes low and circles the ride, letterboxed, in warm colour.</p></span>
+          <span class="gt-nt__b"><span class="gt-nt__k"><svg class="px-ic px-ic--k" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 5h20v14H2V5zm18 12V7H4v10h16zM8 9h2v2h2v2h-2v2H8v-2H6v-2h2V9zm6 0h2v2h-2V9zm4 4h-2v2h2v-2z" fill="currentColor"/></svg>Village square</span><h3>Ride the carousel<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></h3><p>Climb on a horse and the camera goes low and circles the ride, letterboxed, in warm colour.</p></span>
         </a>
         <a class="tile gt-nt gt-nt--pic" href="https://gentown.my.id/">
           <img src="img/windmill.webp" width="800" height="600" alt="A windmill house with turning sails on a floating island" loading="lazy">
-          <span class="gt-nt__b"><span class="gt-nt__k">🏗️ Your Homeland</span><h3>Three work buildings<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></h3><p>Wood and wheat while you are away.</p></span>
+          <span class="gt-nt__b"><span class="gt-nt__k"><svg class="px-ic px-ic--k" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 2h14v4h6v16H2V2zm18 6h-4v2h2v2h-2v2h2v2h-2v2h2v2h2V8zm-6-4H4v16h2v-2h6v2h2V4zM6 6h2v2H6V6zm6 0h-2v2h2V6zm-6 4h2v2H6v-2zm6 0h-2v2h2v-2zm-6 4h2v2H6v-2zm6 0h-2v2h2v-2z" fill="currentColor"/></svg>Your Homeland</span><h3>Three work buildings<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></h3><p>Wood and wheat while you are away.</p></span>
         </a>
         <a class="tile gt-nt gt-nt--pic" href="https://gentown.my.id/">
           <img src="img/island.webp" width="960" height="640" alt="A quiet island of meadow and pines across the lake" loading="lazy">
-          <span class="gt-nt__b"><span class="gt-nt__k">⛵ The lake</span><h3>Row to the island<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></h3><p>A boat crosses to where no path goes.</p></span>
+          <span class="gt-nt__b"><span class="gt-nt__k"><svg class="px-ic px-ic--k" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 4v2h4v2H6v2h6V8h2v2h8v6h-2v-4H4v6h14v-2h2v2h4v2H0v-2h2v-8h2V6h2V4h2z" fill="currentColor"/></svg>The lake</span><h3>Row to the island<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></h3><p>A boat crosses to where no path goes.</p></span>
         </a>
         <a class="tile gt-nt gt-nt--txt" href="https://gentown.my.id/">
-          <span class="gt-nt__i" aria-hidden="true">🎲</span>
+          <span class="gt-nt__i"><svg class="px-ic px-ic--l" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 3H3v18h18V3H5zm14 2v14H5V5h14zM9 7H7v2h2V7zm6 0h2v2h-2V7zm-6 8H7v2h2v-2zm6 0h2v2h-2v-2zm-2-4h-2v2h2v-2z" fill="currentColor"/></svg></span>
           <span class="gt-nt__b"><span class="gt-nt__k">Market</span><h3>Luck Table</h3><p>Stake 1 to 5 goods on a dice roll. Never coin, 20 bets a day.</p></span>
         </a>
         <a class="tile gt-nt gt-nt--txt" href="https://gentown.my.id/">
-          <span class="gt-nt__i" aria-hidden="true">🛍️</span>
+          <span class="gt-nt__i"><svg class="px-ic px-ic--l" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 2h6v2H9V2zm6 4V4h2v2h4v16H3V6h4V4h2v2h6zm0 2H9v2H7V8H5v12h14V8h-2v2h-2V8z" fill="currentColor"/></svg></span>
           <span class="gt-nt__b"><span class="gt-nt__k">Market</span><h3>The Mall</h3><p>Gloves, boots and a hard hat that make your workers stronger.</p></span>
         </a>
         <a class="tile gt-nt gt-nt--txt" href="https://gentown.my.id/">
-          <span class="gt-nt__i" aria-hidden="true">🎯</span>
+          <span class="gt-nt__i"><svg class="px-ic px-ic--l" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 2h10v2h8v14H11v-2H5v6H3V2zm2 12h8v2h6V6h-8V4H5v10z" fill="currentColor"/></svg></span>
           <span class="gt-nt__b"><span class="gt-nt__k">First days · 9 steps</span><h3>Missions</h3><p>From the first fish to your first crop, one step at a time.</p></span>
         </a>
       </div>
@@ -1162,65 +1251,70 @@
     // a touch on a closed panel opens it first; the next touch follows the link (a phone shows them all open)
     j.addEventListener('click', function (e) { if (!still && !j.classList.contains('is-on') && !matchMedia('(max-width: 639px)').matches) { e.preventDefault(); e.stopImmediatePropagation(); openJob(j); } });
   });
-  /* ---- the price lab: economy/pricing.ts with the config's numbers (stock and demand factors; full cash) ---- */
-  var LAB = {
-    sarah: { good: 'fish', name: 'Fish', base: 8, target: 20, spread: 0.2, el: 0.5, minBid: 0 },
-    wendy: { good: 'bread', name: 'Bread', base: 16, target: 12, spread: 0.3, el: 0.5, minBid: 0 },
-    jack: { good: 'wood', name: 'Wood', base: 6, target: 25, spread: 0.12, el: 0.3, minBid: 0.9 }
+
+  /* ---- why: the numbers count up once when the cards come into view (the page already shows the final number) ---- */
+  var whyBox = $('.gt-why');
+  if (whyBox && !still && window.IntersectionObserver) {
+    var counted = false;
+    new IntersectionObserver(function (es) {
+      if (counted || !es[0].isIntersecting) return; counted = true;
+      $$('[data-count]', whyBox).forEach(function (el) {
+        var to = +el.getAttribute('data-count'); if (!to) return;
+        var t0 = performance.now();
+        (function step(now) { var k = Math.min(1, (now - t0) / 900), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(to * e); if (k < 1) requestAnimationFrame(step); })(t0);
+      });
+    }, { threshold: 0.4 }).observe(whyBox);
+  }
+  $$('[data-spot]').forEach(function (t) {
+    t.addEventListener('pointermove', function (e) { var r = t.getBoundingClientRect(); t.style.setProperty('--mx', (e.clientX - r.left) + 'px'); t.style.setProperty('--my', (e.clientY - r.top) + 'px'); });
+  });
+
+  /* ---- talk: Sarah answers from her live shelf ---- */
+  function sarah() {
+    var m = (live.market || []).filter(function (x) { return x.id === 'sari'; })[0], it = function (t) { return m && (m.items || []).filter(function (i) { return i.token === t; })[0]; };
+    var f = it('fish') || { ask: 9, bid: 7, stock: 20, target: 20 }, w = it('wood') || { bid: 5 };
+    return { open: !m || m.open !== false, fish: f, wood: w };
+  }
+  var ANSWERS = {
+    price: function (d) {
+      var f = d.fish, low = f.stock < f.target * 0.8, high = f.stock > f.target * 1.2;
+      return 'Fresh fish is ' + (f.ask != null ? f.ask : f.mid) + ' coin today. I have ' + f.stock + ' on ice and like to keep ' + f.target + ', so ' + (low ? 'it’s a touch dear. Bring me some and I’ll pay well.' : high ? 'it’s a good day to buy.' : 'it’s a fair day to buy.');
+    },
+    why: function (d) {
+      var f = d.fish;
+      return f.stock < f.target ? 'Folks bought my ice box down to ' + f.stock + '. When it runs low the price climbs; sell me a few and watch it drop.' : 'My ice box is full, ' + f.stock + ' fish. When I have plenty the price comes down. Fishers have been busy!';
+    },
+    wood: function (d) { return d.wood.bid != null ? 'Wood? I’ll pay ' + d.wood.bid + ' coin a piece. I need it to grill fish. Bring it to my stall by the square.' : 'Not today, my woodpile is full. Try Jack’s General Store.'; }
   };
-  var PC = { demandWeight: 0.4, demandDamping: 5, fsMin: 0.5, fsMax: 2.5, fdMin: 0.7, fdMax: 1.4, minMult: 0.25, maxMult: 4 };
-  function clampN(x, a, b) { return Math.min(b, Math.max(a, x)); }
-  function labPrice(m, stock, demand) {
-    var sold = Math.max(0, demand), bought = Math.max(0, -demand);
-    var fs = clampN(Math.pow(m.target / Math.max(stock, 1), m.el), PC.fsMin, PC.fsMax);
-    var fd = clampN(1 + PC.demandWeight * (sold - bought) / (sold + bought + PC.demandDamping), PC.fdMin, PC.fdMax);
-    var mid = clampN(m.base * fs * fd, PC.minMult * m.base, PC.maxMult * m.base);
-    var ask = Math.max(1, Math.ceil(mid * (1 + m.spread / 2)));
-    var bid = Math.min(Math.max(1, ask - 1), Math.max(1, m.minBid ? Math.floor(m.minBid * m.base) : 1, Math.floor(mid * (1 - m.spread / 2))));
-    return { mid: mid, ask: ask, bid: bid, fs: fs, fd: fd };
+  var QUESTION = { price: 'What’s fish worth today?', why: 'Why did the price move?', wood: 'Will you buy my wood?' };
+  var chatLog = $('[data-chat]'), chatBusy = false;
+  function chatSay(cls, text) {
+    var li = document.createElement('li'); li.className = cls + ' is-new'; li.textContent = text; chatLog.appendChild(li);
+    while (chatLog.children.length > 6) chatLog.removeChild(chatLog.children[1]); // the shelf card stays on top
+    return li;
   }
-  var lab = $('#lab'), labKey = 'sarah';
-  if (lab) {
-    var X0 = 48, X1 = 580, Y0 = 392, Y1 = 30, SMAX = 60;
-    var sx = function (v) { return X0 + (X1 - X0) * v / SMAX; };
-    var labTabs = $('[data-lab-tabs]', lab), stockIn = $('[data-lab-stock]', lab), demIn = $('[data-lab-demand]', lab);
-    var paintLab = function () {
-      var m = LAB[labKey], st = +stockIn.value, dm = +demIn.value, top = m.base * 3.2;
-      var sy = function (v) { return Y0 - (Y0 - Y1) * Math.min(v, top) / top; };
-      var mids = [], asks = [], bids = [];
-      for (var v = 0; v <= SMAX; v++) { var q = labPrice(m, v, dm); mids.push([sx(v), sy(q.mid)]); asks.push([sx(v), sy(q.ask)]); bids.push([sx(v), sy(q.bid)]); }
-      var line = function (pts) { return pts.map(function (p, i) { return (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' '); };
-      $('[data-lab-midline]', lab).setAttribute('d', line(mids));
-      $('[data-lab-band]', lab).setAttribute('d', line(asks) + ' ' + line(bids.slice().reverse()).replace(/^M/, 'L') + ' Z');
-      var g = $('[data-lab-grid]', lab), html = '';
-      [0, 0.25, 0.5, 0.75, 1].forEach(function (f) { var y = Y0 - (Y0 - Y1) * f; html += '<line x1="' + X0 + '" x2="' + X1 + '" y1="' + y + '" y2="' + y + '"/><text x="' + (X0 - 8) + '" y="' + (y + 4) + '" text-anchor="end">' + Math.round(top * f) + '</text>'; });
-      [0, 20, 40, 60].forEach(function (v) { html += '<text x="' + sx(v) + '" y="' + (Y0 + 20) + '" text-anchor="middle">' + v + '</text>'; });
-      g.innerHTML = html;
-      var tx = sx(m.target);
-      $('[data-lab-tline]', lab).setAttribute('x1', tx); $('[data-lab-tline]', lab).setAttribute('x2', tx); $('[data-lab-tlabel]', lab).setAttribute('x', tx - 22);
-      var now = labPrice(m, st, dm);
-      $('[data-lab-dot]', lab).style.transform = 'translate(' + sx(st).toFixed(1) + 'px,' + sy(now.mid).toFixed(1) + 'px)';
-      $('[data-lab-stock-v]', lab).textContent = st; $('[data-lab-target]', lab).textContent = m.target;
-      $('[data-lab-demand-v]', lab).textContent = (dm > 0 ? '+' : '') + dm;
-      roll($('[data-lab-ask]', lab), m && now.ask); roll($('[data-lab-mid]', lab), Math.round(now.mid)); roll($('[data-lab-bid]', lab), now.bid);
-      var pct = Math.round((now.mid / m.base - 1) * 100), why;
-      if (st < m.target * 0.9) why = 'Only ' + st + ' on the shelf against a target of ' + m.target + ': the price climbs.';
-      else if (st > m.target * 1.1) why = 'A full shelf, ' + st + ' against ' + m.target + ': the price drops to move stock.';
-      else why = 'The shelf is near its target of ' + m.target + '.';
-      if (dm > 0) why += ' Players sold ' + dm + ' more than they bought, so it rises a little more.'; else if (dm < 0) why += ' Players bought ' + (-dm) + ' more than they sold, so it eases.';
-      why += ' Middle ' + (pct >= 0 ? '+' : '−') + Math.abs(pct) + '% against the base ' + m.base + '.';
-      $('[data-lab-why]', lab).textContent = why;
-    };
-    tabs(labTabs, function (b) {
-      var all = $$('[role="tab"]', labTabs); select(all, b); labKey = b.getAttribute('data-lab');
-      labTabs.style.setProperty('--i', all.indexOf(b));
-      var m = LAB[labKey]; stockIn.value = m.target; demIn.value = 0;
-      $('[data-lab-good]', lab).textContent = m.name; $('[data-lab-icon]', lab).src = 'img/item-' + m.good + '.png';
-      paintLab();
+  $$('[data-ask]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (chatBusy || !chatLog) return; chatBusy = true;
+      var k = b.getAttribute('data-ask'), chips = $$('[data-ask]');
+      chips.forEach(function (c) { c.disabled = true; });
+      chatSay('me', QUESTION[k]);
+      var dots = document.createElement('li'); dots.className = 'them typing is-new'; dots.setAttribute('aria-label', 'Sarah is typing'); dots.innerHTML = '<i></i><i></i><i></i>';
+      setTimeout(function () { chatLog.appendChild(dots); }, still ? 0 : 250);
+      setTimeout(function () {
+        if (dots.parentNode) dots.parentNode.removeChild(dots);
+        chatSay('them', ANSWERS[k](sarah()));
+        chips.forEach(function (c) { c.disabled = false; }); chatBusy = false;
+      }, still ? 0 : 1300);
     });
-    stockIn.addEventListener('input', paintLab); demIn.addEventListener('input', paintLab);
-    paintLab();
+  });
+  function chatFirst() {
+    var el = $('[data-chat-first]'); if (!live.market) return;
+    if (el) el.textContent = ANSWERS.price(sarah());
+    var wd = $('[data-chat-wood]'); if (wd) wd.textContent = ANSWERS.wood(sarah());
+    var f = sarah().fish, a = $('[data-shelf-ask]'); if (a) { a.textContent = f.ask != null ? f.ask : f.mid; $('[data-shelf-stock]').textContent = f.stock; $('[data-shelf-target]').textContent = f.target; }
   }
+  setInterval(chatFirst, 5000);
   // the new things: a soft light follows the pointer over each tile
   $$('.gt-nt').forEach(function (t) {
     t.addEventListener('pointermove', function (e) { var r = t.getBoundingClientRect(); t.style.setProperty('--mx', (e.clientX - r.left) + 'px'); t.style.setProperty('--my', (e.clientY - r.top) + 'px'); });

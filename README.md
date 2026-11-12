@@ -21,3 +21,7 @@ Opens on http://localhost:4321 and passes `/api/*` to the live game server, as V
 ## Deploy
 
 Import the repo in Vercel (framework preset: Other, no build command, output directory: the repo root).
+
+## Credits
+
+Pixel icons: [Pixelarticons](https://github.com/halfmage/pixelarticons) by Gerrit Halfmann, MIT (`assets/pixel/LICENSE.txt`).
