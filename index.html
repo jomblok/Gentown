@@ -39,6 +39,77 @@
   --display-tracking-xl: -0.045em;
   --ly-scale: 0.97;
 }
+
+  /* LAB: the controls on the left, the price curve on the right */
+  .gt-lab__ctl { display: grid; gap: var(--s-5); align-content: start; }
+  .gt-lab__ctl .section-head { margin-bottom: 0; }
+  .gt-lab__in { display: grid; gap: 10px; }
+  .gt-lab__row { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); font-size: var(--t-small); color: var(--p-muted); }
+  .gt-lab__row > span { display: inline-flex; align-items: center; gap: 8px; }
+  .gt-lab__row .gt-item { width: 24px; height: 24px; image-rendering: pixelated; }
+  .gt-lab__row b { color: var(--p-ink); font-weight: 500; }
+  .gt-lab input[type="range"] { display: block; margin: 0; width: 100%; accent-color: var(--p-accent); height: 24px; cursor: pointer; }
+  .gt-lab__out { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); margin: 0; padding: var(--s-4) 0; border-top: 1px solid var(--gt-line); border-bottom: 1px solid var(--gt-line); }
+  .gt-lab__out div { display: grid; gap: 4px; }
+  .gt-lab__out dt { font: 500 12px/1 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--p-muted); }
+  .gt-lab__out dd { margin: 0; font-size: clamp(1.6rem, 2.6vw, 2.2rem); line-height: 1.05; letter-spacing: -.02em; color: var(--p-ink); }
+  .gt-lab__out div:nth-child(2) dd { color: var(--p-accent); }
+  .gt-lab__why { margin: 0; color: var(--p-ink); min-height: 3em; }
+  .gt-lab__chart { margin: 0; align-self: stretch; display: flex; flex-direction: column; justify-content: center; padding: var(--s-5) var(--s-4) var(--s-4); border-radius: var(--r-card, 16px);
+    background: color-mix(in oklab, var(--p-ink) 4%, transparent); box-shadow: inset 0 0 0 1px var(--gt-line); }
+  .gt-lab__chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .gt-lab__grid line { stroke: var(--gt-line); stroke-width: 1; }
+  .gt-lab__grid text, .gt-lab__ax, .gt-lab__tl { fill: var(--p-muted); font: 500 12px var(--font-mono); }
+  .gt-lab__band { fill: color-mix(in oklab, var(--p-accent) 18%, transparent); }
+  .gt-lab__mid { fill: none; stroke: var(--p-accent); stroke-width: 3; stroke-linejoin: round; }
+  .gt-lab__target { stroke: var(--p-muted); stroke-width: 1.5; stroke-dasharray: 4 5; }
+  .gt-lab__dot { transition: transform .3s var(--gt-out); }
+  .gt-lab__dot circle { fill: var(--p-accent); }
+  .gt-lab__dot .gt-lab__halo { fill: color-mix(in oklab, var(--p-accent) 25%, transparent); animation: gt-halo 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  @keyframes gt-halo { 50% { transform: scale(1.35); opacity: .5; } }
+  @media (prefers-reduced-motion: reduce) { .gt-lab__dot { transition: none; } .gt-lab__dot .gt-lab__halo { animation: none; } }
+
+  /* NEW: a bento of linked tiles; the light under the pointer is a radial gradient at --mx, --my (set on pointermove) */
+  .gt-new__head { max-width: none; align-items: start; column-gap: var(--gutter); margin-bottom: var(--s-6); }
+  .gt-new { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: minmax(0, 1.75fr) minmax(0, 1fr); gap: var(--gutter);
+    height: clamp(420px, 58svh, 540px); }
+  .gt-nt { position: relative; overflow: hidden; border-radius: var(--r-card, 16px); isolation: isolate; color: var(--p-ink); text-decoration: none;
+    background: color-mix(in oklab, var(--p-ink) 5%, var(--p-bg)); box-shadow: inset 0 0 0 1px var(--gt-line); display: flex; flex-direction: column; justify-content: flex-end;
+    transition: box-shadow .35s var(--gt-out), transform .35s var(--gt-out); }
+  .gt-nt::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0; transition: opacity .35s var(--gt-out);
+    background: radial-gradient(280px circle at var(--mx, 50%) var(--my, 50%), color-mix(in oklab, var(--p-accent) 26%, transparent), transparent 65%); }
+  .gt-nt:hover::before, .gt-nt:focus-visible::before { opacity: 1; }
+  .gt-nt:hover { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--p-accent) 55%, transparent); transform: translateY(-2px); }
+  .gt-nt:focus-visible { outline: 2px solid var(--p-accent); outline-offset: 3px; }
+  .gt-nt--big { grid-column: 1 / span 6; }
+  .gt-nt--pic { grid-column: span 3; }
+  .gt-nt--txt { grid-column: span 4; justify-content: space-between; padding: var(--s-4); }
+  .gt-nt > img { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--gt-out); }
+  .gt-nt:hover > img { transform: scale(1.05); }
+  .gt-nt--big::after, .gt-nt--pic::after { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background: linear-gradient(to top, rgb(8 11 17 / .94) 0%, rgb(8 11 17 / .7) 42%, transparent 75%); }
+  .gt-nt--pic h3 { font-size: var(--t-lead); }
+  .gt-nt__b { position: relative; z-index: 2; display: grid; gap: 6px; padding: var(--s-4); }
+  .gt-nt--txt .gt-nt__b { padding: 0; }
+  .gt-nt__k { font: 500 11px/1 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--p-accent); }
+  .gt-nt h3 { margin: 0; text-wrap: balance; }
+  .gt-nt h3 .m-arrow { display: inline-block; margin-left: 8px; vertical-align: middle; color: var(--p-accent); }
+  .gt-nt p { margin: 0; color: rgb(233 237 243 / .78); font-size: var(--t-small); line-height: 1.5; }
+  .gt-nt__i { position: relative; z-index: 2; font-size: 30px; line-height: 1; }
+  @media (max-width: 1023px) {
+    .gt-new { height: auto; grid-template-rows: none; }
+    .gt-nt--big { grid-column: 1 / -1; height: 320px; }
+    .gt-nt--pic { grid-column: span 6; height: 260px; }
+    .gt-nt--txt { grid-column: span 4; min-height: 200px; }
+  }
+  @media (max-width: 639px) {
+    .gt-nt--big, .gt-nt--pic, .gt-nt--txt { grid-column: 1 / -1; }
+    .gt-nt--big { height: 260px; } .gt-nt--pic { height: 220px; } .gt-nt--txt { min-height: 0; gap: var(--s-3); }
+    .gt-nt h3 { font: 500 var(--t-lead)/1.4 var(--font-text); letter-spacing: 0; } /* one h3 size on a phone, as the jobs */
+    .gt-lab__out dd { font-size: 1.5rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { .gt-nt, .gt-nt > img, .gt-nt::before { transition: none; } .gt-nt:hover { transform: none; } }
+  .gt-proof { color: var(--p-ink); }
 </style>
 <script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
 <script src="assets/backgrounds/backgrounds.js"></script>
@@ -263,7 +334,7 @@
     .gt-merchant { display: block; }
     .gt-merchant::before { top: auto; left: 0; right: 0; bottom: -1px; width: auto; height: 2px; transform: scaleX(0); }
     .gt-merchant[aria-selected="true"]::before { transform: none; }
-    .gt-shelf__pic { flex: none; height: 180px; min-height: 0; }
+    .gt-shelf__pic { flex: none; height: 270px; min-height: 0; } /* fills the market's phone screen (the gap before the prices) */
     .gt-shelf__body { padding: var(--s-4) 0 0; }
     .gt-bar { width: 40px; }
   }
@@ -421,7 +492,9 @@
       </div>
       <div class="nav__item"><a class="nav__link" href="#market">Market</a></div>
       <div class="nav__item"><a class="nav__link" href="#prices">Prices</a></div>
+      <div class="nav__item"><a class="nav__link" href="#lab">Lab</a></div>
       <div class="nav__item"><a class="nav__link" href="#work">Jobs</a></div>
+      <div class="nav__item"><a class="nav__link" href="#new">New</a></div>
       <div class="nav__item"><a class="nav__link" href="#day">Day</a></div>
       <div class="nav__item"><a class="nav__link" href="#faq">Questions</a></div>
     </nav>
@@ -583,6 +656,47 @@
     </div>
   </section>
 
+  <!-- LAB: the merchants' own pricing formula (economy/pricing.ts) as a toy: pick a merchant, move the stock on the shelf
+       and what players sold or bought, and the price, its curve and the buy-sell band follow -->
+  <section class="section" id="lab" aria-labelledby="lab-h">
+    <div class="wrap grid grid--top gt-lab">
+      <div class="span-6 gt-lab__ctl">
+        <div class="section-head">
+          <h2 id="lab-h">The merchants’ price lab. <span class="muted">Move the stock, watch the price.</span></h2>
+        </div>
+        <div class="gt-segs" role="tablist" aria-label="Merchant" data-lab-tabs>
+          <button type="button" role="tab" aria-selected="true" data-lab="sarah">Sarah · fair</button>
+          <button type="button" role="tab" aria-selected="false" tabindex="-1" data-lab="wendy">Wendy · greedy</button>
+          <button type="button" role="tab" aria-selected="false" tabindex="-1" data-lab="jack">Jack · generous</button>
+        </div>
+        <div class="gt-lab__in">
+          <label class="gt-lab__row" for="lab-stock"><span><span data-lab-good>Fish</span> on the shelf <img class="gt-item" data-lab-icon src="img/item-fish.png" width="48" height="48" alt=""></span><b class="gt-num"><span data-lab-stock-v>20</span> / <span data-lab-target>20</span></b></label>
+          <input id="lab-stock" type="range" min="0" max="60" value="20" data-lab-stock>
+          <label class="gt-lab__row" for="lab-demand"><span>Players sold minus bought today</span><b class="gt-num" data-lab-demand-v>0</b></label>
+          <input id="lab-demand" type="range" min="-20" max="20" value="0" data-lab-demand>
+        </div>
+        <dl class="gt-lab__out">
+          <div><dt>You buy at</dt><dd class="gt-num"><span data-lab-ask>9</span> coin</dd></div>
+          <div><dt>Middle</dt><dd class="gt-num"><span data-lab-mid>8</span> coin</dd></div>
+          <div><dt>You sell at</dt><dd class="gt-num"><span data-lab-bid>7</span> coin</dd></div>
+        </dl>
+        <p class="gt-lab__why" data-lab-why aria-live="polite">Stock is at its target: the base price holds.</p>
+      </div>
+      <figure class="span-6 start-7 frame gt-lab__chart" data-visual>
+        <svg viewBox="0 0 600 440" role="img" aria-labelledby="lab-chart-t" data-lab-chart>
+          <title id="lab-chart-t">The merchant's price for every stock level, with the buy and sell prices around it</title>
+          <g class="gt-lab__grid" data-lab-grid></g>
+          <path class="gt-lab__band" data-lab-band d=""/>
+          <path class="gt-lab__mid" data-lab-midline d=""/>
+          <line class="gt-lab__target" data-lab-tline x1="0" y1="24" x2="0" y2="392"/>
+          <text class="gt-lab__tl" data-lab-tlabel x="0" y="18">target</text>
+          <g class="gt-lab__dot" data-lab-dot><circle r="14" class="gt-lab__halo"/><circle r="6"/></g>
+          <text class="gt-lab__ax" x="300" y="434" text-anchor="middle">stock on the shelf</text>
+        </svg>
+      </figure>
+    </div>
+  </section>
+
   <!-- WORK: three tall picture panels across the container (the sea, the forest and mine, the farm); the one under the
        pointer or focus widens and shows its recipe with the game's item sprites and live coin values; each opens its
        recipe in the calculator above. A phone stacks them, each open -->
@@ -625,6 +739,43 @@
               <ul class="gt-recipe"><li><img src="img/item-wheat.png" width="48" height="48" alt="">2 Wheat <span class="gt-coin"><span data-mid="wheat">5</span></span></li><li class="is-op" aria-hidden="true">=</li><li class="is-out"><img src="img/item-bread.png" width="48" height="48" alt="">Bread <span class="gt-coin"><span data-mid="bread">16</span> coin</span></li></ul>
             </div></div></div>
           </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW: what landed in the game this week, as a bento of linked tiles; a soft light follows the pointer over each
+       (the spotlight card pattern); the pictures are the game's own 2.5D renders -->
+  <section class="section" id="new" aria-labelledby="new-h">
+    <div class="wrap">
+      <div class="section-head grid gt-new__head">
+        <h2 id="new-h" class="span-6">Six new things in town. <span class="muted">All of them in the game today.</span></h2>
+        <p class="span-6 start-7 gt-jobs-lead">The square got a ride and a luck table, the market a Mall, the lake an island, and every Homeland three work buildings.</p>
+      </div>
+      <div class="gt-new">
+        <a class="tile gt-nt gt-nt--big" href="https://gentown.my.id/">
+          <img src="img/carousel.webp" width="960" height="640" alt="The carousel on the village square at dusk, its striped canopy over six painted horses" loading="lazy">
+          <span class="gt-nt__b"><span class="gt-nt__k">🎠 Village square</span><h3>Ride the carousel<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></h3><p>Climb on a horse and the camera goes low and circles the ride, letterboxed, in warm colour.</p></span>
+        </a>
+        <a class="tile gt-nt gt-nt--pic" href="https://gentown.my.id/">
+          <img src="img/windmill.webp" width="800" height="600" alt="A windmill house with turning sails on a floating island" loading="lazy">
+          <span class="gt-nt__b"><span class="gt-nt__k">🏗️ Your Homeland</span><h3>Three work buildings<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></h3><p>Wood and wheat while you are away.</p></span>
+        </a>
+        <a class="tile gt-nt gt-nt--pic" href="https://gentown.my.id/">
+          <img src="img/island.webp" width="960" height="640" alt="A quiet island of meadow and pines across the lake" loading="lazy">
+          <span class="gt-nt__b"><span class="gt-nt__k">⛵ The lake</span><h3>Row to the island<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></h3><p>A boat crosses to where no path goes.</p></span>
+        </a>
+        <a class="tile gt-nt gt-nt--txt" href="https://gentown.my.id/">
+          <span class="gt-nt__i" aria-hidden="true">🎲</span>
+          <span class="gt-nt__b"><span class="gt-nt__k">Market</span><h3>Luck Table</h3><p>Stake 1 to 5 goods on a dice roll. Never coin, 20 bets a day.</p></span>
+        </a>
+        <a class="tile gt-nt gt-nt--txt" href="https://gentown.my.id/">
+          <span class="gt-nt__i" aria-hidden="true">🛍️</span>
+          <span class="gt-nt__b"><span class="gt-nt__k">Market</span><h3>The Mall</h3><p>Gloves, boots and a hard hat that make your workers stronger.</p></span>
+        </a>
+        <a class="tile gt-nt gt-nt--txt" href="https://gentown.my.id/">
+          <span class="gt-nt__i" aria-hidden="true">🎯</span>
+          <span class="gt-nt__b"><span class="gt-nt__k">First days · 9 steps</span><h3>Missions</h3><p>From the first fish to your first crop, one step at a time.</p></span>
         </a>
       </div>
     </div>
@@ -711,7 +862,7 @@
     <div class="wrap">
       <h2 class="mo-gt__type" id="own-h">Market goods on NEAR</h2>
       <div class="mo-gt__row">
-        <p>Your items and coin are tokens in one NEAR contract, written once a day at 06:00 game time. Sign in with Google or email: no seed phrase, no wallet pop-up and no gas while you play.</p>
+        <p>Your items and coin are tokens in one NEAR contract, written once a day at 06:00 game time. Sign in with Google or email: no seed phrase, no wallet pop-up and no gas while you play. <span class="gt-proof" data-gt-proof></span> <a class="link" href="https://testnet.nearblocks.io/address/game.genesistown.testnet">See the contract on NearBlocks</a></p>
         <a class="link" href="https://github.com/leutenantKiya/Genesis-Town">Read the code on GitHub</a>
       </div>
     </div>
@@ -1011,6 +1162,73 @@
     // a touch on a closed panel opens it first; the next touch follows the link (a phone shows them all open)
     j.addEventListener('click', function (e) { if (!still && !j.classList.contains('is-on') && !matchMedia('(max-width: 639px)').matches) { e.preventDefault(); e.stopImmediatePropagation(); openJob(j); } });
   });
+  /* ---- the price lab: economy/pricing.ts with the config's numbers (stock and demand factors; full cash) ---- */
+  var LAB = {
+    sarah: { good: 'fish', name: 'Fish', base: 8, target: 20, spread: 0.2, el: 0.5, minBid: 0 },
+    wendy: { good: 'bread', name: 'Bread', base: 16, target: 12, spread: 0.3, el: 0.5, minBid: 0 },
+    jack: { good: 'wood', name: 'Wood', base: 6, target: 25, spread: 0.12, el: 0.3, minBid: 0.9 }
+  };
+  var PC = { demandWeight: 0.4, demandDamping: 5, fsMin: 0.5, fsMax: 2.5, fdMin: 0.7, fdMax: 1.4, minMult: 0.25, maxMult: 4 };
+  function clampN(x, a, b) { return Math.min(b, Math.max(a, x)); }
+  function labPrice(m, stock, demand) {
+    var sold = Math.max(0, demand), bought = Math.max(0, -demand);
+    var fs = clampN(Math.pow(m.target / Math.max(stock, 1), m.el), PC.fsMin, PC.fsMax);
+    var fd = clampN(1 + PC.demandWeight * (sold - bought) / (sold + bought + PC.demandDamping), PC.fdMin, PC.fdMax);
+    var mid = clampN(m.base * fs * fd, PC.minMult * m.base, PC.maxMult * m.base);
+    var ask = Math.max(1, Math.ceil(mid * (1 + m.spread / 2)));
+    var bid = Math.min(Math.max(1, ask - 1), Math.max(1, m.minBid ? Math.floor(m.minBid * m.base) : 1, Math.floor(mid * (1 - m.spread / 2))));
+    return { mid: mid, ask: ask, bid: bid, fs: fs, fd: fd };
+  }
+  var lab = $('#lab'), labKey = 'sarah';
+  if (lab) {
+    var X0 = 48, X1 = 580, Y0 = 392, Y1 = 30, SMAX = 60;
+    var sx = function (v) { return X0 + (X1 - X0) * v / SMAX; };
+    var labTabs = $('[data-lab-tabs]', lab), stockIn = $('[data-lab-stock]', lab), demIn = $('[data-lab-demand]', lab);
+    var paintLab = function () {
+      var m = LAB[labKey], st = +stockIn.value, dm = +demIn.value, top = m.base * 3.2;
+      var sy = function (v) { return Y0 - (Y0 - Y1) * Math.min(v, top) / top; };
+      var mids = [], asks = [], bids = [];
+      for (var v = 0; v <= SMAX; v++) { var q = labPrice(m, v, dm); mids.push([sx(v), sy(q.mid)]); asks.push([sx(v), sy(q.ask)]); bids.push([sx(v), sy(q.bid)]); }
+      var line = function (pts) { return pts.map(function (p, i) { return (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' '); };
+      $('[data-lab-midline]', lab).setAttribute('d', line(mids));
+      $('[data-lab-band]', lab).setAttribute('d', line(asks) + ' ' + line(bids.slice().reverse()).replace(/^M/, 'L') + ' Z');
+      var g = $('[data-lab-grid]', lab), html = '';
+      [0, 0.25, 0.5, 0.75, 1].forEach(function (f) { var y = Y0 - (Y0 - Y1) * f; html += '<line x1="' + X0 + '" x2="' + X1 + '" y1="' + y + '" y2="' + y + '"/><text x="' + (X0 - 8) + '" y="' + (y + 4) + '" text-anchor="end">' + Math.round(top * f) + '</text>'; });
+      [0, 20, 40, 60].forEach(function (v) { html += '<text x="' + sx(v) + '" y="' + (Y0 + 20) + '" text-anchor="middle">' + v + '</text>'; });
+      g.innerHTML = html;
+      var tx = sx(m.target);
+      $('[data-lab-tline]', lab).setAttribute('x1', tx); $('[data-lab-tline]', lab).setAttribute('x2', tx); $('[data-lab-tlabel]', lab).setAttribute('x', tx - 22);
+      var now = labPrice(m, st, dm);
+      $('[data-lab-dot]', lab).style.transform = 'translate(' + sx(st).toFixed(1) + 'px,' + sy(now.mid).toFixed(1) + 'px)';
+      $('[data-lab-stock-v]', lab).textContent = st; $('[data-lab-target]', lab).textContent = m.target;
+      $('[data-lab-demand-v]', lab).textContent = (dm > 0 ? '+' : '') + dm;
+      roll($('[data-lab-ask]', lab), m && now.ask); roll($('[data-lab-mid]', lab), Math.round(now.mid)); roll($('[data-lab-bid]', lab), now.bid);
+      var pct = Math.round((now.mid / m.base - 1) * 100), why;
+      if (st < m.target * 0.9) why = 'Only ' + st + ' on the shelf against a target of ' + m.target + ': the price climbs.';
+      else if (st > m.target * 1.1) why = 'A full shelf, ' + st + ' against ' + m.target + ': the price drops to move stock.';
+      else why = 'The shelf is near its target of ' + m.target + '.';
+      if (dm > 0) why += ' Players sold ' + dm + ' more than they bought, so it rises a little more.'; else if (dm < 0) why += ' Players bought ' + (-dm) + ' more than they sold, so it eases.';
+      why += ' Middle ' + (pct >= 0 ? '+' : '−') + Math.abs(pct) + '% against the base ' + m.base + '.';
+      $('[data-lab-why]', lab).textContent = why;
+    };
+    tabs(labTabs, function (b) {
+      var all = $$('[role="tab"]', labTabs); select(all, b); labKey = b.getAttribute('data-lab');
+      labTabs.style.setProperty('--i', all.indexOf(b));
+      var m = LAB[labKey]; stockIn.value = m.target; demIn.value = 0;
+      $('[data-lab-good]', lab).textContent = m.name; $('[data-lab-icon]', lab).src = 'img/item-' + m.good + '.png';
+      paintLab();
+    });
+    stockIn.addEventListener('input', paintLab); demIn.addEventListener('input', paintLab);
+    paintLab();
+  }
+  // the new things: a soft light follows the pointer over each tile
+  $$('.gt-nt').forEach(function (t) {
+    t.addEventListener('pointermove', function (e) { var r = t.getBoundingClientRect(); t.style.setProperty('--mx', (e.clientX - r.left) + 'px'); t.style.setProperty('--my', (e.clientY - r.top) + 'px'); });
+  });
+  // the proof: the last game day written to the contract
+  function proof() { var el = $('[data-gt-proof]'); if (el && live.time && live.time.settledThrough != null) el.textContent = 'Settled on NEAR through game day ' + live.time.settledThrough + '.'; }
+  setInterval(proof, 5000);
+
   clock(); prices();
   setInterval(function () { if (live.time) live.apply(); }, 5000);
   setInterval(clock, 120000); setInterval(prices, 30000);
