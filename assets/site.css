@@ -451,12 +451,12 @@ kbd { display: inline-grid; place-items: center; min-width: 22px; height: 22px; 
 /* ---- hero entrance: each line of the name rises out of its own mask, then the sentence and the action */
 .ln { display: block; overflow: hidden; padding-bottom: .06em; margin-bottom: -.06em; }
 .ln > span { display: inline-block; }
-.js .ln > span { transform: translateY(105%); animation: rise 1s var(--ease) forwards; }
+.js .ln > span { animation: rise 1s var(--ease) backwards; }
 .js .ln + .ln > span { animation-delay: .12s; }
-.js .hero__row > * { opacity: 0; transform: translateY(16px); animation: up .8s var(--ease) forwards; animation-delay: .35s; }
+.js .hero__row > * { animation: up .8s var(--ease) backwards; animation-delay: .35s; }
 .js .hero__row > * + * { animation-delay: .45s; }
-@keyframes rise { to { transform: none; } }
-@keyframes up { to { opacity: 1; transform: none; } }
+@keyframes rise { from { transform: translateY(105%); } }
+@keyframes up { from { opacity: 0; transform: translateY(16px); } }
 .stage video { transform: scale(var(--zoom, 1)); transform-origin: 50% 40%; will-change: transform; }
 /* a picture settles into its frame as it arrives */
 .js .rv .pic img, .js .rv.pic img, .js .rv .step__pic img, .js .step.rv .step__pic img { transform: scale(1.08); transition: transform 1.4s var(--ease); }
@@ -583,7 +583,7 @@ h2 { line-height: .95; }
 .btn, .chip, .tab, .segs button, .chipset, .chipset button, .viewer__tabs button, .theme, .bar__toggle, .bar__links a,
 .panel, .pic, .step__pic, .viewer__pic, .extras .pic, .part, .season, .isle, .isle__out div, .day, .pipe, .pipe__steps li, .faq details,
 .own__list div, .cmds__list div, .flow__fig, .flow__list li, .lab__reason, .lab__out div, .trade__side, .trade__item, .trade__foot,
-.recipe li:not(.op), .calc__lines li.out, .board li, .shelf__cash, kbd, .stage__hint {
+.recipe li:not(.op), .calc__lines li.out, .board li, kbd, .stage__hint {
   border-radius: 0;
   clip-path: polygon(0 calc(var(--px) * 2), var(--px) calc(var(--px) * 2), var(--px) var(--px), calc(var(--px) * 2) var(--px), calc(var(--px) * 2) 0,
     calc(100% - var(--px) * 2) 0, calc(100% - var(--px) * 2) var(--px), calc(100% - var(--px)) var(--px), calc(100% - var(--px)) calc(var(--px) * 2), 100% calc(var(--px) * 2),
@@ -671,3 +671,48 @@ h2 { line-height: .95; }
 @media (min-width: 1024px) { .final__in { grid-template-columns: 6fr 6fr; gap: 56px; align-items: center; } }
 .final__pic { aspect-ratio: 4 / 3; background: var(--sky); }
 .final__pic img { object-position: 50% 50%; }
+
+/* ---- hero, take two: the title is written in the world's own sky. The live Homeland fills the first screen, the name
+   and the action sit in the blue above the islands, and the words turn light when night falls in the world */
+.hero { padding: 0; }
+.stage { margin-top: 0; aspect-ratio: auto; height: calc(100svh - 72px); min-height: 620px; max-height: 1080px; }
+@media (max-width: 767px) { .stage { aspect-ratio: auto; height: calc(100svh - 72px); min-height: 640px; } }
+.hero__copy { position: absolute; z-index: 2; left: 0; right: 0; top: 0; padding-top: clamp(28px, 6vh, 72px); pointer-events: none; color: var(--sky-ink); transition: color .8s var(--ease); }
+.hero__copy .btn { pointer-events: auto; }
+.hero__copy .hero__h { font-size: clamp(48px, 7.2vw, 120px); max-width: 11ch; }
+.hero__copy .hero__row { grid-template-columns: 1fr; gap: 20px; max-width: 540px; margin-top: 24px; }
+.hero__copy .hero__sub { font-size: 19px; color: inherit; }
+@media (min-width: 1024px) { .hero__copy .hero__sub { font-size: 21px; } }
+.hero__copy .hero__live { color: inherit; opacity: .85; }
+.hero__copy .hero__live b { color: inherit; }
+.stage.is-night .hero__copy { color: #f4f7fb; }
+.stage__hint { top: auto; bottom: 140px; }
+@media (max-width: 767px) { .stage__hint { bottom: 110px; } .hero__copy .hero__live { display: none; } }
+.stage video { z-index: 0; }
+.hero__copy { z-index: 3; transform: translateZ(0); will-change: transform; }
+.stage__hint, .stage__bar { z-index: 4; }
+.stage__poster, .stage__world { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.stage__poster { object-fit: cover; object-position: 50% 100%; z-index: 0; }
+.stage__world { z-index: 1; transform: scale(var(--zoom, 1)); transform-origin: 50% 40%; }
+.stage__world:not([data-live]) { opacity: 0; }
+.stage__world[data-live] { opacity: 1; transition: opacity .8s var(--ease); }
+@media (prefers-reduced-motion: reduce) { .stage__world { transform: none; } }
+/* the hero world runs to its edge: no stepped cut under it, the ticker follows straight on */
+.stage, .stage.stage { clip-path: none; }
+.stage__bar { bottom: 20px; }
+.stage__hint { bottom: 84px; }
+@media (max-width: 767px) { .stage__bar { bottom: 16px; } .stage__hint { bottom: 72px; } }
+@media (min-width: 768px) { .hero__copy .hero__row { max-width: 470px; } }
+
+.shelf__cash { clip-path: none; }
+
+/* ---- the official logo: two floating islands with a waterfall */
+.brand__logo { width: auto; height: 44px; max-width: none; margin: 2px 0; }
+.brand { gap: 12px; }
+@media (max-width: 380px) { .brand__logo { height: 38px; } .brand { gap: 8px; } }
+.footer__brand { display: flex; align-items: flex-end; gap: clamp(20px, 4vw, 56px); margin-top: 56px; }
+.footer__brand img { width: clamp(96px, 14vw, 190px); height: auto; flex: none; }
+.footer__brand .footer__name { margin-top: 0; padding-bottom: .12em; font-size: clamp(44px, 9.6vw, 148px); }
+@media (max-width: 599px) { .footer__brand { flex-direction: column; align-items: flex-start; } .footer__brand .footer__name { white-space: normal; font-size: clamp(44px, 16vw, 72px); } }
+.hero__copy .hero__h { pointer-events: auto; }
+.final__pic { clip-path: none; border-radius: 0; box-shadow: none; }

@@ -4,13 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Genesis Town: a market town in the sky, free in your browser</title>
-<meta name="description" content="Fish, farm, chop and craft on your own floating islands, then sell to four shopkeepers whose prices follow their stock. Play with up to three friends. Free in your browser, sign in with Google.">
+<meta name="description" content="Fish, farm, chop and craft on your own floating islands, then sell to four shopkeepers whose prices follow their stock. Play with up to three friends. Free in your browser, sign in with Google or email.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Genesis Town: a market town in the sky">
 <meta property="og:description" content="Your own floating islands and a shared market town where every price moved because someone played. Free in your browser.">
 <meta property="og:image" content="share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Genesis Town logo, two floating islands with a waterfall, beside the name and the line: a market town in the sky.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#0c1018" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f6f8fb" media="(prefers-color-scheme: light)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,7 +26,7 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
 {"@type":"Question","name":"Does it cost anything?","acceptedAnswer":{"@type":"Answer","text":"No. Genesis Town is free in your browser. It runs on NEAR testnet, a test network, so coin and items have no cash value."}},
-{"@type":"Question","name":"Do I need a crypto wallet?","acceptedAnswer":{"@type":"Answer","text":"No. Sign in with Google. The game pays the network fees, and you never see a seed phrase or a wallet popup."}},
+{"@type":"Question","name":"Do I need a crypto wallet?","acceptedAnswer":{"@type":"Answer","text":"No. Sign in with NEAR Auth, using your Google account or an email. The game pays the network fees, and you never see a seed phrase or a wallet popup."}},
 {"@type":"Question","name":"Can I play with friends?","acceptedAnswer":{"@type":"Answer","text":"Yes. A party holds up to four players. Give friends a role in your Homeland so they can visit, help you gather and farm, or build with you, and swap goods face to face in a trade window."}}
 ]}
 </script>
@@ -32,7 +37,7 @@
 <div class="progress" aria-hidden="true"><i data-progress></i></div>
 <header class="bar" id="nav">
   <div class="bar__in">
-    <a class="brand" href="#top" aria-label="Genesis Town, back to top"><img src="favicon.svg" width="24" height="24" alt=""><span>Genesis Town</span></a>
+    <a class="brand" href="#top" aria-label="Genesis Town, back to top"><img class="brand__logo" src="img/logo-sm.webp" width="37" height="44" alt=""><span>Genesis Town</span></a>
     <nav class="bar__links" aria-label="Main">
       <a href="#loop">How it works</a>
       <a href="#market">Market</a>
@@ -64,18 +69,19 @@
 <main id="main">
   <!-- HERO: the name of the thing, one sentence, one action, then the game's own Homeland drawn live and large -->
   <section class="hero" id="top" aria-labelledby="hero-h">
-    <div class="wrap">
-      <h1 class="hero__h" id="hero-h"><span class="ln"><span>A market town</span></span><span class="ln"><span>in the sky.</span></span></h1>
-      <div class="hero__row">
-        <p class="hero__sub">Fish, farm and craft on your own floating islands, then sell to four shopkeepers whose prices move with their stock. Free in your browser, with Google sign in.</p>
-        <div class="hero__act">
-          <a class="btn btn--primary btn--lg" href="https://gentown.my.id/">Play free in your browser<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-arrow-right"/></svg></a>
-          <p class="hero__live" aria-live="polite"><span class="dot" aria-hidden="true"></span><span data-now-text>One game day lasts 24 real minutes.</span> <span>Sarah pays <b data-fish-bid>7</b> coin for a fish right now.</span></p>
+    <div class="stage" data-stage>
+      <picture><source media="(max-width: 767px)" srcset="img/hero-phone.webp" width="780" height="1544"><img class="stage__poster" src="img/hero.webp" width="1920" height="1008" alt="" fetchpriority="high"></picture>
+      <canvas class="stage__world" data-gt-world="home" aria-hidden="true"></canvas>
+      <div class="wrap hero__copy">
+        <h1 class="hero__h" id="hero-h"><span class="ln"><span>A market town</span></span><span class="ln"><span>in the sky.</span></span></h1>
+        <div class="hero__row">
+          <p class="hero__sub">Fish, farm and craft on your own floating islands, then sell to four shopkeepers whose prices move with their stock. Free in your browser. Sign in with Google or email.</p>
+          <div class="hero__act">
+            <a class="btn btn--primary btn--lg" href="https://gentown.my.id/">Play free in your browser<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-arrow-right"/></svg></a>
+            <p class="hero__live" aria-live="polite"><span class="dot" aria-hidden="true"></span><span data-now-text>One game day lasts 24 real minutes.</span> <span>Sarah pays <b data-fish-bid>7</b> coin for a fish right now.</span></p>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="stage" data-stage>
-      <video data-gt-world="home" poster="img/hero.webp" muted playsinline disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
       <p class="stage__hint" data-hint hidden><svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-hand-grabbing"/></svg><span class="only-mouse">Drag to turn, or press <kbd>Q</kbd> <kbd>E</kbd></span><span class="only-touch">Swipe to turn</span></p>
       <div class="stage__bar" data-bar hidden>
         <div class="chipset stage__seasons" role="group" aria-label="Season">
@@ -104,7 +110,7 @@
       </div>
       <ul class="steps">
         <li class="step rv">
-          <div class="step__pic"><img src="img/fish.webp" width="900" height="675" alt="A sea island with sandy paths around blue ponds" loading="lazy"></div>
+          <div class="step__pic"><img src="img/fish.webp" width="900" height="675" alt="A sea island of sandy paths around blue ponds, its water falling off the edge" loading="lazy"></div>
           <h3>Cast where the water ripples</h3>
           <p>Wait for the bite, press in time, then hold the fish inside the green zone until the catch bar fills. Sell it raw, or grill it over a piece of wood.</p>
           <ul class="recipe" aria-label="Recipe: 1 fish and 1 wood make grilled fish">
@@ -114,7 +120,7 @@
           </ul>
         </li>
         <li class="step rv" style="--d:1">
-          <div class="step__pic"><img src="img/forest.webp" width="900" height="675" alt="A forest island with pines and blossoming fruit trees beside a house" loading="lazy"></div>
+          <div class="step__pic"><img src="img/forest.webp" width="900" height="675" alt="An island of pines and fruit trees beside the sawmill and the storehouse" loading="lazy"></div>
           <h3>Chop, mine, make a pickaxe</h3>
           <p>Swing at trees and rock. Felled trees regrow from a stump. Tools wear down as you work, and Ben sells new ones or repairs yours.</p>
           <ul class="recipe" aria-label="Recipe: 2 ore and 1 wood make a pickaxe">
@@ -253,7 +259,7 @@
     <div class="wrap">
       <div class="head head--split">
         <h2 id="economy-h">Where every coin comes from.</h2>
-        <p>New coin only enters when the townsfolk buy finished goods, and fees and a burn take it back out, so the town’s money keeps its worth. Pick a part of the town to follow its coin.</p>
+        <p>Five townsfolk keep the market moving, and fees and a burn take coin back out, so the town’s money keeps its worth. Pick a part of the town to follow its coin.</p>
       </div>
       <div class="flow">
         <figure class="flow__fig rv" data-ui>
@@ -278,13 +284,13 @@
       </div>
       <div class="home">
         <figure class="pic home__pic rv">
-          <img src="img/islands.webp" width="1920" height="900" alt="A Homeland seen low across its islands: red and blue roofs, a farm, plank bridges and a waterfall falling into the clouds" loading="lazy">
+          <img src="img/islands.webp" width="1920" height="900" alt="A Homeland of nine floating islands: the Town Hall with its flags, your house and the farm in the middle, a sawmill to the east, plank bridges and waterfalls between them" loading="lazy">
           <div class="pins" aria-hidden="true">
-            <span class="pin" data-pin="1" style="--x:45.8%;--y:31.1%">1</span>
-            <span class="pin" data-pin="2" style="--x:44.5%;--y:60.3%">2</span>
-            <span class="pin" data-pin="3" style="--x:75%;--y:37.4%">3</span>
-            <span class="pin" data-pin="4" style="--x:59.9%;--y:65.1%">4</span>
-            <span class="pin" data-pin="5" style="--x:35.6%;--y:38.5%">5</span>
+            <span class="pin" data-pin="1" style="--x:52.7%;--y:38.1%">1</span>
+            <span class="pin" data-pin="2" style="--x:40.7%;--y:48.7%">2</span>
+            <span class="pin" data-pin="3" style="--x:78.2%;--y:55.6%">3</span>
+            <span class="pin" data-pin="4" style="--x:60.4%;--y:57.1%">4</span>
+            <span class="pin" data-pin="5" style="--x:46.2%;--y:36.7%">5</span>
           </div>
         </figure>
         <ol class="parts" data-parts>
@@ -450,7 +456,7 @@
 
       <ul class="extras">
         <li class="rv"><div class="pic"><img src="img/carousel.webp" width="960" height="640" alt="The carousel on the village square at dusk" loading="lazy"></div><h3>Ride the carousel</h3><p>The camera goes low and circles the ride while a fairground waltz plays.</p></li>
-        <li class="rv" style="--d:1"><div class="pic"><img src="img/island.webp" width="960" height="640" alt="A quiet island of meadow and pines across the water" loading="lazy"></div><h3>Steer the public boat</h3><p>It glows when you can board. Sail it yourself to the island no path reaches.</p></li>
+        <li class="rv" style="--d:1"><div class="pic"><img src="img/island.webp" width="960" height="640" alt="The public rowing boat with its lantern, moored at the shore across from the lake island" loading="lazy"></div><h3>Steer the public boat</h3><p>It glows when you can board. Sail it yourself to the island no path reaches.</p></li>
         <li class="rv" style="--d:2"><div class="pic"><img src="img/night.webp" width="1920" height="1080" alt="The village at night with lamps and lit windows" loading="lazy"></div><h3>Evenings on the square</h3><p>Lamps come on, windows glow and the band starts at seven.</p></li>
       </ul>
     </div>
@@ -469,7 +475,7 @@
         </p>
       </div>
       <dl class="own__list">
-        <div><dt>Sign in with Google.</dt><dd>No seed phrase, no wallet popup, no fees. The game pays the network costs for you.</dd></div>
+        <div><dt>Sign in with Google or email.</dt><dd>NEAR Auth makes your account from either one. No seed phrase, no wallet popup, no fees: the game pays the network costs for you.</dd></div>
         <div><dt>Saved once a game day.</dt><dd>Everyday play is added up and written at 06:00 with a fingerprint of the whole day’s ledger. Player market sales and gifts are written right away.</dd></div>
         <div><dt>A test network for now.</dt><dd>Genesis Town runs on NEAR testnet. Coin and items have no cash value, so play for the town, not for profit.</dd></div>
       </dl>
@@ -497,7 +503,7 @@
       <h2 id="faq-h" class="faq__h">Before you move in</h2>
       <div class="faq">
         <details><summary>Does it cost anything?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p>No. Genesis Town is free in your browser. It runs on NEAR testnet, a test network, so coin and items have no cash value.</p></details>
-        <details><summary>Do I need a crypto wallet?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p>No. Sign in with Google. The game pays the network fees, and you never see a seed phrase or a wallet popup.</p></details>
+        <details><summary>Do I need a crypto wallet?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p>No. Sign in with NEAR Auth, using your Google account or an email. The game pays the network fees, and you never see a seed phrase or a wallet popup.</p></details>
         <details><summary>What do I start with?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p>100 coin, 3 loaves of bread, 3 wheat and your four tools. Pick your look on the character screen and you land in your own Homeland, with a portal down to the market town.</p></details>
         <details><summary>Can I look around before signing in?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p>Yes. Open the game and you can walk the public village as a guest and see the players there. Guests cannot chat or trade, and a few can visit at once.</p></details>
         <details><summary>Can I play with friends?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p>Yes. A party holds up to four players. Give friends a role in your Homeland so they can visit, help you gather and farm, or build with you, and swap goods face to face in a trade window.</p></details>
@@ -513,10 +519,10 @@
     <div class="wrap final__in">
       <div class="final__text">
       <h2 id="final-h">Your islands are waiting.</h2>
-      <p>Nothing to install and no wallet to set up. Sign in with Google and start with 100 coin, 3 bread and 3 wheat.</p>
+      <p>Nothing to install and no wallet to set up. Sign in with Google or email and start with 100 coin, 3 bread and 3 wheat.</p>
       <a class="btn btn--primary btn--lg" href="https://gentown.my.id/">Play free in your browser<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-arrow-right"/></svg></a>
       </div>
-      <figure class="pic final__pic" data-tilt><img src="img/hero.webp" width="1600" height="590" alt="A Homeland of nine floating islands joined by plank bridges, waterfalls pouring into the clouds" loading="lazy"></figure>
+      <figure class="pic final__pic" data-tilt><img src="img/final.webp" width="1008" height="756" alt="A Homeland of nine floating islands joined by plank bridges, waterfalls pouring into the clouds"></figure>
     </div>
   </section>
 </main>
@@ -528,7 +534,7 @@
       <div><h3>Town</h3><ul><li><a href="#friends">Friends</a></li><li><a href="#town">Around town</a></li><li><a href="#world">World</a></li><li><a href="#faq">Questions</a></li></ul></div>
       <div><h3>Build</h3><ul><li><a href="https://github.com/leutenantKiya/Genesis-Town">GitHub</a></li><li><a href="https://testnet.nearblocks.io/address/game.genesistown.testnet">Contract</a></li><li><a href="https://gentown.my.id/">Play</a></li></ul></div>
     </div>
-    <p class="footer__name" aria-hidden="true">Genesis Town</p>
+    <div class="footer__brand"><img src="img/logo.webp" width="437" height="520" alt="Genesis Town: two floating islands joined by a waterfall, with a cottage and a plank dock" loading="lazy"><p class="footer__name" aria-hidden="true">Genesis Town</p></div>
     <p class="footer__legal"><span>&copy; 2026 Genesis Town. A pixel art market town on NEAR testnet.</span><span>Icons: Phosphor (MIT). Motion after Magic UI, Aceternity and Motion Primitives on 21st.dev (MIT). Every picture is the game’s own art.</span></p>
   </div>
 </footer>

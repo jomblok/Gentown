@@ -88,9 +88,10 @@
   }
 
   /* ---- the hero's world: the game's 2.5D Homeland, live; the poster stays without WebGL or under reduced motion */
-  var stage = $('[data-stage]'), vid = stage && $('video', stage);
+  var stage = $('[data-stage]'), vid = stage && $('canvas[data-gt-world]', stage);
   if (vid && window.GTWorld && !still) {
-    var view = GTWorld.mount(vid, { shot: GTWorld.shots.home, intro: true, drift: true });
+    var H0 = GTWorld.shots.home; // the islands sit lower, leaving the sky above them for the title
+    var view = GTWorld.mount(vid, { shot: Object.assign({}, H0, window.GT_HERO_SHOT || { dist: 100, ty: 14, narrow: { dist: 118, ty: 16 }, phone: { dist: 112, pitch: 40, yaw: 34, ty: 34 } }), intro: true, drift: true });
     view.ready.then(function () {
       live.view = view;
       var hint = $('[data-hint]'), bar = $('[data-bar]'), pause = $('[data-pause]'), nightB = $('[data-time]');
@@ -107,13 +108,14 @@
         live.night = !live.night; nightB.setAttribute('aria-pressed', String(live.night));
         view.auto({ spin: 7, time: !live.night, season: !live.pinSeason, on: paintSeasons });
         view.hour(live.night ? 21.5 : 10, true);
+        setTimeout(paintSeasons, 900);
       });
       pause.addEventListener('click', function () {
         var on = pause.getAttribute('aria-pressed') !== 'true';
         pause.setAttribute('aria-pressed', String(on)); pause.setAttribute('aria-label', on ? 'Play the world' : 'Pause the world');
         $('use', pause).setAttribute('href', 'assets/icons/ph.svg#ph-' + (on ? 'play' : 'pause')); view.pause(on);
       });
-      function paintSeasons() { var g = view.get ? view.get() : { season: live.pinSeason || 'semi' }; $$('[data-season]', bar).forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-season') === g.season)); }); }
+      function paintSeasons() { var g = view.get ? view.get() : { season: live.pinSeason || 'semi' }; stage.classList.toggle('is-night', !!g.night); $$('[data-season]', bar).forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-season') === g.season)); }); }
       var seen = true;
       new IntersectionObserver(function (es) { seen = es[0].intersectionRatio > 0.3; }, { threshold: [0, 0.3] }).observe(stage);
       document.addEventListener('keydown', function (e) {
@@ -349,7 +351,7 @@
     var kids = h.classList.contains('faq__h') ? [h] : $$(':scope > *', h);
     kids.forEach(function (k, i) { if (!k.classList.contains('rv') && !k.querySelector('.rv')) { k.classList.add('rv'); k.style.setProperty('--d', i); if (rvIO) rvIO.observe(k); else k.classList.add('is-in'); rvs.push(k); } });
   });
-  var stg = $('[data-stage] video');
+  var stg = $('[data-stage] .stage__world');
   if (stg && !still) {
     var zt = 0;
     function zoom() { zt = 0; var r = stg.parentNode.getBoundingClientRect(), p = Math.min(1, Math.max(0, 1 - r.top / innerHeight)); stg.style.setProperty('--zoom', (1.1 - 0.1 * p).toFixed(4)); }
@@ -416,7 +418,7 @@
     faucet: { n: 'Coin faucet', sub: 'capped per day', w: [30, 342, 190, 68], t: [194, 20, 150, 60],
       text: 'The only place new coin is made. The contract mints a capped amount each day, and only when the treasury cannot cover the townsfolk.' },
     folk: { n: 'Townsfolk', sub: 'one shared wallet', w: [280, 186, 180, 68], t: [105, 150, 150, 60],
-      text: 'Dewi, Agus, Rina, Bayu and Intan walk the village for everyone and buy finished goods at the stalls. That is how new coin reaches the market.' },
+      text: 'Haruto, Yui, Sota, Hina and Ren wear orange name tags and walk the village for everyone. They buy at the stalls, and when a good runs short or gets dear they fish, chop, farm and mine it themselves, then stock the shelves to bring the price down.' },
     shops: { n: 'Shopkeepers', sub: 'Sarah, Ben, Wendy, Jack', w: [520, 186, 190, 68], t: [105, 290, 150, 60],
       text: 'They buy your raw goods and sell you food, goods and tools, pricing each from their own shelf. They also buy cheap listings on the player market.' },
     players: { n: 'Players', sub: 'you and your friends', w: [770, 186, 170, 68], t: [105, 430, 150, 60],
@@ -497,12 +499,16 @@
     var txt = 'Next save in ' + m + ' min ' + (s < 10 ? '0' : '') + s + ' s, at 06:00 game time.';
     if (live.time && live.time.settledThrough != null) txt += ' Saved through game day ' + live.time.settledThrough + '.';
     $('[data-pipe-live]').textContent = txt;
+    if (pipeHeld) return; // a step under the pointer or the focus keeps its light until it is let go
     var step = since < 0.5 ? 3 : 0; // just after dawn the day is being written; the rest of the day is play
-    $$('.pipe__steps li').forEach(function (li) { li.classList.toggle('on', +li.getAttribute('data-step') === step && !li.matches(':hover')); });
+    $$('.pipe__steps li').forEach(function (li) { li.classList.toggle('on', +li.getAttribute('data-step') === step); });
   }
+  var pipeHeld = null;
   $$('.pipe__steps li').forEach(function (li) {
-    function on() { $$('.pipe__steps li').forEach(function (o) { o.classList.toggle('on', o === li); }); }
+    function on() { pipeHeld = li; $$('.pipe__steps li').forEach(function (o) { o.classList.toggle('on', o === li); }); }
+    function off() { if (pipeHeld === li) { pipeHeld = null; paintPipe(); } }
     li.addEventListener('pointerenter', on); li.addEventListener('focus', on);
+    li.addEventListener('pointerleave', function () { if (document.activeElement !== li) off(); }); li.addEventListener('blur', off);
   });
   setInterval(paintPipe, 1000);
 

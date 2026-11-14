@@ -16,6 +16,7 @@
  *                         drag or a turn, then picks up again), the clock runs (days fast, nights faster) and the
  *                         season moves on at 02:00; on(state) hears each new season and each dawn and dusk
  *   view.pause(on)        stop or resume the loop (the still stays on the canvas)
+ *   view.project(x, y, z) where a world point (tile x + 0.5, height, tile y + 0.5) lands on the canvas, 0..1
  *   view.dispose()
  *
  * A shot is { tx, tz (the tile looked at), dist, yaw, pitch (degrees), fov, hour, season }.
@@ -29,6 +30,8 @@
     'js/three/rod.js', 'js/three/sky.js', 'js/three/rig.js', 'js/three/seethrough.js', 'js/three/fun.js', 'js/three/life.js', 'js/three/crops.js', 'js/three/world.js'];
   var SEASONS = ['semi', 'panas', 'gugur', 'dingin'], WORLD_SEED = 20261114, HOME_SEED = 1234567;
   var ALL = ['c', 'n', 'e', 's', 'w', 'ne', 'nw', 'se', 'sw'];
+  // every part of the public village is open on the live server (its /api/time world.unlocked), the lake island and its ferry too
+  var VILLAGE_OPEN = ['bukit', 'danau', 'desa', 'hutan', 'hutan-timur', 'ladang', 'padang', 'rawa', 'seberang'];
   var loading = null;
 
   function script(src) {
@@ -46,7 +49,7 @@
 
   // a Homeland with all nine islands open and every lot built, or the shared village
   function layout(map, seed) {
-    if (map === 'village') { var V = window.GTVillage.generate(seed || WORLD_SEED); V.seed = V.seed || seed || WORLD_SEED; return V; }
+    if (map === 'village') { var V = window.GTVillage.generate(seed || WORLD_SEED, VILLAGE_OPEN); V.seed = V.seed || seed || WORLD_SEED; return V; }
     var first = window.GTHomeland.generate(seed || HOME_SEED, { th: 5, open: ALL, built: [] });
     var built = (first.lots || []).map(function (l) { return { lot: l.id, kind: l.kind }; });
     var L = window.GTHomeland.generate(seed || HOME_SEED, { th: 5, open: ALL, built: built });
@@ -222,6 +225,8 @@
     api.pause = function (on) { paused = !!on; if (!paused) kick(); return api; };
     api.auto = function (o) { for (var k in o) if (k in auto) auto[k] = o[k]; if (o.season === false || o.time) seasonAt = clock; kick(); return api; };
     api.hold = function () { touched = clock; return api; };
+    // where a world point lands in the canvas, 0..1 across and down (the page places its markers on stills with it)
+    api.project = function (x, y, z) { if (!camera) return null; var v = new THREE.Vector3(x, y, z).project(camera); return { x: (v.x + 1) / 2, y: (1 - v.y) / 2 }; };
     api.get = function () { return { season: wantSeason || season, hour: hourWant, night: hourWant >= 19 || hourWant < 6, yaw: yawWant, paused: paused }; };
     api.dispose = function () { disposed = true; if (raf) cancelAnimationFrame(raf); if (world) world.dispose(); people.forEach(function (n) { n.a.dispose(); }); if (renderer) renderer.dispose(); };
     return api;
