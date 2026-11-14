@@ -229,6 +229,65 @@
     selSeason(b); var s = b.getAttribute('data-s'); $$('[data-season-pics] img').forEach(function (i) { i.classList.toggle('on', i.getAttribute('data-for') === s); });
   });
 
+  /* ---- prices: the seven goods (the cheapest price to buy, or the best a shop pays when nobody sells it) and what a
+     recipe adds at the shops' middle prices */
+  var WHO = {
+    fish: 'Sarah sells. Sarah and Jack buy.', wood: 'Jack sells. Sarah, Ben and Jack buy.', ore: 'Nobody sells it. Ben buys.',
+    wheat: 'Wendy sells. Wendy and Jack buy.', bread: 'Wendy and Jack sell. No shop buys it.', meal: 'Sarah sells. No shop buys it.',
+    tool: 'Ben sells. No shop buys it.'
+  };
+  var COPY = {
+    up: function (p) { return p + '% over usual'; }, down: function (p) { return p + '% under usual'; }, base: 'Usual price', sell: 'What shops pay',
+    live: function (t) { return 'Live from the game at ' + t + '. Every shopkeeper sets their own price from what is on their shelf.'; },
+    fee: 'Workbench fee: 3 coin, paid to the town.', nofee: function (e) { return 'No coin fee. Costs ' + e + ' energy.'; },
+    good: function (g) { return 'Crafting adds ' + g + ' coin over selling the parts, at what the shops charge today.'; },
+    bad: function () { return 'Today the parts are worth more than the result, so sell them as they are.'; }
+  };
+  var RECIPE = { meal: { in: { fish: 1, wood: 1 }, fee: 0, energy: 8 }, bread: { in: { wheat: 2 }, fee: 0, energy: 5 }, tool: { in: { ore: 2, wood: 1 }, fee: 3 } };
+  var recipe = 'meal', board = $('[data-board]');
+  function mids() {
+    var sum = {}, n = {};
+    (live.market || []).forEach(function (m) { (m.items || []).forEach(function (i) { if (i.mid == null) return; sum[i.token] = (sum[i.token] || 0) + i.mid; n[i.token] = (n[i.token] || 0) + 1; }); });
+    var out = {}; Object.keys(BASE).forEach(function (k) { out[k] = n[k] ? Math.round(sum[k] / n[k]) : BASE[k]; }); return out;
+  }
+  function paintBoard() {
+    var best = {};
+    (live.market || []).forEach(function (m) { if (m.open === false) return; (m.items || []).forEach(function (i) {
+      var b = best[i.token] || (best[i.token] = { ask: null, bid: null });
+      if (i.ask != null && (b.ask == null || i.ask < b.ask)) b.ask = i.ask;
+      if (i.bid != null && (b.bid == null || i.bid > b.bid)) b.bid = i.bid;
+    }); });
+    var r = RECIPE[recipe];
+    board.innerHTML = Object.keys(BASE).map(function (k) {
+      var b = best[k], p = BASE[k], chg = COPY.base, cls = '';
+      if (b) {
+        if (b.ask != null) { p = b.ask; var pct = Math.round((p - BASE[k]) / BASE[k] * 100); chg = pct > 0 ? COPY.up(pct) : pct < 0 ? COPY.down(-pct) : COPY.base; cls = pct > 0 ? 'up' : pct < 0 ? 'down' : ''; }
+        else if (b.bid != null) { p = b.bid; chg = COPY.sell; }
+      }
+      var lit = k === recipe || r.in[k] ? ' class="lit"' : '';
+      return '<li' + lit + '><img class="px" src="img/item-' + k + '.png" width="48" height="48" alt=""><span class="title-3">' + NAME[k] + '</span><p class="body-6">' + WHO[k] + '</p>' +
+        '<span class="board__v"><b>' + p + '<small>coin</small></b><span class="chg caption-4 ' + cls + '">' + chg + '</span></span></li>';
+    }).join('');
+  }
+  function paintCalc(animate) {
+    var r = RECIPE[recipe], p = mids(), cost = 0, lines = $('[data-calc-lines]');
+    var html = Object.keys(r.in).map(function (k) { cost += p[k] * r.in[k];
+      return '<li><img class="px" src="img/item-' + k + '.png" width="48" height="48" alt=""><span>' + r.in[k] + ' × ' + NAME[k] + '</span><b>' + p[k] * r.in[k] + '</b></li>'; }).join('');
+    if (r.fee) html += '<li><span class="gap" aria-hidden="true"></span><span>Workbench fee</span><b>' + r.fee + '</b></li>';
+    html += '<li class="out"><img class="px" src="img/item-' + recipe + '.png" width="48" height="48" alt=""><span>' + NAME[recipe] + '</span><b>' + p[recipe] + '</b></li>';
+    lines.innerHTML = html;
+    if (animate && !still) { lines.classList.remove('swap'); void lines.offsetWidth; lines.classList.add('swap'); }
+    var gain = p[recipe] - cost - r.fee, g = $('[data-calc-gain]');
+    g.textContent = (gain >= 0 ? '+' : '−') + Math.abs(gain); g.classList.toggle('neg', gain < 0);
+    $('[data-calc-note]').textContent = (gain > 0 ? COPY.good(gain) : COPY.bad()) + ' ' + (r.fee ? COPY.fee : COPY.nofee(r.energy));
+    paintBoard();
+  }
+  var segs = $('.segs'), selRecipe = tabs(segs, function (b) {
+    if (b.getAttribute('data-recipe') === recipe) return; selRecipe(b); recipe = b.getAttribute('data-recipe');
+    segs.style.setProperty('--i', $$('[role="tab"]', segs).indexOf(b)); paintCalc(true);
+  });
+  paintCalc(false);
+
   /* ---- live: the clock and the settled day, the shelves and the middle prices */
   function hour() { return live.time ? (live.time.hour + (Date.now() - live.at) / 60000) % 24 : null; }
   function paintClock() {
@@ -249,7 +308,8 @@
       var s = sarah(), bid = $('[data-fish-bid]'); if (s.fish.bid != null) tick(bid, s.fish.bid);
       var first = $('[data-chat-first]'); if (first) first.textContent = ANSWER.price(s);
       $('[data-shelf-note]').textContent = 'Live from the game server at ' + new Date().toTimeString().slice(0, 5) + '. Stock against what the shop likes to keep.';
-      paintShelf(false);
+      paintShelf(false); paintCalc(false);
+      $('[data-live-note]').textContent = COPY.live(new Date().toTimeString().slice(0, 5));
     }).catch(function () {});
   }
   clock(); prices();

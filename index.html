@@ -192,6 +192,28 @@
           <figcaption class="chat__note caption-5">A sample built from Sarah’s live shelf. In the game you type anything and she answers from her stock.</figcaption>
         </figure>
       </div>
+      <!-- PRICES: the seven goods live (the cheapest price to buy, or what a shop pays when nobody sells it) beside a
+           recipe calculator at the shops' middle prices; base prices from economy/config.json until the server answers -->
+      <div class="prices" id="prices" aria-labelledby="prices-h">
+        <div class="prices__head">
+          <h3 class="heading-4" id="prices-h" data-copy="prices-h">Today’s prices in town.<br>See what a craft adds.</h3>
+          <p class="body-6 muted" data-live-note aria-live="polite">Usual prices until the game answers.</p>
+        </div>
+        <div class="prices__grid">
+          <ul class="board panel rv" data-board></ul>
+          <div class="calc panel rv" style="--d:1">
+            <h4 class="title-2" id="calc-h">What one craft is worth</h4>
+            <div class="segs" role="tablist" aria-label="Recipe">
+              <button type="button" role="tab" aria-selected="true" data-recipe="meal" class="button-sm">Grilled fish</button>
+              <button type="button" role="tab" aria-selected="false" tabindex="-1" data-recipe="bread" class="button-sm">Bread</button>
+              <button type="button" role="tab" aria-selected="false" tabindex="-1" data-recipe="tool" class="button-sm">Pickaxe</button>
+            </div>
+            <ul class="calc__lines body-6" data-calc-lines aria-labelledby="calc-h"></ul>
+            <div class="calc__sum"><span class="caption-3 muted">Coin added by one craft</span><strong class="num" data-calc-gain>+6</strong></div>
+            <p class="body-6 muted" data-calc-note>At base prices.</p>
+          </div>
+        </div>
+      </div>
       <ul class="rules">
         <li class="rule rv"><svg class="ic ic-lg" aria-hidden="true"><use href="assets/icons/ph.svg#ph-scales"/></svg><h3 class="title-2">Stock and demand set the price</h3><p class="body-6">A price moves at most 10% in a game hour and stays between a quarter and four times its base. Each move comes with a one line reason in the shop window.</p></li>
         <li class="rule rv" style="--d:1"><svg class="ic ic-lg" aria-hidden="true"><use href="assets/icons/ph.svg#ph-storefront"/></svg><h3 class="title-2">Sell to players too</h3><p class="body-6">List goods at your own price on the player market. The shopkeepers shop there as well, buying listings at or below their fair price.</p></li>
