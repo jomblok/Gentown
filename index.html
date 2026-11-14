@@ -11,10 +11,10 @@
 <meta property="og:image" content="share.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<meta name="theme-color" content="#131209">
+<meta name="theme-color" content="#0c1018">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css">
 <script>document.documentElement.classList.add('js')</script>
 <script type="application/ld+json">
@@ -26,212 +26,201 @@
 </script>
 </head>
 <body>
-<a class="skip button-sm" href="#main">Skip to content</a>
+<a class="skip" href="#main">Skip to content</a>
 
-<header class="nav" id="nav">
-  <a class="brand title-3" href="#top" aria-label="Genesis Town, back to top"><img src="favicon.svg" width="24" height="24" alt="">Genesis Town</a>
-  <nav class="nav__links body-5" aria-label="Main">
-    <a href="#loop">How it works</a>
-    <a href="#market">Market</a>
-    <a href="#homeland">Homeland</a>
-    <a href="#friends">Friends</a>
-    <a href="#world">World</a>
-    <a href="#town">Town</a>
-    <a href="#faq">Questions</a>
-  </nav>
-  <a class="btn btn--primary button-sm nav__cta" href="https://gentown.my.id/">Play <span class="btn-label-long">free</span></a>
-  <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open the menu"><span></span><span></span></button>
+<header class="bar" id="nav">
+  <div class="bar__in">
+    <a class="brand" href="#top" aria-label="Genesis Town, back to top"><img src="favicon.svg" width="24" height="24" alt="">Genesis Town</a>
+    <nav class="bar__links" aria-label="Main">
+      <a href="#loop">How it works</a>
+      <a href="#market">Market</a>
+      <a href="#homeland">Homeland</a>
+      <a href="#friends">Friends</a>
+      <a href="#town">Town</a>
+      <a href="#world">World</a>
+      <a href="#faq">Questions</a>
+    </nav>
+    <a class="btn btn--primary bar__cta" href="https://gentown.my.id/">Play free</a>
+    <button class="bar__toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open the menu"><span></span><span></span></button>
+  </div>
 </header>
 <div class="menu" id="menu" aria-hidden="true">
-  <a class="heading-4" href="#loop" style="--i:0">How it works</a>
-  <a class="heading-4" href="#market" style="--i:1">Market</a>
-  <a class="heading-4" href="#homeland" style="--i:2">Homeland</a>
-  <a class="heading-4" href="#friends" style="--i:3">Friends</a>
-  <a class="heading-4" href="#world" style="--i:4">World</a>
-  <a class="heading-4" href="#town" style="--i:5">Town</a>
-  <a class="heading-4" href="#faq" style="--i:6">Questions</a>
-  <a class="btn btn--primary button-md" href="https://gentown.my.id/" style="--i:7">Play free in your browser</a>
+  <a href="#loop" style="--i:0">How it works</a>
+  <a href="#market" style="--i:1">Market</a>
+  <a href="#homeland" style="--i:2">Homeland</a>
+  <a href="#friends" style="--i:3">Friends</a>
+  <a href="#town" style="--i:4">Town</a>
+  <a href="#world" style="--i:5">World</a>
+  <a href="#faq" style="--i:6">Questions</a>
+  <a class="btn btn--primary" href="https://gentown.my.id/" style="--i:7">Play free in your browser</a>
 </div>
 
 <main id="main">
-  <!-- HERO: what it is, one action, one live proof line, and the game's own world drawn live below -->
+  <!-- HERO: the name of the thing, one sentence, one action, then the game's own Homeland drawn live and large -->
   <section class="hero" id="top" aria-labelledby="hero-h">
     <div class="wrap">
-      <div class="hero__text">
-        <p class="hero__live caption-4" data-now><span class="dot" aria-hidden="true"></span><span data-now-text>One game day lasts 24 real minutes</span></p>
-        <h1 class="heading-1" id="hero-h">A market town in the sky,<br>where prices move<br>when people play.</h1>
-        <p class="hero__sub body-7">Fish, farm, chop and craft on your own floating islands, then sell to four shopkeepers whose prices follow their stock. Free in your browser, with Google sign in.</p>
-        <div class="hero__actions">
-          <a class="btn btn--primary button-md" href="https://gentown.my.id/">Play free in your browser<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-arrow-right"/></svg></a>
-          <p class="hero__proof caption-2" data-proof><img class="px" src="img/item-fish.png" width="48" height="48" alt=""><span>Right now Sarah pays <b class="num" data-fish-bid>7</b> coin for a fish</span></p>
+      <h1 class="hero__h" id="hero-h">A market town<br>in the sky.</h1>
+      <div class="hero__row">
+        <p class="hero__sub">Fish, farm and craft on your own floating islands, then sell to four shopkeepers whose prices move with their stock. Free in your browser, with Google sign in.</p>
+        <div class="hero__act">
+          <a class="btn btn--primary btn--lg" href="https://gentown.my.id/">Play free in your browser<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-arrow-right"/></svg></a>
+          <p class="hero__live" aria-live="polite"><span class="dot" aria-hidden="true"></span><span data-now-text>One game day lasts 24 real minutes.</span> <span>Sarah pays <b data-fish-bid>7</b> coin for a fish right now.</span></p>
         </div>
       </div>
-      <div class="stage" data-stage>
-        <video data-gt-world="home" poster="img/hero.webp" muted playsinline disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
-        <p class="stage__hint caption-1" data-hint hidden><svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-hand-grabbing"/></svg><span class="only-mouse">Drag to turn, or press <kbd>Q</kbd> <kbd>E</kbd></span><span class="only-touch">Swipe to turn</span></p>
-        <div class="stage__bar" data-bar hidden>
-          <div class="chipset stage__seasons caption-1" role="group" aria-label="Season">
-            <button type="button" data-season="semi" aria-pressed="true"><i class="sw" style="--c:#f28fb0" aria-hidden="true"></i>Spring</button>
-            <button type="button" data-season="panas" aria-pressed="false"><i class="sw" style="--c:#34c3c9" aria-hidden="true"></i>Summer</button>
-            <button type="button" data-season="gugur" aria-pressed="false"><i class="sw" style="--c:#f0903a" aria-hidden="true"></i>Autumn</button>
-            <button type="button" data-season="dingin" aria-pressed="false"><i class="sw" style="--c:#8fc8f2" aria-hidden="true"></i>Winter</button>
-          </div>
-          <div class="chipset caption-1" role="group" aria-label="The world">
-            <button type="button" data-time="night" aria-pressed="false"><svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-moon-stars"/></svg>Night</button>
-            <button type="button" data-pause aria-pressed="false" aria-label="Pause the world"><svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-pause"/></svg></button>
-          </div>
+    </div>
+    <div class="stage" data-stage>
+      <video data-gt-world="home" poster="img/hero.webp" muted playsinline disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
+      <p class="stage__hint" data-hint hidden><svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-hand-grabbing"/></svg><span class="only-mouse">Drag to turn, or press <kbd>Q</kbd> <kbd>E</kbd></span><span class="only-touch">Swipe to turn</span></p>
+      <div class="stage__bar" data-bar hidden>
+        <div class="chipset stage__seasons" role="group" aria-label="Season">
+          <button type="button" data-season="semi" aria-pressed="true"><i class="sw" style="--c:#f28fb0" aria-hidden="true"></i>Spring</button>
+          <button type="button" data-season="panas" aria-pressed="false"><i class="sw" style="--c:#34c3c9" aria-hidden="true"></i>Summer</button>
+          <button type="button" data-season="gugur" aria-pressed="false"><i class="sw" style="--c:#f0903a" aria-hidden="true"></i>Autumn</button>
+          <button type="button" data-season="dingin" aria-pressed="false"><i class="sw" style="--c:#8fc8f2" aria-hidden="true"></i>Winter</button>
+        </div>
+        <div class="chipset" role="group" aria-label="The world">
+          <button type="button" data-time="night" aria-pressed="false"><svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-moon-stars"/></svg>Night</button>
+          <button type="button" data-pause aria-pressed="false" aria-label="Pause the world"><svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-pause"/></svg></button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- LOOP: the whole game in three steps, each with the real recipe and the base prices from economy/config.json -->
+  <!-- LOOP: the whole game in three pictures, each with its real recipe and live middle prices -->
   <section class="section" id="loop" aria-labelledby="loop-h">
     <div class="wrap">
       <div class="head head--split">
-        <div class="head" style="margin:0">
-          <p class="kicker caption-3">How it works</p>
-          <h2 class="heading-2" id="loop-h">Gather on your islands. Craft it up. Sell it in town.</h2>
-        </div>
-        <p class="body-7 muted">That is the whole loop, and it never asks for coin to start. Gathering costs energy, and a meal brings it back. What you bring home sells raw, or crafts into something worth more.</p>
+        <h2 id="loop-h">Gather, craft, sell.</h2>
+        <p>That is the whole loop, and it never asks for coin to start. Gathering costs energy and a meal brings it back. What you bring home sells raw, or crafts into something worth more.</p>
       </div>
-      <ol class="steps">
+      <ul class="steps">
         <li class="step rv">
-          <div class="step__pic"><img src="img/fish.webp" width="900" height="675" alt="A sea island with sandy paths around blue ponds" loading="lazy"><span class="step__n caption-4"><b>01</b>Fish</span></div>
-          <div class="step__body">
-            <h3 class="heading-6">Cast where the water ripples</h3>
-            <p class="body-6">Wait for the bite, press in time, then hold the fish inside the green zone until the catch bar fills. Sell it raw, or grill it over a piece of wood.</p>
-            <ul class="recipe caption-1" aria-label="Recipe: 1 fish and 1 wood make grilled fish">
-              <li><img class="px" src="img/item-fish.png" width="48" height="48" alt="">Fish <span class="c" data-mid="fish">8</span></li><li class="op" aria-hidden="true">+</li>
-              <li><img class="px" src="img/item-wood.png" width="48" height="48" alt="">Wood <span class="c" data-mid="wood">6</span></li><li class="op" aria-hidden="true">=</li>
-              <li class="out"><img class="px" src="img/item-meal.png" width="48" height="48" alt="">Grilled fish <span class="c" data-mid="meal">20</span></li>
-            </ul>
-          </div>
+          <div class="step__pic"><img src="img/fish.webp" width="900" height="675" alt="A sea island with sandy paths around blue ponds" loading="lazy"></div>
+          <h3>Cast where the water ripples</h3>
+          <p>Wait for the bite, press in time, then hold the fish inside the green zone until the catch bar fills. Sell it raw, or grill it over a piece of wood.</p>
+          <ul class="recipe" aria-label="Recipe: 1 fish and 1 wood make grilled fish">
+            <li><img class="px" src="img/item-fish.png" width="48" height="48" alt="">Fish <span class="c" data-mid="fish">8</span></li><li class="op" aria-hidden="true">+</li>
+            <li><img class="px" src="img/item-wood.png" width="48" height="48" alt="">Wood <span class="c" data-mid="wood">6</span></li><li class="op" aria-hidden="true">=</li>
+            <li class="out"><img class="px" src="img/item-meal.png" width="48" height="48" alt="">Grilled fish <span class="c" data-mid="meal">20</span></li>
+          </ul>
         </li>
         <li class="step rv" style="--d:1">
-          <div class="step__pic"><img src="img/forest.webp" width="900" height="675" alt="A forest island with pines and blossoming fruit trees beside a house" loading="lazy"><span class="step__n caption-4"><b>02</b>Chop and mine</span></div>
-          <div class="step__body">
-            <h3 class="heading-6">Chop wood, mine ore, make a pickaxe</h3>
-            <p class="body-6">Swing at trees and rock. Felled trees regrow from a stump. Tools wear down as you work, and Ben sells new ones or repairs yours.</p>
-            <ul class="recipe caption-1" aria-label="Recipe: 2 ore and 1 wood make a pickaxe">
-              <li><img class="px" src="img/item-ore.png" width="48" height="48" alt="">2 Ore <span class="c" data-mid="ore">12</span></li><li class="op" aria-hidden="true">+</li>
-              <li><img class="px" src="img/item-wood.png" width="48" height="48" alt="">Wood <span class="c" data-mid="wood">6</span></li><li class="op" aria-hidden="true">=</li>
-              <li class="out"><img class="px" src="img/item-tool.png" width="48" height="48" alt="">Pickaxe <span class="c" data-mid="tool">45</span></li>
-            </ul>
-          </div>
+          <div class="step__pic"><img src="img/forest.webp" width="900" height="675" alt="A forest island with pines and blossoming fruit trees beside a house" loading="lazy"></div>
+          <h3>Chop, mine, make a pickaxe</h3>
+          <p>Swing at trees and rock. Felled trees regrow from a stump. Tools wear down as you work, and Ben sells new ones or repairs yours.</p>
+          <ul class="recipe" aria-label="Recipe: 2 ore and 1 wood make a pickaxe">
+            <li><img class="px" src="img/item-ore.png" width="48" height="48" alt="">2 Ore <span class="c" data-mid="ore">12</span></li><li class="op" aria-hidden="true">+</li>
+            <li><img class="px" src="img/item-wood.png" width="48" height="48" alt="">Wood <span class="c" data-mid="wood">6</span></li><li class="op" aria-hidden="true">=</li>
+            <li class="out"><img class="px" src="img/item-tool.png" width="48" height="48" alt="">Pickaxe <span class="c" data-mid="tool">45</span></li>
+          </ul>
         </li>
         <li class="step rv" style="--d:2">
-          <div class="step__pic"><img src="img/farm.webp" width="900" height="675" alt="A fenced farm plot of tilled soil next to a house" loading="lazy"><span class="step__n caption-4"><b>03</b>Farm</span></div>
-          <div class="step__body">
-            <h3 class="heading-6">Grow wheat on fifteen plots</h3>
-            <p class="body-6">Hoe the soil, plant, water and harvest. Wheat will not grow in winter, so plan ahead. Wendy buys it and bakes it into bread.</p>
-            <ul class="recipe caption-1" aria-label="Recipe: 2 wheat make 1 bread">
-              <li><img class="px" src="img/item-wheat.png" width="48" height="48" alt="">2 Wheat <span class="c" data-mid="wheat">5</span></li><li class="op" aria-hidden="true">=</li>
-              <li class="out"><img class="px" src="img/item-bread.png" width="48" height="48" alt="">Bread <span class="c" data-mid="bread">16</span></li>
-            </ul>
-          </div>
+          <div class="step__pic"><img src="img/farm.webp" width="900" height="675" alt="A fenced farm plot of tilled soil next to a house" loading="lazy"></div>
+          <h3>Grow wheat on fifteen plots</h3>
+          <p>Hoe the soil, plant, water and harvest. Rain waters it for you, and nothing grows in winter. Wendy buys the wheat and bakes it into bread.</p>
+          <ul class="recipe" aria-label="Recipe: 2 wheat make 1 bread">
+            <li><img class="px" src="img/item-wheat.png" width="48" height="48" alt="">2 Wheat <span class="c" data-mid="wheat">5</span></li><li class="op" aria-hidden="true">=</li>
+            <li class="out"><img class="px" src="img/item-bread.png" width="48" height="48" alt="">Bread <span class="c" data-mid="bread">16</span></li>
+          </ul>
         </li>
-      </ol>
-      <p class="note body-6 rv"><svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-coins"/></svg><span><b>Coin values are the middle prices across the four shops</b>, live from the game server when it answers. Twelve starter missions walk you from your first chopped log to your first sale.</span></p>
+      </ul>
+      <p class="aside rv">Coin values are the middle prices across the four shops, live from the game. Twelve starter missions walk you from your first chopped log to your first sale.</p>
     </div>
   </section>
 
-  <!-- TAGLINE: words light up one by one as they cross the middle of the screen -->
-  <section class="tagline" aria-label="The idea behind Genesis Town">
+  <!-- STATEMENT: the idea on the islands' sky blue, each word lighting as it crosses the middle of the screen -->
+  <section class="statement" aria-label="The idea behind Genesis Town">
     <div class="wrap">
-      <p data-words>You gather it. Someone buys it. The whole <span class="hl">town</span> <span class="hl">feels</span> <span class="hl">it.</span></p>
-      <p class="tagline__sub body-7">Every coin a shop pays out comes from goods somebody brought in. When fishers flood the market, fish gets cheap. When nobody chops, wood climbs.</p>
+      <p class="statement__p" data-words>You gather it. Someone buys it. The whole town feels it.</p>
+      <p class="statement__sub">Every coin a shop pays out comes from goods somebody brought in. When fishers flood the market, fish gets cheap. When nobody chops, wood climbs.</p>
     </div>
   </section>
 
-  <!-- MARKET: the four merchants as tabs over a live shelf, Sarah's chat answered from her live stock, and the rules -->
+  <!-- MARKET: shop tabs over a live shelf, Sarah answering from her stock, the price board with the recipe calculator,
+       and the rules of the economy in plain words -->
   <section class="section" id="market" aria-labelledby="market-h">
     <div class="wrap">
       <div class="head head--split">
-        <div class="head" style="margin:0">
-          <p class="kicker caption-3">The market</p>
-          <h2 class="heading-2" id="market-h">Four shopkeepers.<br>Prices follow the shelf.</h2>
-        </div>
-        <p class="body-7 muted">Each shop has its own stock, its own cash and its own mood. A full shelf means a low price. An empty one means they pay you well. Pick a shop to see its shelf right now.</p>
+        <h2 id="market-h">Prices follow the shelf.</h2>
+        <p>Four shopkeepers, each with their own stock, cash and mood. A full shelf means a low price. An empty one means they pay you well. Pick a shop to see its shelf right now.</p>
       </div>
       <div class="market">
-        <div class="panel rv">
+        <div class="panel rv" data-ui>
           <div class="tabs" role="tablist" aria-label="Shops">
-            <button class="tab" type="button" role="tab" id="t-sari" aria-selected="true" aria-controls="shelf" data-shop="sari"><span class="title-4">Sarah</span><small class="caption-5">Fish Stall</small></button>
-            <button class="tab" type="button" role="tab" id="t-budi" aria-selected="false" aria-controls="shelf" tabindex="-1" data-shop="budi"><span class="title-4">Ben</span><small class="caption-5">Workshop</small></button>
-            <button class="tab" type="button" role="tab" id="t-wati" aria-selected="false" aria-controls="shelf" tabindex="-1" data-shop="wati"><span class="title-4">Wendy</span><small class="caption-5">Bakery</small></button>
-            <button class="tab" type="button" role="tab" id="t-joko" aria-selected="false" aria-controls="shelf" tabindex="-1" data-shop="joko"><span class="title-4">Jack</span><small class="caption-5">General Store</small></button>
+            <button class="tab" type="button" role="tab" id="t-sari" aria-selected="true" aria-controls="shelf" data-shop="sari">Sarah</button>
+            <button class="tab" type="button" role="tab" id="t-budi" aria-selected="false" aria-controls="shelf" tabindex="-1" data-shop="budi">Ben</button>
+            <button class="tab" type="button" role="tab" id="t-wati" aria-selected="false" aria-controls="shelf" tabindex="-1" data-shop="wati">Wendy</button>
+            <button class="tab" type="button" role="tab" id="t-joko" aria-selected="false" aria-controls="shelf" tabindex="-1" data-shop="joko">Jack</button>
           </div>
           <div class="shelf" id="shelf" role="tabpanel" aria-labelledby="t-sari" tabindex="0">
             <div class="shelf__top">
-              <div><h3 class="title-2" data-shop-name>Sarah’s Fish Stall</h3><p class="body-6" data-shop-line>Buys fish and wood. Sells fish and grilled fish.</p></div>
-              <span class="shelf__cash caption-1" data-shop-cash>Base prices</span>
+              <div><h3 data-shop-name>Sarah’s Fish Stall</h3><p data-shop-line>Buys fish and wood. Sells fish and grilled fish.</p></div>
+              <span class="shelf__cash" data-shop-cash>Base prices</span>
             </div>
-            <table class="table body-6">
-              <thead><tr><th scope="col" class="caption-4">Good</th><th scope="col" class="caption-4">Stock</th><th scope="col" class="caption-4">You buy</th><th scope="col" class="caption-4">You sell</th></tr></thead>
+            <table class="table">
+              <thead><tr><th scope="col">Good</th><th scope="col">Stock</th><th scope="col">You buy</th><th scope="col">You sell</th></tr></thead>
               <tbody data-shelf></tbody>
             </table>
-            <p class="shelf__foot caption-5" data-shelf-note>Base prices from the game’s economy file, until the game server answers.</p>
+            <p class="note" data-shelf-note>Base prices from the game’s economy file, until the game server answers.</p>
           </div>
         </div>
-        <figure class="panel chat rv" style="--d:1" aria-label="A sample chat with Sarah">
+        <figure class="panel chat rv" style="--d:1" data-ui aria-label="A sample chat with Sarah">
           <div class="chat__h">
             <span class="chat__av"><img class="px" src="img/item-fish.png" width="48" height="48" alt=""></span>
-            <span class="chat__who"><b class="title-4">Sarah</b><span class="caption-5">Sarah’s Fish Stall</span></span>
-            <span class="chat__on caption-4"><span class="dot" aria-hidden="true"></span>at her stall</span>
+            <span class="chat__who"><b>Sarah</b><span>Sarah’s Fish Stall</span></span>
           </div>
-          <ol class="chat__log body-6" data-chat aria-live="polite">
+          <ol class="chat__log" data-chat aria-live="polite">
             <li class="me">What’s fish worth today?</li>
             <li class="them" data-chat-first>Fresh fish is 9 coin today. I keep about 20 on ice, so it’s a fair day to buy.</li>
           </ol>
           <div class="chat__ask" role="group" aria-label="Ask Sarah">
-            <button type="button" class="chip caption-1" data-ask="price"><svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-tag"/></svg>What’s fish worth?</button>
-            <button type="button" class="chip caption-1" data-ask="why"><svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-trend-up"/></svg>Why did it move?</button>
-            <button type="button" class="chip caption-1" data-ask="wood"><svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-tree"/></svg>Buy my wood?</button>
+            <button type="button" class="chip" data-ask="price">What’s fish worth?</button>
+            <button type="button" class="chip" data-ask="why">Why did it move?</button>
+            <button type="button" class="chip" data-ask="wood">Buy my wood?</button>
           </div>
-          <figcaption class="chat__note caption-5">A sample built from Sarah’s live shelf. In the game you type anything and she answers from her stock.</figcaption>
+          <figcaption class="note">Built from Sarah’s live shelf. In the game you type anything and she answers from her stock.</figcaption>
         </figure>
       </div>
-      <!-- PRICES: the seven goods live (the cheapest price to buy, or what a shop pays when nobody sells it) beside a
-           recipe calculator at the shops' middle prices; base prices from economy/config.json until the server answers -->
-      <div class="prices" id="prices" aria-labelledby="prices-h">
-        <div class="prices__head">
-          <h3 class="heading-4" id="prices-h" data-copy="prices-h">Today’s prices in town.<br>See what a craft adds.</h3>
-          <p class="body-6 muted" data-live-note aria-live="polite">Usual prices until the game answers.</p>
+
+      <div class="prices" id="prices">
+        <div class="head head--split head--sub">
+          <h3 class="h-sub">Today’s prices in town.<br>See what a craft adds.</h3>
+          <p class="note" data-live-note aria-live="polite">Usual prices until the game answers.</p>
         </div>
         <div class="prices__grid">
-          <ul class="board panel rv" data-board></ul>
-          <div class="calc panel rv" style="--d:1">
-            <h4 class="title-2" id="calc-h">What one craft is worth</h4>
+          <ul class="board panel rv" data-board data-ui></ul>
+          <div class="calc panel rv" style="--d:1" data-ui>
+            <h4 id="calc-h">What one craft is worth</h4>
             <div class="segs" role="tablist" aria-label="Recipe">
-              <button type="button" role="tab" aria-selected="true" data-recipe="meal" class="button-sm">Grilled fish</button>
-              <button type="button" role="tab" aria-selected="false" tabindex="-1" data-recipe="bread" class="button-sm">Bread</button>
-              <button type="button" role="tab" aria-selected="false" tabindex="-1" data-recipe="tool" class="button-sm">Pickaxe</button>
+              <button type="button" role="tab" aria-selected="true" data-recipe="meal">Grilled fish</button>
+              <button type="button" role="tab" aria-selected="false" tabindex="-1" data-recipe="bread">Bread</button>
+              <button type="button" role="tab" aria-selected="false" tabindex="-1" data-recipe="tool">Pickaxe</button>
             </div>
-            <ul class="calc__lines body-6" data-calc-lines aria-labelledby="calc-h"></ul>
-            <div class="calc__sum"><span class="caption-3 muted">Coin added by one craft</span><strong class="num" data-calc-gain>+6</strong></div>
-            <p class="body-6 muted" data-calc-note>At base prices.</p>
+            <ul class="calc__lines" data-calc-lines aria-labelledby="calc-h"></ul>
+            <div class="calc__sum"><span>Coin added by one craft</span><strong data-calc-gain>+6</strong></div>
+            <p data-calc-note>At usual prices.</p>
           </div>
         </div>
       </div>
-      <ul class="rules">
-        <li class="rule rv"><svg class="ic ic-lg" aria-hidden="true"><use href="assets/icons/ph.svg#ph-scales"/></svg><h3 class="title-2">Stock and demand set the price</h3><p class="body-6">A price moves at most 10% in a game hour and stays between a quarter and four times its base. Each move comes with a one line reason in the shop window.</p></li>
-        <li class="rule rv" style="--d:1"><svg class="ic ic-lg" aria-hidden="true"><use href="assets/icons/ph.svg#ph-storefront"/></svg><h3 class="title-2">Sell to players too</h3><p class="body-6">List goods at your own price on the player market. The shopkeepers shop there as well, buying listings at or below their fair price.</p></li>
-        <li class="rule rv" style="--d:2"><svg class="ic ic-lg" aria-hidden="true"><use href="assets/icons/ph.svg#ph-fire"/></svg><h3 class="title-2">Coin that stays worth something</h3><p class="body-6">New coin only enters when a shop buys your goods. Fees, food, tool repairs and a 5% burn on every player sale take it back out.</p></li>
-      </ul>
+
+      <dl class="rules">
+        <div class="rv"><dt>Stock and demand set the price.</dt><dd>A price moves at most 10% in a game hour and stays between a quarter and four times its usual level. Each move comes with a one line reason in the shop window.</dd></div>
+        <div class="rv"><dt>Sell to players, named or not.</dt><dd>List up to 50 of a good at your own price. On the Stalls side your name shows and every sale earns popularity. On the Black Market you sell anonymously. The shopkeepers shop there too, buying listings at or below their fair price.</dd></div>
+        <div class="rv"><dt>Five townsfolk do the shopping.</dt><dd>Dewi, Agus, Rina, Bayu and Intan walk the village for every player and buy finished goods from one shared wallet. That is the only way new coin enters the game, and fees, food, repairs and a 5% burn on player sales take it back out.</dd></div>
+      </dl>
     </div>
   </section>
 
-  <!-- HOMELAND: the islands picture with numbered pins, and what each part is for beside it (always visible) -->
-  <section class="section" id="homeland" aria-labelledby="home-h">
+  <!-- HOMELAND: the islands picture with its key beside it, then the island ladder: pick how many islands are open and
+       read what the next one costs (economy/config.json homeland.chunks) -->
+  <section class="section section--tone" id="homeland" aria-labelledby="home-h">
     <div class="wrap">
-      <div class="head">
-        <p class="kicker caption-3">Your Homeland</p>
-        <h2 class="heading-2" id="home-h">Nine islands in the sky.<br>All of them yours.</h2>
-        <p class="body-7 muted">Every player gets a Homeland above the town. It starts with your house, a Town Hall and a farm. Open the next island and a plank bridge lays itself across the gap.</p>
+      <div class="head head--split">
+        <h2 id="home-h">Nine islands, all yours.</h2>
+        <p>Every player gets a Homeland above the town. It starts with your house, a Town Hall and a farm on the centre island, with eight more waiting in the fog.</p>
       </div>
       <div class="home">
-        <figure class="pic rv" style="aspect-ratio: 32 / 15">
+        <figure class="pic home__pic rv">
           <img src="img/islands.webp" width="1920" height="900" alt="A Homeland seen low across its islands: red and blue roofs, a farm, plank bridges and a waterfall falling into the clouds" loading="lazy">
           <div class="pins" aria-hidden="true">
             <span class="pin" data-pin="1" style="--x:45.8%;--y:31.1%">1</span>
@@ -241,204 +230,230 @@
           </div>
         </figure>
         <ol class="parts" data-parts>
-          <li class="part" data-part="1" tabindex="0"><span class="part__n" aria-hidden="true">1</span><div><h3 class="title-2">Town Hall</h3><p class="body-6">Level it up to open islands and new buildings, and it grows a new look up to level 3. Hire workers here: a farmer grows crops faster, a woodcutter gets more from each tree, a cook keeps everyone fed.</p></div></li>
-          <li class="part" data-part="2" tabindex="0"><span class="part__n" aria-hidden="true">2</span><div><h3 class="title-2">Farm</h3><p class="body-6">Fifteen plots beside your house. Two wheat bake one loaf.</p></div></li>
-          <li class="part" data-part="3" tabindex="0"><span class="part__n" aria-hidden="true">3</span><div><h3 class="title-2">Forest and work buildings</h3><p class="body-6">A sawmill turns out wood and a windmill turns out wheat while you are away, until the storehouse is full. Come back and collect.</p>
-            <ul class="tags caption-4"><li class="tag"><img class="px" src="img/item-wood.png" width="16" height="16" alt="">Sawmill</li><li class="tag"><img class="px" src="img/item-wheat.png" width="16" height="16" alt="">Windmill</li><li class="tag">Storehouse, 3 levels</li></ul></div></li>
-          <li class="part" data-part="4" tabindex="0"><span class="part__n" aria-hidden="true">4</span><div><h3 class="title-2">Plank bridges</h3><p class="body-6">Each island you open joins the rest with a bridge. Later, street lights line the paths and glow at night.</p></div></li>
-          <li class="part" data-part="5" tabindex="0"><span class="part__n" aria-hidden="true">5</span><div><h3 class="title-2">Your house</h3><p class="body-6">Walk in and Mom is home. Lie down in bed for a nap: the camera comes in close, a lullaby plays and you get back 30 energy a minute while you stay in bed.</p>
-            <ul class="tags caption-4"><li class="tag"><svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-bed"/></svg>Nap</li><li class="tag"><svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-newspaper"/></svg>TV news</li><li class="tag"><svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plant"/></svg>A plant to water</li><li class="tag"><svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-door-open"/></svg>Your chest</li></ul></div></li>
+          <li class="part" data-part="1" tabindex="0"><span class="part__n" aria-hidden="true">1</span><div><h3>Town Hall</h3><p>Level it up to open islands and new buildings, and it grows a new look up to level 3. Hire workers here: a farmer grows crops faster, a woodcutter gets more from each tree, a cook keeps everyone fed.</p></div></li>
+          <li class="part" data-part="2" tabindex="0"><span class="part__n" aria-hidden="true">2</span><div><h3>Farm</h3><p>Fifteen plots beside your house. Two wheat bake one loaf.</p></div></li>
+          <li class="part" data-part="3" tabindex="0"><span class="part__n" aria-hidden="true">3</span><div><h3>Sawmill, windmill and storehouse</h3><p>The sawmill turns out wood and the windmill wheat while you are away, until the storehouse is full. Come back and collect.</p></div></li>
+          <li class="part" data-part="4" tabindex="0"><span class="part__n" aria-hidden="true">4</span><div><h3>Plank bridges</h3><p>Each island you open joins the rest with a bridge. Later, street lights line the paths and glow at night.</p></div></li>
+          <li class="part" data-part="5" tabindex="0"><span class="part__n" aria-hidden="true">5</span><div><h3>Your house</h3><p>Walk in and Mom is home. Lie down in bed for a nap: the camera comes in close, a lullaby plays and you get back 30 energy a minute while you stay in bed. There is TV news, a plant to water and your own chest.</p></div></li>
         </ol>
+      </div>
+
+      <div class="isle rv" data-isle>
+        <div class="isle__text">
+          <h3 class="h-sub">Open the next island.</h3>
+          <p>Hover a locked island anywhere in your Homeland and it glows along its shore. Click it, pay the wood, ore and coin, and your builder lays the bridge while you play on. Each island asks for a higher Town Hall.</p>
+        </div>
+        <div class="isle__tool">
+          <label class="isle__label" for="isle-range">Islands already open: <b data-isle-open>1</b> of 9</label>
+          <input id="isle-range" type="range" min="1" max="8" step="1" value="1" data-isle-range aria-describedby="isle-out">
+          <dl class="isle__out" id="isle-out" aria-live="polite">
+            <div><dt>Town Hall level</dt><dd data-isle-th>1</dd></div>
+            <div><dt>Cost</dt><dd data-isle-cost>10 wood</dd></div>
+            <div><dt>Building time</dt><dd data-isle-time>30 seconds</dd></div>
+          </dl>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- FRIENDS: roles in a Homeland, and the trade window (an illustration of the in game one) counting down when seen -->
+  <!-- FRIENDS: what a friend can do in your Homeland, the trade window playing once, and the chat commands -->
   <section class="section" id="friends" aria-labelledby="friends-h">
     <div class="wrap">
       <div class="friends">
-        <div>
-          <div class="head" style="margin-bottom: var(--s-400)">
-            <p class="kicker caption-3">Better with friends</p>
-            <h2 class="heading-2" id="friends-h">Bring up to three friends home.</h2>
-            <p class="body-7 muted">A party holds four. Party mates get green name tags, a private chat and a dot on your map. You choose what each one can do in your Homeland.</p>
-          </div>
-          <ul class="roles">
-            <li class="role rv"><span class="role__i"><svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-house-line"/></svg></span><div><h3 class="title-3">Visitor</h3><p class="body-6">Walks, chats and eats at your place.</p></div></li>
-            <li class="role rv" style="--d:1"><span class="role__i"><svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plant"/></svg></span><div><h3 class="title-3">Helper</h3><p class="body-6">Chops, mines, fishes, farms and fights the night monsters. They keep what they gather, within a daily share.</p></div></li>
-            <li class="role rv" style="--d:2"><span class="role__i"><svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-hammer"/></svg></span><div><h3 class="title-3">Builder</h3><p class="body-6">Starts buildings for you from their own bag. A helper can press Help the builder to cut 15 seconds off a job.</p></div></li>
-          </ul>
+        <div class="friends__l">
+          <h2 id="friends-h">Bring up to three friends home.</h2>
+          <p class="lead">A party holds four. Party mates get green name tags and a dot on your map. You choose what each one can do in your Homeland.</p>
+          <dl class="roles">
+            <div class="rv"><dt>Visitor</dt><dd>Walks, chats and eats at your place.</dd></div>
+            <div class="rv"><dt>Helper</dt><dd>Chops, mines, fishes, farms and fights the night monsters, and keeps what they gather within a daily share.</dd></div>
+            <div class="rv"><dt>Builder</dt><dd>Starts buildings for you from their own bag. A helper can press Help the builder to cut 15 seconds off a job.</dd></div>
+          </dl>
         </div>
-        <figure class="panel trade rv" data-trade aria-label="Illustration of the trade window">
-          <div class="trade__h"><h3 class="title-3">Trade</h3><span class="caption-4 muted">Up to 3 kinds of goods plus coin</span></div>
+        <figure class="panel trade rv" data-trade data-ui aria-label="Illustration of the trade window">
+          <div class="trade__h"><h3>Trade</h3><span>Up to 3 kinds of goods plus coin</span></div>
           <div class="trade__cols">
             <div class="trade__side">
-              <div class="trade__who"><span class="title-4">You</span></div>
-              <div class="trade__item caption-1"><img class="px" src="img/item-fish.png" width="48" height="48" alt="">Fish<b>4</b></div>
-              <div class="trade__item caption-1"><img class="px" src="img/item-wood.png" width="48" height="48" alt="">Wood<b>6</b></div>
-              <span class="ready caption-4" data-ready="a"><svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-shield-check"/></svg>Ready</span>
+              <p class="trade__who">You</p>
+              <p class="trade__item"><img class="px" src="img/item-fish.png" width="48" height="48" alt="">Fish<b>4</b></p>
+              <p class="trade__item"><img class="px" src="img/item-wood.png" width="48" height="48" alt="">Wood<b>6</b></p>
+              <span class="ready" data-ready="a"><svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-shield-check"/></svg>Ready</span>
             </div>
             <span class="trade__x" aria-hidden="true"><svg class="ic ic-lg"><use href="assets/icons/ph.svg#ph-handshake"/></svg></span>
             <div class="trade__side">
-              <div class="trade__who"><span class="title-4 tagname">Mira#20481</span></div>
-              <div class="trade__item caption-1"><img class="px" src="img/item-bread.png" width="48" height="48" alt="">Bread<b>2</b></div>
-              <div class="trade__item caption-1"><svg class="ic" style="width:32px;height:32px;padding:6px;color:var(--coin)" aria-hidden="true"><use href="assets/icons/ph.svg#ph-coins"/></svg>Coin<b>13</b></div>
-              <span class="ready caption-4" data-ready="b"><svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-shield-check"/></svg>Ready</span>
+              <p class="trade__who tagname">Mira#20481</p>
+              <p class="trade__item"><img class="px" src="img/item-bread.png" width="48" height="48" alt="">Bread<b>2</b></p>
+              <p class="trade__item"><svg class="ic trade__coin" aria-hidden="true"><use href="assets/icons/ph.svg#ph-coins"/></svg>Coin<b>13</b></p>
+              <span class="ready" data-ready="b"><svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-shield-check"/></svg>Ready</span>
             </div>
           </div>
-          <div class="trade__foot body-5" aria-live="polite"><span data-trade-msg>Both press Ready</span><span class="trade__count" data-count hidden>3</span></div>
-          <figcaption class="trade__cap caption-5">Any change clears both ticks. Once both confirm, a three second countdown runs and the goods swap in one go.</figcaption>
+          <div class="trade__foot" aria-live="polite"><span data-trade-msg>Both press Ready</span><span class="trade__count" data-count hidden>3</span></div>
+          <figcaption>Any change clears both ticks. Once both confirm, a three second countdown runs and the goods swap in one go.</figcaption>
         </figure>
+      </div>
+
+      <div class="cmds rv">
+        <div>
+          <h3 class="h-sub">Do it from the chat.</h3>
+          <p>Chat reaches the players in your world. Type a slash and a few words to message, invite, trade or tidy your name.</p>
+        </div>
+        <dl class="cmds__list">
+          <div><dt><code>/msg name hello</code></dt><dd>A private line to anyone, in any world.</dd></div>
+          <div><dt><code>/p on my way</code></dt><dd>Talk only to your party, wherever they are.</dd></div>
+          <div><dt><code>/party name#tag</code></dt><dd>Invite someone to your party.</dd></div>
+          <div><dt><code>/dagang name#tag</code></dt><dd>Open a trade window with them.</dd></div>
+          <div><dt><code>/name NewName</code></dt><dd>Change the name over your head.</dd></div>
+          <div><dt><code>/block name</code></dt><dd>Hide someone’s messages. <code>/unblock</code> undoes it.</dd></div>
+        </dl>
       </div>
     </div>
   </section>
 
-  <!-- WORLD: seasons as tabs over one picture, the shared 24 minute day with the live hour, and three things to do around town -->
+  <!-- TOWN: a viewer of the public buildings, each in the game's own 2.5D render, then the small touches -->
+  <section class="section section--tone" id="town" aria-labelledby="town-h">
+    <div class="wrap">
+      <div class="head head--split">
+        <h2 id="town-h">Walk the town together.</h2>
+        <p>Take the portal down from your Homeland and the village is shared by every player. Almost every building has a room inside and a sign over its door. Pick one to look around.</p>
+      </div>
+      <div class="viewer" data-viewer>
+        <div class="viewer__tabs" role="tablist" aria-label="Buildings">
+          <button type="button" role="tab" aria-selected="true" aria-controls="bld" data-bld="square">The square</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="bld" tabindex="-1" data-bld="board">Leaderboard</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="bld" tabindex="-1" data-bld="mall">Genesis Mall</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="bld" tabindex="-1" data-bld="news">News Hall</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="bld" tabindex="-1" data-bld="casino">Genesis Casino</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="bld" tabindex="-1" data-bld="mine">Public Mine</button>
+        </div>
+        <div class="viewer__stage" id="bld" role="tabpanel" tabindex="0">
+          <figure class="viewer__pic">
+            <img class="on" data-bld-pic="square" src="img/square.webp" width="1200" height="800" alt="The village square at dusk: a fountain, striped market stalls, benches, lamps, the concert stage and the leaderboard on the east edge" loading="lazy">
+            <img data-bld-pic="board" src="img/leaderboard.webp" width="960" height="640" alt="The leaderboard sign on the edge of the square, beside the market stalls" loading="lazy">
+            <img data-bld-pic="mall" src="img/mall.webp" width="960" height="640" alt="The Genesis Mall: a cream building with a red tiled roof and shop windows full of clothes" loading="lazy">
+            <img data-bld-pic="news" src="img/news-hall.webp" width="960" height="640" alt="The News Hall with notices pinned by its door, beside the market stalls" loading="lazy">
+            <img data-bld-pic="casino" src="img/casino.webp" width="960" height="640" alt="The Genesis Casino at night, a dark purple building with two turrets and a row of yellow lights" loading="lazy">
+            <img data-bld-pic="mine" src="img/public-mine.webp" width="960" height="640" alt="The Public Mine, a small stone building beside a field of grey rocks" loading="lazy">
+          </figure>
+          <div class="viewer__text" data-bld-text>
+            <h3>The square</h3>
+            <p>A fountain in the middle, the four shopkeepers’ stalls along one side and players’ stalls along the other, with benches to sit on and the stage where a band plays every night.</p>
+          </div>
+        </div>
+      </div>
+      <dl class="touches">
+        <div class="rv"><dt>Click any player</dt><dd>for their card, their Town Hall level and buttons to message or trade. Every purchase flies between buyer and seller, for everyone nearby to see.</dd></div>
+        <div class="rv"><dt>Hold Tab</dt><dd>to see who is in your world, with their party and a connection signal.</dd></div>
+        <div class="rv"><dt>Ben’s tool shop</dt><dd>sells a new pickaxe, axe, fishing rod or hoe, or repairs yours, priced by the wear.</dd></div>
+        <div class="rv"><dt>Search the grass</dt><dd>and it rustles. Sometimes a wheat seed pops out to plant.</dd></div>
+        <div class="rv"><dt>Every action has a sound,</dt><dd>from chopping and fishing to doors and trades, with soft music by day.</dd></div>
+        <div class="rv"><dt>Twelve house styles</dt><dd>stand around the Town Hall, the Post Office, the Coffee Shop and the Broker’s Office.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- WORLD: seasons over one picture, the weather, the shared 24 minute day with the live hour, and evenings -->
   <section class="section" id="world" aria-labelledby="world-h">
     <div class="wrap">
       <div class="head head--split">
-        <div class="head" style="margin:0">
-          <p class="kicker caption-3">A living world</p>
-          <h2 class="heading-2" id="world-h">One clock and one calendar for every player.</h2>
-        </div>
-        <p class="body-7 muted">A game hour lasts one real minute, so a day takes 24. The server keeps the time, so night falls on every island at once, and each season lasts seven game days.</p>
+        <h2 id="world-h">One clock for every player.</h2>
+        <p>A game hour lasts one real minute, so a day takes 24. The server keeps the time, so night falls on every island at once, and each season lasts seven game days.</p>
       </div>
       <div class="seasons">
-        <div class="pic rv" data-season-pics>
+        <div class="pic seasons__pic rv" data-season-pics>
           <img class="on" data-for="semi" src="img/season-semi.webp" width="1200" height="900" alt="The centre island in spring, green trees and red and blue roofs" loading="lazy">
           <img data-for="panas" src="img/season-panas.webp" width="1200" height="900" alt="The centre island in summer at noon" loading="lazy">
           <img data-for="gugur" src="img/season-gugur.webp" width="1200" height="900" alt="The centre island in autumn, its trees orange" loading="lazy">
           <img data-for="dingin" src="img/season-dingin.webp" width="1200" height="900" alt="The centre island in winter, under snow at dusk" loading="lazy">
         </div>
         <div class="season-list" role="tablist" aria-label="Seasons" data-season-tabs>
-          <button class="season" type="button" role="tab" aria-selected="true" data-s="semi"><i class="sw" style="--c:#f28fb0" aria-hidden="true"></i><span class="title-3">Spring</span><span class="caption-4 muted">7 days</span><p class="body-6">Blossom on the fruit trees. Forests give 20% more wood and bread sells well.</p></button>
-          <button class="season" type="button" role="tab" aria-selected="false" tabindex="-1" data-s="panas"><i class="sw" style="--c:#34c3c9" aria-hidden="true"></i><span class="title-3">Summer</span><span class="caption-4 muted">7 days</span><p class="body-6">Fish bite half again as often. Grilled fish is in demand.</p></button>
-          <button class="season" type="button" role="tab" aria-selected="false" tabindex="-1" data-s="gugur"><i class="sw" style="--c:#f0903a" aria-hidden="true"></i><span class="title-3">Autumn</span><span class="caption-4 muted">7 days</span><p class="body-6">Orange crowns, 30% more wood, and everyone wants tools.</p></button>
-          <button class="season" type="button" role="tab" aria-selected="false" tabindex="-1" data-s="dingin"><i class="sw" style="--c:#8fc8f2" aria-hidden="true"></i><span class="title-3">Winter</span><span class="caption-4 muted">7 days</span><p class="body-6">Snow on the ground and no wheat grows. Fewer fish, and firewood sells high.</p></button>
+          <button class="season" type="button" role="tab" aria-selected="true" data-s="semi"><span class="season__n">Spring</span><span class="season__p">Blossom on the fruit trees and showers. Forests give 20% more wood and bread sells well.</span></button>
+          <button class="season" type="button" role="tab" aria-selected="false" tabindex="-1" data-s="panas"><span class="season__n">Summer</span><span class="season__p">Bright sun most days. Fish bite half again as often and grilled fish is in demand.</span></button>
+          <button class="season" type="button" role="tab" aria-selected="false" tabindex="-1" data-s="gugur"><span class="season__n">Autumn</span><span class="season__p">Rain and orange crowns, 30% more wood, and everyone wants tools.</span></button>
+          <button class="season" type="button" role="tab" aria-selected="false" tabindex="-1" data-s="dingin"><span class="season__n">Winter</span><span class="season__p">Snow on the ground and no wheat grows. Fewer fish, and firewood sells high.</span></button>
         </div>
       </div>
+      <p class="aside rv">Every game day has one weather for everyone, and rain waters every planted plot by itself, so a wet week saves you energy on the farm.</p>
 
-      <p class="note body-6 rv"><svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-cloud-rain"/></svg><span><b>Every game day has one weather for everyone.</b> Showers in spring, bright sun through summer, rain in autumn and snow through winter. Rain waters every planted plot by itself, so a wet week saves you energy on the farm.</span></p>
-
-      <div class="day rv" aria-labelledby="day-h">
-        <div class="day__top"><h3 class="title-2" id="day-h">A day in town</h3><span class="caption-4 muted num" data-day-now-text>24 real minutes</span></div>
+      <div class="day rv">
+        <div class="day__top"><h3>A day in town</h3><span data-day-now-text>24 real minutes</span></div>
         <div class="day__grid" role="img" aria-label="The game day: night until 05:00, daylight from 07:00 to 18:00, the daily save on NEAR at 06:00, a concert from 19:00 to 01:00 and monsters from 19:00 to 06:00">
           <div class="lane"><i class="n"></i><i class="n"></i><i class="n"></i><i class="n"></i><i class="n"></i><i class="a"></i><i class="a"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="k"></i><i class="k"></i><i class="n"></i><i class="n"></i><i class="n"></i><i class="n"></i></div>
           <div class="lane"><b class="ev-settle" style="--a:7;--b:11">Saved on NEAR</b></div>
           <div class="lane"><b class="ev-concert" style="--a:1;--b:2"></b><b class="ev-concert" style="--a:20;--b:25">Concert</b></div>
           <div class="lane"><b class="ev-monster" style="--a:1;--b:7">Monsters</b><b class="ev-monster" style="--a:20;--b:25">Monsters</b></div>
-          <div class="day__axis caption-5"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div>
+          <div class="day__axis"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div>
           <span class="day__now" data-day-now hidden></span>
         </div>
-        <ul class="day__keys">
-          <li><i class="sw" style="--c:var(--coin)" aria-hidden="true"></i><span class="title-4">06:00, the daily save</span><p class="body-6">Yesterday’s gathering, crafting and shop trades are written to NEAR in one batch.</p></li>
-          <li><i class="sw" style="--c:var(--accent)" aria-hidden="true"></i><span class="title-4">19:00 to 01:00, concert</span><p class="body-6">A band plays the town’s chiptune on the stage by the fountain. It gets louder as you walk closer.</p></li>
-          <li><i class="sw" style="--c:var(--up)" aria-hidden="true"></i><span class="title-4">19:00 to 06:00, monsters</span><p class="body-6">Wild boars and mine bats roam the forest and rock. Beat them for wood and ore.</p></li>
-        </ul>
+        <dl class="day__keys">
+          <div><dt><span style="color:var(--coin)">06:00</span>, the daily save</dt><dd>Yesterday’s gathering, crafting and shop trades are written to NEAR in one batch.</dd></div>
+          <div><dt><span style="color:var(--accent)">19:00 to 01:00</span>, concert</dt><dd>A band plays the town’s chiptune on the stage by the fountain. It gets louder as you walk closer.</dd></div>
+          <div><dt><span style="color:var(--up)">19:00 to 06:00</span>, monsters</dt><dd>Wild boars and mine bats roam the forest and rock. Beat them for wood and ore.</dd></div>
+        </dl>
       </div>
 
       <ul class="extras">
-        <li class="extra rv"><div class="pic"><img src="img/carousel.webp" width="960" height="640" alt="The carousel on the village square at dusk" loading="lazy"></div><div><h3 class="title-2">Ride the carousel</h3><p class="body-6">The square has a fountain, benches you can sit on, a lily pond with frogs and a carousel.</p></div></li>
-        <li class="extra rv" style="--d:1"><div class="pic"><img src="img/island.webp" width="960" height="640" alt="A quiet island of meadow and pines across the water" loading="lazy"><!-- --></div><div><h3 class="title-2">Steer the public boat</h3><p class="body-6">Board at a landing and sail it yourself to the island no path reaches.</p></div></li>
-        <li class="extra rv" style="--d:2"><div class="pic"><img src="img/night.webp" width="1920" height="1080" alt="The village at night with lamps and lit windows" loading="lazy"></div><div><h3 class="title-2">Evenings on the square</h3><p class="body-6">Lamps come on, windows glow and gentle music plays. Footsteps, rain and every chop and catch have their own sound.</p></div></li>
+        <li class="rv"><div class="pic"><img src="img/carousel.webp" width="960" height="640" alt="The carousel on the village square at dusk" loading="lazy"></div><h3>Ride the carousel</h3><p>The camera goes low and circles the ride while a fairground waltz plays.</p></li>
+        <li class="rv" style="--d:1"><div class="pic"><img src="img/island.webp" width="960" height="640" alt="A quiet island of meadow and pines across the water" loading="lazy"></div><h3>Steer the public boat</h3><p>It glows when you can board. Sail it yourself to the island no path reaches.</p></li>
+        <li class="rv" style="--d:2"><div class="pic"><img src="img/night.webp" width="1920" height="1080" alt="The village at night with lamps and lit windows" loading="lazy"></div><h3>Evenings on the square</h3><p>Lamps come on, windows glow and the band starts at seven.</p></li>
       </ul>
     </div>
   </section>
 
-  <!-- TOWN: the public buildings around the square, then the small touches a new player meets in the first hour -->
-  <section class="section" id="town" aria-labelledby="town-h">
-    <div class="wrap">
-      <div class="head head--split">
-        <div class="head" style="margin:0">
-          <p class="kicker caption-3">Around town</p>
-          <h2 class="heading-2" id="town-h">A whole town to walk into.</h2>
-        </div>
-        <p class="body-7 muted">Take the portal down from your Homeland and the public village is shared by every player. Almost every building has a room inside, and each one has a sign over its door.</p>
-      </div>
-      <ul class="town">
-        <li class="rv"><div class="town__pic"><img src="img/mall.webp" width="960" height="640" alt="The Genesis Mall: a cream building with a red tiled roof and shop windows full of clothes, at the edge of the forest" loading="lazy"></div><h3 class="title-2">Genesis Mall</h3><p class="body-6">28 outfits, hats and capes in seven slots, from 20 to 400 coin. Everyone sees what you wear. Work gloves, boots and a hard hat also make your workers faster.</p></li>
-        <li class="rv" style="--d:1"><div class="town__pic"><img src="img/news-hall.webp" width="960" height="640" alt="The News Hall with notices pinned by its door, beside the market stalls" loading="lazy"></div><h3 class="title-2">Leaderboard and News Hall</h3><p class="body-6">The board at the edge of the square lists the best traders today and of all time. The News Hall carries the town’s latest news.</p></li>
-        <li class="rv" style="--d:2"><div class="town__pic"><img src="img/public-mine.webp" width="960" height="640" alt="The Public Mine, a small stone building beside a field of grey rocks" loading="lazy"></div><h3 class="title-2">Public Mine</h3><p class="body-6">A mine beside a public forest and rock field, so new players can gather from day one before their own islands open up.</p></li>
-        <li class="rv" style="--d:0"><div class="town__pic"><img src="img/casino.webp" width="960" height="640" alt="The Genesis Casino at night, a dark purple building with two turrets and a row of yellow lights" loading="lazy"></div><h3 class="title-2">Genesis Casino</h3><p class="body-6">A pass lets you in for 30 minutes to the Luck Table, slots, dice and cards. Chips are bought with coin, and anything you win is chips and titles that never turn back into coin.</p></li>
-        <li class="rv" style="--d:1"><span class="town__i"><svg class="ic ic-lg" aria-hidden="true"><use href="assets/icons/ph.svg#ph-wrench"/></svg></span><h3 class="title-2">Ben’s tool shop</h3><p class="body-6">Your pickaxe, axe, fishing rod and hoe wear down with use. Buy a new one or pay Ben to repair it, priced by the wear.</p></li>
-        <li class="rv" style="--d:2"><span class="town__i"><svg class="ic ic-lg" aria-hidden="true"><use href="assets/icons/ph.svg#ph-house-line"/></svg></span><h3 class="title-2">Twelve house styles</h3><p class="body-6">The village Town Hall, the Post Office, the Coffee Shop and the Broker’s Office stand among houses in twelve styles, with medieval touches around the square.</p></li>
-      </ul>
-      <div class="details rv">
-        <h3 class="title-2">Little things you will notice</h3>
-        <ul class="details__list body-6">
-          <li><svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-user-circle"/></svg><span><b>Click any player</b> for their card: look, Town Hall level, and buttons to message or trade. Traded goods fly across between you.</span></li>
-          <li><svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-users-three"/></svg><span><b>Hold Tab</b> to see who is in your world, with their party and a connection signal.</span></li>
-          <li><svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-list-checks"/></svg><span><b>Twelve missions</b> sit behind a button at the top, with a mark when a reward is waiting.</span></li>
-          <li><svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-leaf"/></svg><span><b>Search the grass</b> and it rustles. Sometimes a wheat seed pops out to plant.</span></li>
-          <li><svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-speaker-high"/></svg><span><b>Every action has a sound</b>, from chopping and fishing to doors and trades, with soft music by day.</span></li>
-          <li><svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-chat-circle-dots"/></svg><span><b>Chat with the town</b>, send a private line with /msg, or talk only to your party with /p.</span></li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- OWNERSHIP: the chain in plain words, with the live settled day and the links to check it -->
-  <section class="section" id="own" aria-labelledby="own-h">
-    <div class="wrap">
-      <div class="head">
-        <p class="kicker caption-3">Ownership</p>
-        <h2 class="heading-2" id="own-h">Your goods are really yours.<br>No wallet needed to play.</h2>
-        <p class="body-7 muted">Coin and items are recorded on NEAR, a public blockchain, so anyone can check who owns what. You never touch the crypto part unless you want to.</p>
-      </div>
-      <ul class="own">
-        <li class="rv"><svg class="ic ic-lg" aria-hidden="true"><use href="assets/icons/ph.svg#ph-google-logo"/></svg><h3 class="title-2">Sign in with Google</h3><p class="body-6">No seed phrase, no wallet popup, no fees. The game pays the network costs for you.</p></li>
-        <li class="rv" style="--d:1"><svg class="ic ic-lg" aria-hidden="true"><use href="assets/icons/ph.svg#ph-clock"/></svg><h3 class="title-2">Saved once a game day</h3><p class="body-6">Everyday play is added up and written at 06:00 with a fingerprint of the whole day’s ledger. Player market sales and gifts are written right away.</p></li>
-        <li class="rv" style="--d:2"><svg class="ic ic-lg" aria-hidden="true"><use href="assets/icons/ph.svg#ph-shield-check"/></svg><h3 class="title-2">A test network for now</h3><p class="body-6">Genesis Town runs on NEAR testnet. Coin and items have no cash value, so play for the town, not for profit.</p></li>
-      </ul>
-      <div class="proofbar rv">
-        <span class="proofbar__live body-5"><span class="dot" aria-hidden="true"></span><span data-settled>Written to NEAR once every game day</span></span>
-        <span class="proofbar__links body-6">
+  <!-- OWNERSHIP: the chain in plain words beside the three facts, with the live settled day and the links to check it -->
+  <section class="section section--tone" id="own" aria-labelledby="own-h">
+    <div class="wrap own">
+      <div class="own__l">
+        <h2 id="own-h">Your goods are really yours.</h2>
+        <p class="lead">Coin and items are recorded on NEAR, a public blockchain, so anyone can check who owns what. You never touch the crypto part unless you want to.</p>
+        <p class="own__live"><span class="dot" aria-hidden="true"></span><span data-settled>Written to NEAR once every game day.</span></p>
+        <p class="own__links">
           <a class="link" href="https://testnet.nearblocks.io/address/game.genesistown.testnet">See the contract<svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-arrow-up-right"/></svg></a>
           <a class="link" href="https://github.com/leutenantKiya/Genesis-Town">Read the code<svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-github-logo"/></svg></a>
-        </span>
+        </p>
       </div>
+      <dl class="own__list">
+        <div><dt>Sign in with Google.</dt><dd>No seed phrase, no wallet popup, no fees. The game pays the network costs for you.</dd></div>
+        <div><dt>Saved once a game day.</dt><dd>Everyday play is added up and written at 06:00 with a fingerprint of the whole day’s ledger. Player market sales and gifts are written right away.</dd></div>
+        <div><dt>A test network for now.</dt><dd>Genesis Town runs on NEAR testnet. Coin and items have no cash value, so play for the town, not for profit.</dd></div>
+      </dl>
     </div>
   </section>
 
-  <!-- FAQ -->
+  <!-- FAQ: two columns of open questions -->
   <section class="section" id="faq" aria-labelledby="faq-h">
     <div class="wrap">
-      <div class="head"><p class="kicker caption-3">Questions</p><h2 class="heading-2" id="faq-h">Before you move in</h2></div>
+      <h2 id="faq-h" class="faq__h">Before you move in</h2>
       <div class="faq">
-        <details><summary class="title-2">Does it cost anything?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p class="body-3">No. Genesis Town is free in your browser. It runs on NEAR testnet, a test network, so coin and items have no cash value.</p></details>
-        <details><summary class="title-2">Do I need a crypto wallet?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p class="body-3">No. Sign in with Google. The game pays the network fees, and you never see a seed phrase or a wallet popup.</p></details>
-        <details><summary class="title-2">What do I start with?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p class="body-3">100 coin, 3 loaves of bread, 3 wheat and your tools. Pick your look on the character screen and you land in your own Homeland, with a portal down to the market town.</p></details>
-        <details><summary class="title-2">Can I look around before signing in?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p class="body-3">Yes. Open the game and you can walk the public village as a guest and see the players there. Guests cannot chat or trade, and a few can visit at once.</p></details>
-        <details><summary class="title-2">Can I play with friends?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p class="body-3">Yes. A party holds up to four players. Give friends a role in your Homeland so they can visit, help you gather and farm, or build with you, and swap goods face to face in a trade window.</p></details>
-        <details><summary class="title-2">Why do prices change?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p class="body-3">Each shop prices from its stock, recent demand and its cash. A price moves at most 10% per game hour and stays between a quarter and four times its base. The player market also nudges what shopkeepers pay.</p></details>
-        <details><summary class="title-2">Does it run on my phone?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p class="body-3">Yes, in a current browser, held upright or sideways, with thumb controls. A 2D view is one switch away in Settings for older devices.</p></details>
-        <details><summary class="title-2">What language is the game in?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p class="body-3">English by default. Bahasa Indonesia is one click away in Settings, and the shopkeepers answer in your language.</p></details>
+        <details><summary>Does it cost anything?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p>No. Genesis Town is free in your browser. It runs on NEAR testnet, a test network, so coin and items have no cash value.</p></details>
+        <details><summary>Do I need a crypto wallet?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p>No. Sign in with Google. The game pays the network fees, and you never see a seed phrase or a wallet popup.</p></details>
+        <details><summary>What do I start with?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p>100 coin, 3 loaves of bread, 3 wheat and your four tools. Pick your look on the character screen and you land in your own Homeland, with a portal down to the market town.</p></details>
+        <details><summary>Can I look around before signing in?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p>Yes. Open the game and you can walk the public village as a guest and see the players there. Guests cannot chat or trade, and a few can visit at once.</p></details>
+        <details><summary>Can I play with friends?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p>Yes. A party holds up to four players. Give friends a role in your Homeland so they can visit, help you gather and farm, or build with you, and swap goods face to face in a trade window.</p></details>
+        <details><summary>Why do prices change?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p>Each shop prices from its stock, recent demand and its cash. A price moves at most 10% per game hour and stays between a quarter and four times its usual level. The player market also nudges what shopkeepers pay.</p></details>
+        <details><summary>Does it run on my phone?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p>Yes, in a current browser, held upright or sideways, with a joystick and thumb buttons. A 2D view is one switch away in Settings for older devices.</p></details>
+        <details><summary>What language is the game in?<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-plus"/></svg></summary><p>English by default. Bahasa Indonesia is one click away in Settings, and the shopkeepers answer in your language.</p></details>
       </div>
     </div>
   </section>
 
-  <!-- FINAL CTA: the same action as the hero, with the real starter kit -->
+  <!-- CLOSE: the same action as the hero, with the real starter kit -->
   <section class="final" aria-labelledby="final-h">
     <div class="wrap">
-      <h2 class="heading-2" id="final-h">Your islands are waiting.</h2>
-      <p class="body-7">Nothing to install and no wallet to set up. Sign in with Google and start with:</p>
-      <ul class="kit caption-1">
-        <li><svg class="ic" style="width:32px;height:32px;padding:6px;color:var(--coin)" aria-hidden="true"><use href="assets/icons/ph.svg#ph-coins"/></svg>100 coin</li>
-        <li><img class="px" src="img/item-bread.png" width="48" height="48" alt="">3 bread</li>
-        <li><img class="px" src="img/item-wheat.png" width="48" height="48" alt="">3 wheat</li>
-      </ul>
-      <a class="btn btn--primary button-lg" href="https://gentown.my.id/">Play free in your browser<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-arrow-right"/></svg></a>
+      <h2 id="final-h">Your islands are waiting.</h2>
+      <p>Nothing to install and no wallet to set up. Sign in with Google and start with 100 coin, 3 bread and 3 wheat.</p>
+      <a class="btn btn--primary btn--lg" href="https://gentown.my.id/">Play free in your browser<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-arrow-right"/></svg></a>
     </div>
   </section>
 </main>
 
 <footer class="footer">
   <div class="wrap">
-    <div><a class="brand title-3" href="#top"><img src="favicon.svg" width="24" height="24" alt="">Genesis Town</a><p class="body-6" style="margin-top:var(--s-100)">A pixel art market town on floating islands, on NEAR testnet.</p></div>
-    <div><h3 class="title-4">Play</h3><ul class="body-6"><li><a href="#loop">How it works</a></li><li><a href="#market">Market</a></li><li><a href="#homeland">Homeland</a></li></ul></div>
-    <div><h3 class="title-4">Town</h3><ul class="body-6"><li><a href="#friends">Friends</a></li><li><a href="#world">World</a></li><li><a href="#town">Around town</a></li><li><a href="#faq">Questions</a></li></ul></div>
-    <div><h3 class="title-4">Build</h3><ul class="body-6"><li><a href="https://github.com/leutenantKiya/Genesis-Town">GitHub</a></li><li><a href="https://testnet.nearblocks.io/address/game.genesistown.testnet">Contract</a></li><li><a href="https://gentown.my.id/">Play</a></li></ul></div>
-    <div class="footer__legal caption-5"><span>&copy; 2026 Genesis Town</span><span>Icons: Phosphor (MIT). Art from the game.</span></div>
+    <div class="footer__cols">
+      <div><h3>Play</h3><ul><li><a href="#loop">How it works</a></li><li><a href="#market">Market</a></li><li><a href="#homeland">Homeland</a></li></ul></div>
+      <div><h3>Town</h3><ul><li><a href="#friends">Friends</a></li><li><a href="#town">Around town</a></li><li><a href="#world">World</a></li><li><a href="#faq">Questions</a></li></ul></div>
+      <div><h3>Build</h3><ul><li><a href="https://github.com/leutenantKiya/Genesis-Town">GitHub</a></li><li><a href="https://testnet.nearblocks.io/address/game.genesistown.testnet">Contract</a></li><li><a href="https://gentown.my.id/">Play</a></li></ul></div>
+    </div>
+    <p class="footer__name" aria-hidden="true">Genesis Town</p>
+    <p class="footer__legal"><span>&copy; 2026 Genesis Town. A pixel art market town on NEAR testnet.</span><span>Icons: Phosphor (MIT). Every picture is the game’s own art.</span></p>
   </div>
 </footer>
 

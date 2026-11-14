@@ -31,7 +31,7 @@
   }
 
   /* ---- nav: the current section is marked; the phone menu opens as a full panel */
-  var toggle = $('.nav__toggle'), menu = $('#menu');
+  var toggle = $('.bar__toggle'), menu = $('#menu');
   function openMenu(on) {
     toggle.setAttribute('aria-expanded', String(on)); toggle.setAttribute('aria-label', on ? 'Close the menu' : 'Open the menu');
     menu.classList.toggle('is-open', on); menu.setAttribute('aria-hidden', String(!on)); document.body.style.overflow = on ? 'hidden' : '';
@@ -39,7 +39,7 @@
   toggle.addEventListener('click', function () { openMenu(toggle.getAttribute('aria-expanded') !== 'true'); });
   $$('a', menu).forEach(function (a) { a.addEventListener('click', function () { openMenu(false); }); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && menu.classList.contains('is-open')) { openMenu(false); toggle.focus(); } });
-  var navLinks = $$('.nav__links a');
+  var navLinks = $$('.bar__links a');
   if ('IntersectionObserver' in window) {
     var secIO = new IntersectionObserver(function (es) {
       es.forEach(function (e) {
@@ -55,6 +55,14 @@
   if ('IntersectionObserver' in window) {
     var rvIO = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); rvIO.unobserve(e.target); } }); }, { rootMargin: '0px 0px -10% 0px' });
     rvs.forEach(function (el) { rvIO.observe(el); });
+    // a fast scroll can jump past a part without it ever crossing the line: anything above the fold's foot shows
+    var rvTick = 0;
+    window.addEventListener('scroll', function () {
+      if (rvTick) return; rvTick = requestAnimationFrame(function () {
+        rvTick = 0; var h = innerHeight;
+        rvs.forEach(function (el) { if (!el.classList.contains('is-in') && el.getBoundingClientRect().top < h) { el.classList.add('is-in'); rvIO.unobserve(el); } });
+      });
+    }, { passive: true });
   } else rvs.forEach(function (el) { el.classList.add('is-in'); });
 
   /* ---- tagline: each word lights as it crosses a line 60% down the screen, in reading order */
@@ -158,7 +166,7 @@
     $('[data-shelf]').innerHTML = m.items.filter(function (i) { return NAME[i.token]; }).map(function (i) {
       var w = i.target ? Math.min(1, i.stock / i.target) : 0;
       return '<tr><th scope="row"><span class="good"><img class="px" src="img/item-' + i.token + '.png" width="48" height="48" alt="">' + NAME[i.token] + '</span></th>' +
-        '<td><span class="stock"><span class="bar"><i style="--w:' + w.toFixed(2) + '"></i></span><span class="num">' + i.stock + '/' + i.target + '</span></span></td>' +
+        '<td><span class="stock"><span class="meter"><i style="--w:' + w.toFixed(2) + '"></i></span><span class="num">' + i.stock + '/' + i.target + '</span></span></td>' +
         '<td class="num">' + (i.ask != null ? i.ask : '<span class="muted">&ndash;</span>') + '</td><td class="num">' + (i.bid != null ? i.bid : '<span class="muted">&ndash;</span>') + '</td></tr>';
     }).join('');
     if (animate && !still) { shelf.classList.remove('is-swap'); void shelf.offsetWidth; shelf.classList.add('is-swap'); }
@@ -265,8 +273,8 @@
         else if (b.bid != null) { p = b.bid; chg = COPY.sell; }
       }
       var lit = k === recipe || r.in[k] ? ' class="lit"' : '';
-      return '<li' + lit + '><img class="px" src="img/item-' + k + '.png" width="48" height="48" alt=""><span class="title-3">' + NAME[k] + '</span><p class="body-6">' + WHO[k] + '</p>' +
-        '<span class="board__v"><b>' + p + '<small>coin</small></b><span class="chg caption-4 ' + cls + '">' + chg + '</span></span></li>';
+      return '<li' + lit + '><img class="px" src="img/item-' + k + '.png" width="48" height="48" alt=""><span class="nm">' + NAME[k] + '</span><p>' + WHO[k] + '</p>' +
+        '<span class="board__v"><b>' + p + '<small>coin</small></b><span class="chg ' + cls + '">' + chg + '</span></span></li>';
     }).join('');
   }
   function paintCalc(animate) {
@@ -288,11 +296,43 @@
   });
   paintCalc(false);
 
+  /* ---- town: the building viewer */
+  var BLD = {
+    square: ['The square', 'A fountain in the middle, the four shopkeepers’ stalls along one side and players’ stalls along the other, with benches to sit on and the stage where a band plays every night.'],
+    board: ['Leaderboard', 'A board on the square’s east edge lists the best traders of the day and of all time. Walk up to it or click it to read.'],
+    mall: ['Genesis Mall', '28 outfits, hats and capes in seven slots, from 20 to 400 coin, and everyone sees what you wear. Work gloves, boots and a hard hat also make your workers faster.'],
+    news: ['News Hall', 'The town’s notice board and its news. It is where to read what changed in town today.'],
+    casino: ['Genesis Casino', 'A pass lets you in for 30 minutes to the Luck Table, slots, dice and cards. Chips are bought with coin, and what you win is chips and titles that never turn back into coin.'],
+    mine: ['Public Mine', 'A mine beside a public forest and rock field, so new players can gather from the first day, before their own islands open up.']
+  };
+  var vTabs = $('.viewer__tabs'), vText = $('[data-bld-text]');
+  if (vTabs) { var selBld = tabs(vTabs, function (b) {
+    var k = b.getAttribute('data-bld'); selBld(b);
+    $$('[data-bld-pic]').forEach(function (i) { i.classList.toggle('on', i.getAttribute('data-bld-pic') === k); });
+    vText.innerHTML = '<h3>' + BLD[k][0] + '</h3><p>' + BLD[k][1] + '</p>';
+    if (!still) { vText.classList.remove('swap'); void vText.offsetWidth; vText.classList.add('swap'); }
+  }); }
+
+  /* ---- homeland: what the next island asks for (economy/config.json homeland.chunks) */
+  var ISLES = [
+    { th: 1, cost: { wood: 10 }, secs: 30 }, { th: 2, cost: { wood: 25, coin: 20 }, secs: 90 }, { th: 2, cost: { wood: 40, ore: 10, coin: 40 }, secs: 180 },
+    { th: 3, cost: { wood: 60, ore: 20, coin: 80 }, secs: 300 }, { th: 3, cost: { wood: 80, ore: 30, coin: 120 }, secs: 450 },
+    { th: 4, cost: { wood: 110, ore: 45, coin: 200 }, secs: 600 }, { th: 4, cost: { wood: 150, ore: 60, coin: 300 }, secs: 900 }, { th: 5, cost: { wood: 200, ore: 80, coin: 450 }, secs: 1200 }
+  ];
+  var range = $('[data-isle-range]');
+  function paintIsle() {
+    var n = +range.value, d = ISLES[n - 1];
+    $('[data-isle-open]').textContent = n; $('[data-isle-th]').textContent = d.th;
+    $('[data-isle-cost]').textContent = Object.keys(d.cost).map(function (k) { return d.cost[k] + ' ' + k; }).join(', ');
+    $('[data-isle-time]').textContent = d.secs < 60 ? d.secs + ' seconds' : (d.secs / 60) + ' minutes';
+  }
+  if (range) { range.addEventListener('input', paintIsle); paintIsle(); }
+
   /* ---- live: the clock and the settled day, the shelves and the middle prices */
   function hour() { return live.time ? (live.time.hour + (Date.now() - live.at) / 60000) % 24 : null; }
   function paintClock() {
     var t = live.time, h = hour(); if (!t) return;
-    $('[data-now-text]').textContent = 'In town now: ' + SEASON[t.season] + ', day ' + (t.dayOfSeason || 1) + ', ' + hhmm(h);
+    $('[data-now-text]').textContent = 'In town now: ' + SEASON[t.season] + ', day ' + (t.dayOfSeason || 1) + ', ' + hhmm(h) + '.';
     var mark = $('[data-day-now]'); mark.hidden = false; mark.style.setProperty('--h', (h / 24).toFixed(4));
     $('[data-day-now-text]').textContent = 'Now ' + hhmm(h) + ' in town';
     if (t.settledThrough != null) $('[data-settled]').textContent = 'Saved on NEAR through game day ' + t.settledThrough;
