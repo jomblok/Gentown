@@ -759,3 +759,35 @@ h2 { line-height: .95; }
 .brand__rest { min-width: 0; overflow: hidden; white-space: nowrap; }
 .brand .brand__logo { width: auto; height: 42px; }
 @media (max-width: 380px) { .brand .brand__logo { height: 38px; } }
+
+/* ---- the bar as a floating pill: centred, sized to its content, the hero's world runs up behind it */
+.bar { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: transparent; padding: 12px var(--m) 0; pointer-events: none; }
+.bar__in { pointer-events: auto; width: max-content; max-width: 100%; height: 60px; margin: 0 auto; padding: 0 8px 0 18px; gap: 6px; border-radius: 999px;
+  background: var(--s2); transition: background-color .4s var(--ease); }
+.bar__links { margin-left: 18px; gap: 2px; }
+.bar__links a { padding: 8px 12px; font-size: 15px; }
+.bar__links a:hover, .bar__links a[aria-current] { background: var(--s3); }
+.bar__cta { margin-left: 8px; }
+.bar .theme { width: 40px; height: 40px; background: var(--s3); }
+.bar .bar__toggle { width: 40px; height: 40px; background: var(--s3); }
+@media (max-width: 1179px) {
+  .bar__in { width: 100%; justify-content: space-between; padding: 0 8px 0 14px; }
+  .bar__links, .bar .theme { display: none; }
+  .bar__toggle { display: grid; }
+  .menu { display: flex; inset: 84px 0 0; }
+  .bar__cta { margin-left: auto; }
+}
+@media (min-width: 1180px) { .bar__toggle { display: none; } .menu { display: none; } }
+/* the hero starts at the very top, under the pill */
+.stage { height: 100svh; max-height: 1160px; }
+@media (max-width: 767px) { .stage { height: 100svh; min-height: 680px; } }
+.hero__copy { padding-top: calc(84px + clamp(24px, 5vh, 64px)); }
+html { scroll-padding-top: 92px; }
+@media (max-width: 559px) {
+  .bar { padding: 10px 12px 0; }
+  .bar__in { height: 56px; padding: 0 6px 0 12px; gap: 4px; }
+  .brand .brand__logo { height: 36px; }
+  .brand__rest { font-size: 19px; padding-bottom: 5px; overflow: visible; text-overflow: clip; }
+  .bar__cta { padding: 8px 14px; font-size: 15px; min-height: 40px; }
+  .menu { inset: 76px 0 0; }
+}
