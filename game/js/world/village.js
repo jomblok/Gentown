@@ -36,6 +36,12 @@
     "Kantor Makelar": "Broker's Office",
     "Kantor Pos": "Post Office",
     "Warung Kopi": "Coffee Shop",
+    "Mall Genesis": "Genesis Mall",
+    "Kasino Genesis": "Genesis Casino",
+    "Balai Berita": "News Hall",
+    "Tambang Umum": "Public Mine",
+    "Hutan Umum. Kayu untuk semua orang; bawa Kapak.": "Public Forest. Wood for everyone; bring an Axe.",
+    "Tambang Umum. Bijih untuk semua orang; bawa Beliung.": "Public Mine. Ore for everyone; bring a Pickaxe.",
     "Lapak pemain. Pasang daganganmu lewat Pasar.": "Player stall. List your goods through the Market.",
     "Air mancur Pasar Genesis. Airnya jernih dan dingin.": "Genesis Market fountain. The water is clear and cold.",
     "Pasar Genesis. Pedagang berjualan di sini setiap hari.": "Genesis Market. Merchants sell here every day.",
@@ -43,7 +49,7 @@
     "Komedi putar. Kudanya berputar pelan, siang dan malam.": "Carousel. The horses turn slowly, day and night.",
     "Kolam teratai. Katak-katak suka duduk di lumpurnya.": "Lotus pond. Frogs like to sit in its mud.",
     "Meja teras Warung Kopi. Duduk santai sambil ngopi.": "Coffee Shop terrace table. Sit back and enjoy a coffee.",
-    "Tambang Utara. Bijih di bebatuan; bawa Alat.": "North Mine. Ore in the rocks; bring a Tool.",
+    "Tambang Utara. Bijih di bebatuan; bawa Beliung.": "North Mine. Ore in the rocks; bring a Pickaxe.",
     " belum bisa dicapai: jembatannya belum ada. Bahan untuk {0} dikumpulkan di Balai Desa.": " can't be reached yet: the bridge isn't built. Materials for {0} are collected at the Town Hall.",
     " belum dibuka.": " isn't open yet.",
     "Cerah": "Clear",
@@ -54,7 +60,8 @@
   };
   var $t = root.$t || function (k, v) { var s = EN_TEXT[k] || k; return v ? s.replace(/\{(\d+)\}/g, function (m, i) { return v[i]; }) : s; };
 
-  var CH = 32, NC = 3, W = CH * NC, H = CH * NC, VERSION = 2;
+  var CH = 32, NC = 3, W = CH * NC, H = CH * NC, VERSION = 3;
+  var HOUSE_LOOKS = 12; // house looks in sprites.js (HOUSE_STYLES); the generator picks among all of them
 
   /* ---------------------------------------------------------------- PRNG and noise (deterministic everywhere) */
   function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
@@ -107,6 +114,7 @@
   /* ---------------------------------------------------------------- generator */
   function tryGen(seed, att, unlocked) {
     var R = makeR((seed + att * 7919) >>> 0), ns = (seed ^ 0x51f15e) >>> 0;
+    var LR = R; // the random stream that lot and area scoring draws from (swapped for the version 3 additions, see below)
     var tiles = new Array(W * H).fill('grass');
     var res = new Uint8Array(W * H); // 1 = reserved (roads, buildings, plaza, farm)
     var info = {}; // tile index -> text
@@ -188,21 +196,21 @@
       }
       return true;
     }
-    function stubLen(dx, y) { for (var k = 1; k <= 5; k++) { var t = get(dx, y + k); if (t === 'path' || t === 'plaza') return k; if (!free(dx, y + k)) return -1; } return -1; }
-    function lots(w, h, chunks, scoreFn) {
+    function stubLen(dx, y, max) { for (var k = 1; k <= (max || 5); k++) { var t = get(dx, y + k); if (t === 'path' || t === 'plaza') return k; if (!free(dx, y + k)) return -1; } return -1; }
+    function lots(w, h, chunks, scoreFn, maxStub) {
       var out = [], bx0 = W, by0 = H, bx1 = 0, by1 = 0;
       CHUNKS.forEach(function (c) { if (chunks.indexOf(c.id) < 0) return; bx0 = Math.min(bx0, c.cx * CH); by0 = Math.min(by0, c.cy * CH); bx1 = Math.max(bx1, c.cx * CH + CH); by1 = Math.max(by1, c.cy * CH + CH); });
       for (var y0 = Math.max(2, by0); y0 < Math.min(H - h - 3, by1); y0++) for (var x0 = Math.max(2, bx0); x0 < Math.min(W - w - 2, bx1); x0++) {
         if (!fits(x0, y0, w, h, chunks)) continue;
-        var dx = x0 + (w >> 1), dy = y0 + h - 1, s = stubLen(dx, dy);
+        var dx = x0 + (w >> 1), dy = y0 + h - 1, s = stubLen(dx, dy, maxStub);
         if (s < 1) continue;
-        out.push({ x: x0, y: y0, dx: dx, dy: dy, stub: s, score: scoreFn(x0 + w / 2, y0 + h / 2) - s * 0.6 + R.f() * 2 });
+        out.push({ x: x0, y: y0, dx: dx, dy: dy, stub: s, score: scoreFn(x0 + w / 2, y0 + h / 2) - s * 0.6 + LR.f() * 2 });
       }
       out.sort(function (a, b) { return b.score - a.score; });
       return out;
     }
-    function place(kind, name, w, h, chunks, scoreFn, extra) {
-      var c = lots(w, h, chunks, scoreFn)[0];
+    function place(kind, name, w, h, chunks, scoreFn, extra, maxStub) {
+      var c = lots(w, h, chunks, scoreFn, maxStub)[0];
       if (!c) return null;
       var b = { kind: kind, name: name, x: c.x, y: c.y, w: w, h: h, dx: c.dx, dy: c.dy, chunk: chunkAtR(c.dx, c.dy).id };
       for (var k in extra || {}) b[k] = extra[k];
@@ -254,7 +262,7 @@
     });
 
     // the merchants' stalls along the square's north side, two by two (merchants stand behind, customers in front); the
-    // gap between the pairs holds the Titip Jual stall and the Papan Juara board (landmarks); lapak stalls for players
+    // gap between the pairs stays open and the Papan Juara board stands on the square's east edge (landmarks); lapak stalls for players
     // along the south side; the fountain in the middle with benches round it, a street lamp at each corner
     var stallColors = ['#e8503c', '#4a8ad8', '#e8a13c', '#58a858'], market = { stalls: [], lapak: [] };
     [plaza.x0 + 3, plaza.x0 + 5, plaza.x0 + 11, plaza.x0 + 13].forEach(function (sx, k) {
@@ -285,7 +293,7 @@
           if (!free(xx, yy) || chunks.indexOf(chunkAtR(xx, yy).id) < 0) good = false;
         }
         if (!good) continue;
-        var sc = scoreFn(x0 + w / 2, y0 + h / 2) + R.f();
+        var sc = scoreFn(x0 + w / 2, y0 + h / 2) + LR.f();
         if (!best || sc > best.sc) best = { x0: x0, y0: y0, x1: x0 + w - 1, y1: y0 + h - 1, sc: sc };
       }
       if (best) for (var y2 = best.y0; y2 <= best.y1; y2++) for (var x2 = best.x0; x2 <= best.x1; x2++) res[I(x2, y2)] = 1;
@@ -327,14 +335,99 @@
     linkToRoad(Math.round(pcx), pond.y1 + 1);
     // the warung terrace: two tables with a bench each on the free ground beside its door
     var terrace = [];
-    [[-2, 1], [2, 1], [-2, 3], [2, 3]].forEach(function (o) {
-      if (terrace.length >= 2) return;
-      var tx = warung.dx + o[0], ty = warung.dy + o[1];
-      if (!free(tx, ty) || !free(tx, ty + 1)) return;
-      tiles[I(tx, ty)] = 'table'; tiles[I(tx, ty + 1)] = 'bench'; res[I(tx, ty)] = 1; res[I(tx, ty + 1)] = 1;
-      info[I(tx, ty)] = $t('Meja teras Warung Kopi. Duduk santai sambil ngopi.');
-      terrace.push({ x: tx, y: ty }); benches.push({ x: tx, y: ty + 1 });
+    function buildTerrace(wb) {
+      terrace.length = 0;
+      [[-2, 1], [2, 1], [-2, 3], [2, 3]].forEach(function (o) {
+        if (terrace.length >= 2) return;
+        var tx = wb.dx + o[0], ty = wb.dy + o[1];
+        if (!free(tx, ty) || !free(tx, ty + 1)) return;
+        tiles[I(tx, ty)] = 'table'; tiles[I(tx, ty + 1)] = 'bench'; res[I(tx, ty)] = 1; res[I(tx, ty + 1)] = 1;
+        info[I(tx, ty)] = $t('Meja teras Warung Kopi. Duduk santai sambil ngopi.');
+        terrace.push({ x: tx, y: ty }); benches.push({ x: tx, y: ty + 1 });
+      });
+    }
+    buildTerrace(warung);
+
+    /* --- version 3: more public buildings (Mall, Casino, News Hall, Public Mine) and two grinding grounds for new players
+       (a dense public forest, a public mine field). They draw from their own random stream and are placed after everything
+       above, so no earlier building, lane or area moves. */
+    LR = makeR(((seed ^ 0x3a11b) + att * 104729) >>> 0);
+    /* Public buildings keep apart. The first four (hall, broker, post, warung) were placed above and the houses and fun spots were laid out
+       round them, so the Town Hall stays and a crowded broker, post or warung is MOVED further down instead (own random stream, nothing
+       drawn from R: every house, lane, pond and the mine stay where they were). A lot within SPREAD tiles of another public building scores
+       lower the closer it is, so the new buildings (Mall, casino, news hall, public mine) spread out round the village with gaps too. */
+    var wide = core.concat(['ladang', 'hutan']);
+    var SPREAD = 18, CROWDED = 14, pubs = buildings.filter(function (b) { return b.kind !== 'house'; });
+    function cen(b) { return { x: b.x + b.w / 2, y: b.y + b.h / 2 }; }
+    function spreadFn(fn, self) {
+      return function (x, y) {
+        var sc = fn(x, y), far = Math.abs(x - px) + Math.abs(y - py);
+        if (far > 26) sc -= (far - 26) * 6; // a public building is never far from the square
+        pubs.forEach(function (o) { if (o === self) return; var c = cen(o), d = Math.abs(x - c.x) + Math.abs(y - c.y); if (d < SPREAD) sc -= (SPREAD - d) * 1.6; });
+        return sc;
+      };
+    }
+    function placeP(kind, name, w, h, chunks, fn) { var b = place(kind, name, w, h, chunks, spreadFn(fn), null, 14); if (b) pubs.push(b); return b; } // a longer lane to the door is fine: more lots to spread over
+    var midx = Math.round((own.dx + px) / 2);
+    if (!placePub('mall', $t('Mall Genesis'), 5, 4, near(px, plaza.y0 - 3, 8))) return null;
+    if (!placePub('casino', $t('Kasino Genesis'), 4, 4, near(px + 7, ry + 5, 9))) return null;
+    if (!placePub('papan', $t('Balai Berita'), 4, 3, near(px - 7, py - 2, 9))) return null;
+    var tpub = placePub('tambangpub', $t('Tambang Umum'), 3, 3, near(midx, ry + 9, 5));
+    if (!tpub) return null;
+    var grind = { forest: null, mine: null };
+    // the public mine field: sand round the Tambang Umum, rocks left and right of straight lanes (every rock has a lane beside it)
+    (function () {
+      var x0 = tpub.x - 5, x1 = tpub.x + tpub.w + 4, y0 = tpub.y - 2, y1 = tpub.y + tpub.h + 3, x, y;
+      for (y = y0; y <= y1; y++) for (x = x0; x <= x1; x++) {
+        if (!free(x, y) || wide.indexOf(chunkAtR(x, y).id) < 0) continue;
+        tiles[I(x, y)] = 'sand'; // sand is not SOFT: the nature pass leaves it alone
+        var frontOfDoor = y > tpub.dy && Math.abs(x - tpub.dx) <= 1;
+        if (x % 3 !== 0 && y % 4 !== 0 && !frontOfDoor && hash3(x, y, ns + 41) < 0.86) tiles[I(x, y)] = 'rock';
+      }
+      grind.mine = { x0: x0, y0: y0, x1: x1, y1: y1, door: { x: tpub.dx, y: tpub.dy } };
+      var sx = tpub.dx + 2, sy = tpub.dy + 1;
+      if (inb(sx, sy) && tiles[I(sx, sy)] !== 'rock' && !res[I(sx, sy)]) { tiles[I(sx, sy)] = 'sign'; res[I(sx, sy)] = 1; info[I(sx, sy)] = $t('Tambang Umum. Bijih untuk semua orang; bawa Beliung.'); }
+    })();
+    // the public forest: 9 x 8, tree rows between walking lanes (every third column, the middle row, the bottom row), a lane out to the road
+    var forest = area(9, 8, wide, function (x, y) { return -(Math.abs(x - px) + Math.abs(y - py)); });
+    if (!forest) return null;
+    for (y = forest.y0; y <= forest.y1; y++) for (x = forest.x0; x <= forest.x1; x++) {
+      var fl = (x - forest.x0) % 3 === 0 || y === forest.y0 + 3 || y === forest.y1, fr = hash3(x, y, ns + 43);
+      tiles[I(x, y)] = fl ? (fr < 0.1 ? 'flower' : 'grass') : (fr < 0.9 ? 'tree' : fr < 0.95 ? 'bush' : 'tallgrass');
+    }
+    linkToRoad(forest.x0, forest.y1 + 1);
+    grind.forest = { x0: forest.x0, y0: forest.y0, x1: forest.x1, y1: forest.y1, entry: { x: forest.x0, y: forest.y1 } };
+    if (free(forest.x0 + 1, forest.y1 + 1)) { tiles[I(forest.x0 + 1, forest.y1 + 1)] = 'sign'; res[I(forest.x0 + 1, forest.y1 + 1)] = 1; info[I(forest.x0 + 1, forest.y1 + 1)] = $t('Hutan Umum. Kayu untuk semua orang; bawa Kapak.'); }
+
+    // a crowded broker, post or warung moves to a free lot (last, so the new buildings above always get theirs first)
+    [['broker', near(px, py, 7)], ['post', near(px, py, 9)], ['warung', near(px, ry, 6)]].forEach(function (m) {
+      var b = buildings.filter(function (q) { return q.kind === m[0]; })[0]; if (!b) return;
+      var c = cen(b);
+      if (!pubs.some(function (o) { if (o === b) return false; var oc = cen(o); return Math.abs(c.x - oc.x) + Math.abs(c.y - oc.y) < CROWDED; })) return;
+      // lift it off the map, then look for a better lot; when there is none it goes back exactly where it was
+      var bi = buildings.indexOf(b), pi = pubs.indexOf(b), y, x;
+      buildings.splice(bi, 1); pubs.splice(pi, 1);
+      for (y = b.y; y < b.y + b.h; y++) for (x = b.x; x < b.x + b.w; x++) res[I(x, y)] = 0;
+      function gap(cx, cy) { var g = 1e9; pubs.forEach(function (o) { var c2 = cen(o); g = Math.min(g, Math.abs(cx - c2.x) + Math.abs(cy - c2.y)); }); return g; }
+      var here = gap(c.x, c.y), cand = null;
+      lots(b.w, b.h, wide, spreadFn(m[1], b), 16).some(function (l) { // the best lot that is clearly less crowded and still close to the square
+        var lx = l.x + b.w / 2, ly = l.y + b.h / 2;
+        if (Math.abs(lx - px) + Math.abs(ly - py) > 26 || gap(lx, ly) < here + 4) return false;
+        cand = l; return true;
+      });
+      if (!cand) { // nothing better: it stays exactly where it was
+        for (y = b.y; y < b.y + b.h; y++) for (x = b.x; x < b.x + b.w; x++) res[I(x, y)] = 1;
+        buildings.splice(bi, 0, b); pubs.splice(pi, 0, b); return;
+      }
+      var nb = place(b.kind, b.name, b.w, b.h, wide, function (x, y) { return -Math.abs(x - (cand.x + b.w / 2)) - Math.abs(y - (cand.y + b.h / 2)); }, null, 16); // exactly that lot
+      if (nb) pubs.push(nb);
+      if (b.kind === 'warung') { // its terrace moves with it
+        terrace.forEach(function (t) { [[t.x, t.y], [t.x, t.y + 1]].forEach(function (q) { tiles[I(q[0], q[1])] = 'grass'; res[I(q[0], q[1])] = 0; delete info[I(q[0], q[1])]; }); });
+        benches = benches.filter(function (bn) { return !terrace.some(function (t) { return bn.x === t.x && bn.y === t.y + 1; }); });
+        warung = nb; buildTerrace(nb);
+      }
     });
+    function placePub(kind, name, w, h, scoreFn) { return placeP(kind, name, w, h, wide, scoreFn); } // core and the neighbouring areas compete in one list, so the spread decides
 
     /* --- nature */
     var mine = null;
@@ -366,7 +459,7 @@
       }
       if (best) line(mx, my + 3, best.x, best.y, false);
       var sx = mx + 1, sy = my + 4;
-      if (free(sx, sy)) { set(sx, sy, 'sign'); info[I(sx, sy)] = $t('Tambang Utara. Bijih di bebatuan; bawa Alat.'); res[I(sx, sy)] = 1; }
+      if (free(sx, sy)) { set(sx, sy, 'sign'); info[I(sx, sy)] = $t('Tambang Utara. Bijih di bebatuan; bawa Beliung.'); res[I(sx, sy)] = 1; }
     })();
     // the pond in Ladang Barat with a sandy shore
     (function () {
@@ -381,6 +474,20 @@
         return;
       }
     })();
+    // the island in the south-east corner is cut off by a wide band of water: the top rows of the 'danau' chunk are lake, so the mainland's
+    // shore and the island's north tip are 4+ tiles apart (no random numbers used; reserved tiles, i.e. roads and buildings, stay)
+    // (the band also cuts the map's tree ring on the east edge, so no line of trees joins the island's north-east corner to the mainland)
+    for (y = 2 * CH; y < 2 * CH + 4; y++) for (x = 1; x < W; x++) {
+      if (!res[I(x, y)] && chunkAtR(x, y).id === 'danau') tiles[I(x, y)] = 'water';
+    }
+    // the island's three west columns are water too, so the little islet of Rawa/Padang shore south-west of it is 3+ tiles of water away
+    for (y = 2 * CH + 4; y < H - 1; y++) for (x = 2 * CH; x < 2 * CH + 3; x++) {
+      if (!res[I(x, y)]) tiles[I(x, y)] = 'water';
+    }
+    // and the island's last two columns by the east edge are water too, so the tree ring there is an edge, not a shore it is joined to
+    for (y = 2 * CH + 4; y < H - 1; y++) for (x = W - 3; x < W - 1; x++) {
+      if (!res[I(x, y)] && chunkAtR(x, y).id === 'danau') tiles[I(x, y)] = 'water';
+    }
     // sandy spots along the river banks (fishing places)
     for (y = 2; y < H - 2; y++) {
       [river[y].x0 - 1, river[y].x1 + 1].forEach(function (bx) { if (!res[I(bx, y)] && SOFT[tiles[I(bx, y)]] && hash3(bx, y, ns + 5) < 0.45) tiles[I(bx, y)] = 'sand'; });
@@ -414,7 +521,7 @@
     }
     // border ring of trees
     for (x = 0; x < W; x++) { tiles[I(x, 0)] = 'tree'; tiles[I(x, H - 1)] = 'tree'; }
-    for (y = 0; y < H; y++) { tiles[I(0, y)] = 'tree'; tiles[I(W - 1, y)] = 'tree'; }
+    for (y = 0; y < H; y++) { tiles[I(0, y)] = 'tree'; if (!(y >= 2 * CH && y < 2 * CH + 4)) tiles[I(W - 1, y)] = 'tree'; }
 
     /* --- spawn and validation */
     var spawn = { x: own.dx, y: own.dy + 1 };
@@ -437,6 +544,13 @@
       if (ok(x - 1, y) || ok(x + 1, y) || ok(x, y - 1) || ok(x, y + 1)) spots[t]++;
     }
     if (spots.water < 12 || spots.rock < 8 || spots.tree < 30) return null;
+    // the grinding grounds must be reachable and really hold rocks / trees you can stand next to
+    if (!ok(grind.forest.entry.x, grind.forest.entry.y) || !ok(grind.mine.door.x, grind.mine.door.y + 1)) return null;
+    var gp = { tree: 0, rock: 0 };
+    for (y = grind.forest.y0; y <= grind.forest.y1; y++) for (x = grind.forest.x0; x <= grind.forest.x1; x++) if (tiles[I(x, y)] === 'tree' && (ok(x - 1, y) || ok(x + 1, y) || ok(x, y - 1) || ok(x, y + 1))) gp.tree++;
+    for (y = grind.mine.y0; y <= grind.mine.y1; y++) for (x = grind.mine.x0; x <= grind.mine.x1; x++) if (tiles[I(x, y)] === 'rock' && (ok(x - 1, y) || ok(x + 1, y) || ok(x, y - 1) || ok(x, y + 1))) gp.rock++;
+    if (gp.tree < 25 || gp.rock < 15) return null;
+    grind.trees = gp.tree; grind.rocks = gp.rock;
 
     signs.forEach(function (s) {
       var lc = CHUNKS.filter(function (c) { return c.id === s.chunk; })[0], pj = lc.project && PROJECTS[lc.project];
@@ -444,12 +558,13 @@
     });
 
     var houseN = 0;
-    buildings.forEach(function (b, k) { b.id = k; b.open = isOpen(b.dx, b.dy); if (b.kind === 'house') b.houseNo = houseN++; });
+    // every house gets one of all the looks, by a hash of its lot (no random stream used: the layout above stays as it was)
+    buildings.forEach(function (b, k) { b.id = k; b.open = isOpen(b.dx, b.dy); if (b.kind === 'house') { b.houseNo = houseN++; b.style = Math.floor(hash3(b.x, b.y, ns + 77) * HOUSE_LOOKS); } });
     return {
       version: VERSION, seed: seed, attempt: att, w: W, h: H, chunk: CH, riverX1: rx1,
       tiles: tiles, info: info, buildings: buildings, market: market,
       farm: { plots: farm.plots, gate: farm.gate, x0: farm.x0, y0: farm.y0, x1: farm.x1, y1: farm.y1 },
-      plaza: plaza, mine: mine, spawn: spawn,
+      plaza: plaza, mine: mine, spawn: spawn, grind: grind,
       fun: { fountain: fountain, stage: stage, carousel: carousel, pond: pond, benches: benches, terrace: terrace }, river: { y: bridgeY, x0: river[bridgeY].x0, x1: river[bridgeY].x1 },
       chunks: CHUNKS.map(function (c) { return { id: c.id, name: c.name, cx: c.cx, cy: c.cy, biome: c.biome, open: c.open || unlocked.indexOf(c.id) >= 0, project: c.project || null }; }),
       projects: PROJECTS, spots: spots
@@ -619,15 +734,60 @@
     return L._ferry;
   }
 
-  // Fixed public-area spots next to the market, derived only from market.stalls (no RNG, no tile changed): the Titip Jual
-  // stall stands in the gap between the 2nd and 3rd merchant stall, the Papan Juara board just east of the last stall.
-  // Both are plaza tiles in the stall row; people stand in front (south) of them.
+  /* Where the ferry boat may sail: the open water tiles that join the two boat spots of ferryOf (4-connected). Shared by the browser
+     (what the boat can steer into) and the server (the positions a player aboard may report). */
+  function boatWater(L, x, y) {
+    if (L._boatw === undefined) {
+      var f = ferryOf(L), w = L.w, h = L.h, m = null;
+      if (f) {
+        m = new Uint8Array(w * h);
+        var q = [f.wa.x, f.wa.y, f.wb.x, f.wb.y], head = 0, d;
+        m[f.wa.y * w + f.wa.x] = 1; m[f.wb.y * w + f.wb.x] = 1;
+        while (head < q.length) {
+          var cx = q[head++], cy = q[head++];
+          for (d = 0; d < 4; d++) {
+            var nx = cx + (d === 0 ? 1 : d === 1 ? -1 : 0), ny = cy + (d === 2 ? 1 : d === 3 ? -1 : 0), ni = ny * w + nx;
+            if (nx < 0 || ny < 0 || nx >= w || ny >= h || m[ni] || L.tiles[ni] !== 'water' || !chunkOf(L, nx, ny).open) continue;
+            m[ni] = 1; q.push(nx, ny);
+          }
+        }
+      }
+      L._boatw = m;
+    }
+    return !!L._boatw && x >= 0 && y >= 0 && x < L.w && y < L.h && L._boatw[y * L.w + x] === 1;
+  }
+
+  /* Fishing spots (the ripples on the water): a water tile next to walkable land is a spot when a hash of the world's seed, its position
+     and the time bucket says so (about one in six). The bucket is FISH_HOURS game hours long, so a spot stays put for a while and then the
+     fish move on. Works on any layout with w, h, seed and tiles (the public village and every Homeland); the browser draws the ripples
+     from it and the server refuses to fish anywhere else. */
+  var FISH_HOURS = 6, FISH_CHANCE = 0.17;
+  function fishBucket(totalHours) { return Math.floor((+totalHours || 0) / FISH_HOURS); }
+  function fishSpot(L, x, y, bucket) {
+    var w = L.w, h = L.h;
+    if (x < 0 || y < 0 || x >= w || y >= h || L.tiles[y * w + x] !== 'water') return false;
+    var near = false;
+    for (var d = 0; d < 4 && !near; d++) {
+      var nx = x + (d === 0 ? 1 : d === 1 ? -1 : 0), ny = y + (d === 2 ? 1 : d === 3 ? -1 : 0);
+      if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+      var t = L.tiles[ny * w + nx];
+      near = !SOLID[t] && t !== 'void';
+    }
+    return near && hash3(x, y, ((L.seed | 0) ^ Math.imul(bucket | 0, 2654435761)) | 0) < FISH_CHANCE;
+  }
+
+  // Fixed public-area spots next to the market, derived only from market.stalls (no RNG, no tile changed): the Papan Juara
+  // board on the square's east edge, the Luck Table west of the first and the Mall door. All are plaza tiles in the
+  // stall row; people stand in front (south) of them.
   function landmarks(L) {
     var s = L.market.stalls, y = s[0].y;
     // the luck table (Meja Untung) two tiles west of the first stall
-    return { consign: { x: s[1].x + 1, y: y }, board: { x: s[s.length - 1].x + 1, y: y }, gamble: { x: s[0].x - 2, y: y }, mall: { x: s[s.length - 1].x + 3, y: y } };
+    // version 3: the Mall is a building, its door is the shop counter (stand on the tile in front of the door)
+    var mb = L.buildings.filter(function (b) { return b.kind === 'mall'; })[0];
+    var pz = L.plaza; // the Papan Juara board stands on the square's east edge, in the open and clear of the merchants' row
+    return { board: pz ? { x: pz.x1, y: pz.y0 + 3 } : { x: s[s.length - 1].x + 1, y: y }, gamble: { x: s[0].x - 2, y: y }, mall: mb ? { x: mb.dx, y: mb.dy } : { x: s[s.length - 1].x + 3, y: y } };
   }
 
-  var api = { VERSION: VERSION, landmarks: landmarks, W: W, H: H, CHUNK: CH, CHUNKS: CHUNKS, PROJECTS: PROJECTS, generate: generate, chunkOf: chunkOf, makeR: makeR, weather: weather, monstersAt: monstersAt, dockOf: dockOf, ferryOf: ferryOf };
+  var api = { VERSION: VERSION, landmarks: landmarks, W: W, H: H, CHUNK: CH, CHUNKS: CHUNKS, PROJECTS: PROJECTS, generate: generate, chunkOf: chunkOf, makeR: makeR, weather: weather, monstersAt: monstersAt, dockOf: dockOf, ferryOf: ferryOf, boatWater: boatWater, fishSpot: fishSpot, fishBucket: fishBucket };
   root.GTVillage = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

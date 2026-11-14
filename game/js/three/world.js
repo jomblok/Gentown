@@ -24,6 +24,10 @@
     // the public square's fountain, stage and carousel (village v2), and the butterflies, fireflies and frogs
     var fun = GT3.Fun && L.fun ? GT3.Fun(L) : null, life = GT3.Life ? GT3.Life(L) : null;
     if (fun) group.add(fun.group);
+    var boats = GT3.Boats ? GT3.Boats(L) : null; // the ferry boats at the public village's landings
+    if (boats) group.add(boats.group);
+    var crops = GT3.Crops ? GT3.Crops(L) : null; // the wheat on the farm plots, standing up (crops.js)
+    if (crops) group.add(crops.group);
     if (life) group.add(life.group);
     var buildings = (L.buildings || []).filter(function (b) { return !ground.locked(b.dx, b.dy); }).map(function (b) {
       var g = GT3.Building(b); group.add(g); return g;
@@ -48,6 +52,8 @@
         props.lights(px === undefined ? L.w / 2 : px, pz === undefined ? L.h / 2 : pz);
         if (fun) fun.update(t, night, world.concert(hour));
         if (life) life.update(t, night);
+        if (boats) boats.update(t);
+        if (crops) crops.update(t);
         buildings.forEach(function (g) { g.userData.glow(night * 1.4); if (g.userData.tick) g.userData.tick(t); });
       },
       setSeason: function (season, snowy) {

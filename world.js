@@ -26,7 +26,7 @@
   var me = document.currentScript, BASE = (me && me.getAttribute('data-game')) || '../';
   var FILES = ['vendor/three.js', 'js/sprites.js', 'js/art.js', 'js/buildings.js', 'js/world/village.js', 'js/world/homeland.js',
     'js/three/kit.js', 'js/three/ground.js', 'js/three/building.js', 'js/three/nature.js', 'js/three/props.js', 'js/three/actor.js',
-    'js/three/sky.js', 'js/three/fun.js', 'js/three/life.js', 'js/three/world.js'];
+    'js/three/rod.js', 'js/three/sky.js', 'js/three/rig.js', 'js/three/seethrough.js', 'js/three/fun.js', 'js/three/life.js', 'js/three/crops.js', 'js/three/world.js'];
   var SEASONS = ['semi', 'panas', 'gugur', 'dingin'], WORLD_SEED = 20261114, HOME_SEED = 1234567;
   var ALL = ['c', 'n', 'e', 's', 'w', 'ne', 'nw', 'se', 'sw'];
   var loading = null;

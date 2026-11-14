@@ -102,7 +102,9 @@
         hp.push({ geo: new THREE.BoxGeometry(0.12, 0.26, 0.14), matrix: GT3.xform(0, 0.98, 0.26, 1, 1, 1, 0, -0.5), color: hc[k] }); // neck and head
         hp.push({ geo: new THREE.BoxGeometry(0.17, 0.05, 0.2), matrix: GT3.xform(0, 0.93, -0.02), color: '#e8503c' });  // saddle
         [[-0.05, 0.16], [0.05, -0.16]].forEach(function (q) { hp.push({ geo: new THREE.BoxGeometry(0.05, 0.24, 0.05), matrix: GT3.xform(q[0], 0.6, q[1]), color: '#3a2418' }); });
-        var h = new THREE.Mesh(GT3.merge(hp), solid); h.position.set(hx, 0, hz); h.rotation.y = -ha; h.castShadow = true; spin.add(h); horses.push({ m: h, ph: k * 1.3 });
+        var h = new THREE.Mesh(GT3.merge(hp), solid); h.position.set(hx, 0, hz); h.rotation.y = Math.PI - ha;
+        // nose first: the ride turns by +y, so a horse at angle ha moves along (sin ha, -cos ha), and its head (+z) points that way
+        h.castShadow = true; spin.add(h); horses.push({ m: h, ph: k * 1.3 });
       }
       var cbp = [];
       for (k = 0; k < 16; k++) { var ba = k / 16 * Math.PI * 2; cbp.push({ geo: new THREE.BoxGeometry(0.09, 0.09, 0.09), matrix: GT3.xform(Math.cos(ba) * 1.66, 2.3, Math.sin(ba) * 1.66), color: '#ffffff' }); }
@@ -131,6 +133,39 @@
         });
       },
       face: function (camera) { band.forEach(function (a) { a.face(camera); }); }
+    };
+  };
+  /* The public ferry's ONE boat (GTVillage.ferryOf; mods/ferry.js says where it is, window.GT_FERRY.pos {x, y, yaw}: on its tile, or following
+     whoever steers it), as a wooden rowing boat with a plank seat, a pair of oars and a lantern on a post. It bobs on the water.
+     Returns { group, update(t) }. */
+  GT3.Boats = function (L) {
+    var group = new THREE.Group(), V = window.GTVillage, f = null;
+    group.name = 'boats';
+    try { f = V && V.ferryOf && L.market && L.market.stalls && L.market.stalls.length ? V.ferryOf(L) : null; } catch (e) { f = null; }
+    if (!f) return { group: group, update: function () {} };
+    var mat = GT3.mat({ vertexColors: true });
+    function model() {
+      var p = [], hull = '#9a6234', hullD = '#6a4020', rim = '#c8894a';
+      box(p, 1.12, 0.1, 0.5, 0, 0.02, 0, hullD); // keel and bottom
+      box(p, 1.0, 0.16, 0.5, 0, 0.1, 0, shaded(rim, hull, hullD));
+      box(p, 1.3, 0.14, 0.34, 0, 0.12, 0, shaded(rim, hull, hullD)); // the bow and stern stand a little wider
+      box(p, 0.08, 0.14, 0.5, 0.52, 0.2, 0, rim); box(p, 0.08, 0.14, 0.5, -0.52, 0.2, 0, rim); // rims across both ends
+      box(p, 0.08, 0.12, 0.54, 0.2, 0.2, 0, rim); box(p, 0.08, 0.12, 0.54, -0.2, 0.2, 0, rim);
+      box(p, 0.3, 0.05, 0.48, 0, 0.23, 0, '#e0bc80'); // the plank seat
+      box(p, 0.04, 0.5, 0.04, 0.5, 0.2, 0.0, '#5a3a1e'); box(p, 0.1, 0.1, 0.1, 0.5, 0.7, 0, '#ffd88a'); // lantern post
+      box(p, 0.6, 0.03, 0.04, -0.05, 0.27, 0.36, '#6a4020', 0.35); box(p, 0.6, 0.03, 0.04, -0.05, 0.27, -0.36, '#6a4020', -0.35); // oars
+      var g = new THREE.Group(), m = new THREE.Mesh(GT3.merge(p), mat); m.castShadow = true; m.receiveShadow = true; g.add(m); g.visible = false;
+      group.add(g); return g;
+    }
+    var one = model(), yaw0 = Math.atan2(f.a.x - f.wa.x, f.a.y - f.wa.y) + Math.PI / 2;
+    return {
+      group: group, boats: [one],
+      update: function (t) {
+        var S = window.GT_FERRY && window.GT_FERRY.pos, x = S ? S.x : f.wa.x, y = S ? S.y : f.wa.y;
+        one.visible = true;
+        one.position.set(x + 0.5, -0.2 + Math.sin(t * 2) * 0.016, y + 0.5);
+        one.rotation.set(Math.sin(t * 1.5) * 0.03, S ? S.yaw : yaw0, Math.cos(t * 1.8) * 0.04);
+      }
     };
   };
 })();
