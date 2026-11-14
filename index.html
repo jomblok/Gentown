@@ -15,7 +15,7 @@
 <meta name="theme-color" content="#f6f8fb" media="(prefers-color-scheme: light)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@600;700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css">
 <script>(function(){var d=document.documentElement,t;d.classList.add('js');try{t=localStorage.getItem('gt.theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';d.setAttribute('data-theme',t)})()</script>
 <script type="application/ld+json">
@@ -29,9 +29,10 @@
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
+<div class="progress" aria-hidden="true"><i data-progress></i></div>
 <header class="bar" id="nav">
   <div class="bar__in">
-    <a class="brand" href="#top" aria-label="Genesis Town, back to top"><img src="favicon.svg" width="24" height="24" alt="">Genesis Town</a>
+    <a class="brand" href="#top" aria-label="Genesis Town, back to top"><img src="favicon.svg" width="24" height="24" alt=""><span>Genesis Town</span></a>
     <nav class="bar__links" aria-label="Main">
       <a href="#loop">How it works</a>
       <a href="#market">Market</a>
@@ -88,6 +89,9 @@
           <button type="button" data-pause aria-pressed="false" aria-label="Pause the world"><svg class="ic ic-sm" aria-hidden="true"><use href="assets/icons/ph.svg#ph-pause"/></svg></button>
         </div>
       </div>
+    </div>
+    <div class="ticker" data-ticker data-ui role="region" aria-label="Prices in town right now">
+      <div class="ticker__track" data-ticker-track></div>
     </div>
   </section>
 
@@ -210,17 +214,25 @@
 
       <div class="lab" id="lab">
         <div class="lab__text rv">
-          <h3 class="h-sub">Why a price moves.</h3>
-          <p>Sarah likes to keep about 20 fish on ice. Move her stock and how busy her stall has been, and the game’s own pricing rule sets the price. In town the price walks there at most 10% per game hour.</p>
+          <h3 class="h-sub">Try moving a price yourself.</h3>
+          <p>No one sets prices in Genesis Town. Each shopkeeper works them out from their own shelf, every game hour. This is Sarah’s fish stall running the game’s real rule. Pick a moment, or drag the sliders.</p>
+          <div class="lab__presets" role="group" aria-label="Moments at Sarah’s stall">
+            <button type="button" class="chip" data-lab-preset="20,0" aria-pressed="true">A normal day</button>
+            <button type="button" class="chip" data-lab-preset="55,-15" aria-pressed="false">Fishers flooded her stall</button>
+            <button type="button" class="chip" data-lab-preset="4,0" aria-pressed="false">Nobody fished all day</button>
+            <button type="button" class="chip" data-lab-preset="20,18" aria-pressed="false">Busy market day</button>
+          </div>
           <div class="lab__ctl">
-            <label for="lab-stock">Fish on ice: <b data-lab-stock-v>20</b></label>
+            <label for="lab-stock">Fish Sarah has on ice: <b data-lab-stock-v>20</b></label>
             <input id="lab-stock" type="range" min="0" max="60" step="1" value="20" data-lab-stock>
+            <span class="lab__ends" aria-hidden="true"><span>None</span><span>She wants 20</span><span>60</span></span>
           </div>
           <div class="lab__ctl">
-            <label for="lab-dem">Lately players have been <b data-lab-dem-v>buying and selling evenly</b></label>
+            <label for="lab-dem">What players did lately: <b data-lab-dem-v>bought and sold evenly</b></label>
             <input id="lab-dem" type="range" min="-20" max="20" step="1" value="0" data-lab-dem>
+            <span class="lab__ends" aria-hidden="true"><span>Sold her fish</span><span>Bought her fish</span></span>
           </div>
-          <p class="lab__reason" data-lab-reason aria-live="polite">My fish stock is just right (20, target 20). Price steady.</p>
+          <p class="lab__reason" aria-live="polite"><span data-lab-sentence>A fish costs you 9 coin. Sarah pays 7 for yours.</span> <span class="lab__quote" data-lab-reason>Her shop window: “My fish stock is just right. Price steady.”</span></p>
         </div>
         <figure class="lab__fig panel rv" style="--d:1" data-ui>
           <svg class="lab__svg" viewBox="0 0 560 340" role="img" aria-label="Sarah’s fish price against her stock: the price falls as her stock grows" data-lab-svg></svg>
@@ -370,7 +382,7 @@
           <button type="button" role="tab" aria-selected="false" aria-controls="bld" tabindex="-1" data-bld="mine">Public Mine</button>
         </div>
         <div class="viewer__stage" id="bld" role="tabpanel" tabindex="0">
-          <figure class="viewer__pic">
+          <figure class="viewer__pic" data-tilt>
             <img class="on" data-bld-pic="square" src="img/square.webp" width="1200" height="800" alt="The village square at dusk: a fountain, striped market stalls, benches, lamps, the concert stage and the leaderboard on the east edge" loading="lazy">
             <img data-bld-pic="board" src="img/leaderboard.webp" width="960" height="640" alt="The leaderboard sign on the edge of the square, beside the market stalls" loading="lazy">
             <img data-bld-pic="mall" src="img/mall.webp" width="960" height="640" alt="The Genesis Mall: a cream building with a red tiled roof and shop windows full of clothes" loading="lazy">
@@ -497,10 +509,13 @@
 
   <!-- CLOSE: the same action as the hero, with the real starter kit -->
   <section class="final" aria-labelledby="final-h">
-    <div class="wrap">
+    <div class="wrap final__in">
+      <div class="final__text">
       <h2 id="final-h">Your islands are waiting.</h2>
       <p>Nothing to install and no wallet to set up. Sign in with Google and start with 100 coin, 3 bread and 3 wheat.</p>
       <a class="btn btn--primary btn--lg" href="https://gentown.my.id/">Play free in your browser<svg class="ic" aria-hidden="true"><use href="assets/icons/ph.svg#ph-arrow-right"/></svg></a>
+      </div>
+      <figure class="pic final__pic" data-tilt><img src="img/hero.webp" width="1600" height="590" alt="A Homeland of nine floating islands joined by plank bridges, waterfalls pouring into the clouds" loading="lazy"></figure>
     </div>
   </section>
 </main>
@@ -513,7 +528,7 @@
       <div><h3>Build</h3><ul><li><a href="https://github.com/leutenantKiya/Genesis-Town">GitHub</a></li><li><a href="https://testnet.nearblocks.io/address/game.genesistown.testnet">Contract</a></li><li><a href="https://gentown.my.id/">Play</a></li></ul></div>
     </div>
     <p class="footer__name" aria-hidden="true">Genesis Town</p>
-    <p class="footer__legal"><span>&copy; 2026 Genesis Town. A pixel art market town on NEAR testnet.</span><span>Icons: Phosphor (MIT). Every picture is the game’s own art.</span></p>
+    <p class="footer__legal"><span>&copy; 2026 Genesis Town. A pixel art market town on NEAR testnet.</span><span>Icons: Phosphor (MIT). Motion after Magic UI, Aceternity and Motion Primitives on 21st.dev (MIT). Every picture is the game’s own art.</span></p>
   </div>
 </footer>
 

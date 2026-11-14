@@ -190,7 +190,7 @@
   };
   var Q = { price: 'What’s fish worth today?', why: 'Why did the price move?', wood: 'Will you buy my wood?' };
   var log = $('[data-chat]'), busy = false;
-  function say(cls, text) { var li = document.createElement('li'); li.className = cls + ' new'; li.textContent = text; log.appendChild(li); while (log.children.length > 5) log.removeChild(log.firstChild); return li; }
+  function say(cls, text) { var li = document.createElement('li'); li.className = cls + ' new'; if (cls === 'them' && !still) { li.setAttribute('aria-label', text); li.innerHTML = text.split(' ').map(function (w, k) { return '<span class="w8" aria-hidden="true" style="--k:' + k + '">' + w.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</span>'; }).join(' '); } else li.textContent = text; log.appendChild(li); while (log.children.length > 5) log.removeChild(log.firstChild); return li; }
   $$('[data-ask]').forEach(function (b) {
     b.addEventListener('click', function () {
       if (busy) return; busy = true; var k = b.getAttribute('data-ask'), chips = $$('[data-ask]');
@@ -272,7 +272,7 @@
         if (b.ask != null) { p = b.ask; var pct = Math.round((p - BASE[k]) / BASE[k] * 100); chg = pct > 0 ? COPY.up(pct) : pct < 0 ? COPY.down(-pct) : COPY.base; cls = pct > 0 ? 'up' : pct < 0 ? 'down' : ''; }
         else if (b.bid != null) { p = b.bid; chg = COPY.sell; }
       }
-      var lit = k === recipe || r.in[k] ? ' class="lit"' : '';
+      var lit = (k === recipe || r.in[k] ? ' class="lit"' : '') + ' style="--n:' + Object.keys(BASE).indexOf(k) + '"';
       return '<li' + lit + '><img class="px" src="img/item-' + k + '.png" width="48" height="48" alt=""><span class="nm">' + NAME[k] + '</span><p>' + WHO[k] + '</p>' +
         '<span class="board__v"><b>' + p + '<small>coin</small></b><span class="chg ' + cls + '">' + chg + '</span></span></li>';
     }).join('');
@@ -309,7 +309,7 @@
   if (vTabs) { var selBld = tabs(vTabs, function (b) {
     var k = b.getAttribute('data-bld'); selBld(b);
     $$('[data-bld-pic]').forEach(function (i) { i.classList.toggle('on', i.getAttribute('data-bld-pic') === k); });
-    vText.innerHTML = '<h3>' + BLD[k][0] + '</h3><p>' + BLD[k][1] + '</p>';
+    vText.innerHTML = '<h3></h3><p>' + BLD[k][1] + '</p>'; window.scramble($('h3', vText), BLD[k][0]);
     if (!still) { vText.classList.remove('swap'); void vText.offsetWidth; vText.classList.add('swap'); }
   }); }
 
@@ -386,12 +386,14 @@
     for (var s = 0; s <= 60; s++) { var p = labPrice(s, net); a += (s ? 'L' : 'M') + x(s).toFixed(1) + ' ' + y(p.ask).toFixed(1); b += (s ? 'L' : 'M') + x(s).toFixed(1) + ' ' + y(p.bid).toFixed(1); }
     for (var s2 = 60; s2 >= 0; s2--) band += 'L' + x(s2).toFixed(1) + ' ' + y(labPrice(s2, net).bid).toFixed(1);
     el('path', { d: a + band + 'Z', class: 'band' }, labSvg);
-    el('path', { d: b, class: 'bid' }, labSvg); el('path', { d: a, class: 'ask' }, labSvg);
+    el('path', { d: b, class: 'bid' }, labSvg); el('path', { d: a, class: 'ask', pathLength: 1 }, labSvg);
     var now = labPrice(stock, net);
     el('circle', { cx: x(stock), cy: y(now.bid), r: 7, class: 'pt2' }, labSvg);
     el('circle', { cx: x(stock), cy: y(now.ask), r: 9, class: 'pt' }, labSvg);
     $('[data-lab-stock-v]').textContent = stock;
-    $('[data-lab-dem-v]').textContent = net > 2 ? 'buying fish from her' : net < -2 ? 'selling fish to her' : 'buying and selling evenly';
+    $('[data-lab-dem-v]').textContent = net > 2 ? 'bought her fish' : net < -2 ? 'sold her fish' : 'bought and sold evenly';
+    $('[data-lab-sentence]').textContent = 'A fish costs you ' + now.ask + ' coin. Sarah pays ' + now.bid + ' for yours.';
+    $$('[data-lab-preset]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-lab-preset') === stock + ',' + net)); });
     tick($('[data-lab-ask]'), now.ask); tick($('[data-lab-bid]'), now.bid);
     var pct = Math.round((now.mid - LAB.base) / LAB.base * 100), pe = $('[data-lab-pct]');
     pe.textContent = pct > 0 ? pct + '% over' : pct < 0 ? -pct + '% under' : 'Usual'; pe.className = pct > 0 ? 'up' : pct < 0 ? 'down' : '';
@@ -399,49 +401,54 @@
     if (se < 0.03 && de < 0.03) why = 'My fish stock is just right (' + stock + ', target 20).';
     else if (se >= de) why = now.fs < 1 ? 'My fish stock is ' + stock + ', target 20.' : 'My fish stock is down to ' + stock + ', target 20.';
     else why = now.fd > 1 ? 'Lots of people have been buying fish lately.' : 'Lots of people have been selling fish to me lately.';
-    $('[data-lab-reason]').textContent = '“' + why + ' ' + (pct > 0 ? 'Price up.' : pct < 0 ? 'Price down.' : 'Price steady.') + '” Sarah, in the shop window';
+    $('[data-lab-reason]').textContent = 'Her shop window: “' + why + ' ' + (pct > 0 ? 'Price up.' : pct < 0 ? 'Price down.' : 'Price steady.') + '”';
   };
-  if (labS) { labS.addEventListener('input', window.paintLab); labD.addEventListener('input', window.paintLab); window.paintLab(); }
+  if (labS) {
+    labS.addEventListener('input', window.paintLab); labD.addEventListener('input', window.paintLab);
+    $$('[data-lab-preset]').forEach(function (b) { b.addEventListener('click', function () { var v = b.getAttribute('data-lab-preset').split(','); labS.value = v[0]; labD.value = v[1]; window.paintLab(); }); });
+    window.paintLab();
+  }
 
   /* ---- the coin flow: nodes and flows from the game's economy (README, docs/economy.md §3a); two layouts, wide and tall */
   var FN = {
-    treasury: { n: 'Town treasury', sub: 'fees land here', w: [30, 30, 190, 68], t: [16, 16, 158, 64],
+    treasury: { n: 'Town treasury', sub: 'fees land here', w: [30, 30, 190, 68], t: [16, 20, 150, 60],
       text: 'Holds the town’s coin. Crafting fees from players and shopkeepers land here, and it hands coin to the townsfolk while it holds more than 2,000.' },
-    faucet: { n: 'Coin faucet', sub: 'capped per day', w: [30, 342, 190, 68], t: [186, 16, 158, 64],
+    faucet: { n: 'Coin faucet', sub: 'capped per day', w: [30, 342, 190, 68], t: [194, 20, 150, 60],
       text: 'The only place new coin is made. The contract mints a capped amount each day, and only when the treasury cannot cover the townsfolk.' },
-    folk: { n: 'Townsfolk', sub: 'one shared wallet', w: [280, 186, 180, 68], t: [101, 166, 158, 64],
+    folk: { n: 'Townsfolk', sub: 'one shared wallet', w: [280, 186, 180, 68], t: [105, 150, 150, 60],
       text: 'Dewi, Agus, Rina, Bayu and Intan walk the village for everyone and buy finished goods at the stalls. That is how new coin reaches the market.' },
-    shops: { n: 'Shopkeepers', sub: 'Sarah, Ben, Wendy, Jack', w: [520, 186, 190, 68], t: [101, 316, 158, 64],
+    shops: { n: 'Shopkeepers', sub: 'Sarah, Ben, Wendy, Jack', w: [520, 186, 190, 68], t: [105, 290, 150, 60],
       text: 'They buy your raw goods and sell you food, goods and tools, pricing each from their own shelf. They also buy cheap listings on the player market.' },
-    players: { n: 'Players', sub: 'you and your friends', w: [770, 186, 170, 68], t: [101, 466, 158, 64],
+    players: { n: 'Players', sub: 'you and your friends', w: [770, 186, 170, 68], t: [105, 430, 150, 60],
       text: 'You earn coin by selling raw goods to the shops and to other players, and spend it on food, tools, repairs and fees.' },
-    market: { n: 'Player market', sub: 'held in the contract', w: [770, 342, 170, 68], t: [16, 626, 158, 64],
+    market: { n: 'Player market', sub: 'held in the contract', w: [770, 342, 170, 68], t: [16, 590, 150, 60],
       text: 'Players sell to each other at their own price, named on the Stalls or anonymous on the Black Market. Goods wait in the contract until someone buys.' },
-    burn: { n: 'Burned', sub: 'gone for good', w: [520, 342, 190, 68], t: [186, 626, 158, 64],
+    burn: { n: 'Burned', sub: 'gone for good', w: [520, 342, 190, 68], t: [194, 590, 150, 60],
       text: 'Five percent of every player market sale is burned, so coin leaves the game as it is used and prices keep their meaning.' }
   };
   var FE = [
-    { a: 'treasury', b: 'folk', l: 'handouts above 2,000', w: 'M220 64 C 280 64 300 120 345 186', t: 'M95 80 C 95 120 150 130 160 166', lw: [282, 104], lt: [8, 128] },
-    { a: 'faucet', b: 'folk', l: 'new coin', k: 'new', w: 'M220 376 C 280 376 300 320 345 254', t: 'M265 80 C 265 120 210 130 200 166', lw: [270, 352], lt: [240, 128] },
-    { a: 'folk', b: 'shops', l: 'buy finished goods', w: 'M460 220 L 520 220', t: 'M180 230 L 180 316', lw: [490, 172], lt: [188, 278], aw: 'middle' },
-    { a: 'shops', b: 'players', l: 'pay for raw goods', w: 'M710 206 L 770 206', t: 'M165 380 L 165 466', lw: [700, 172], lt: [16, 428] },
-    { a: 'players', b: 'shops', l: 'buy food and tools', w: 'M770 236 L 710 236', t: 'M195 466 L 195 380', lw: [700, 276], lt: [204, 428] },
-    { a: 'players', b: 'treasury', l: 'crafting fees', w: 'M855 186 C 855 40 420 30 220 40', t: 'M101 498 C 0 498 0 120 40 80', lw: [560, 46], lt: [6, 300] },
-    { a: 'shops', b: 'treasury', l: '', w: 'M615 186 C 615 100 380 70 220 74', t: 'M101 348 C 30 348 30 120 60 80', lw: [0, 0], lt: [0, 0] },
-    { a: 'players', b: 'market', l: 'sell to each other', w: 'M855 254 L 855 342', t: 'M150 530 C 150 580 95 590 95 626', lw: [843, 304], lt: [20, 590], aw: 'end' },
-    { a: 'market', b: 'burn', l: '5% of each sale', k: 'sink', w: 'M770 376 L 710 376', t: 'M174 658 L 186 658', lw: [740, 444], lt: [186, 718], aw: 'middle' }
+    { a: 'treasury', b: 'folk', l: 'handouts above 2,000', w: 'M220 64 C 280 64 300 120 345 186', t: 'M91 80 V115 H165 V150', lw: [282, 104], lt: [96, 106] },
+    { a: 'faucet', b: 'folk', l: 'new coin', k: 'new', w: 'M220 376 C 280 376 300 320 345 254', t: 'M269 80 V115 H195 V150', lw: [270, 352], lt: [204, 106] },
+    { a: 'folk', b: 'shops', l: 'buy finished goods', w: 'M460 220 L 520 220', t: 'M180 210 V290', lw: [490, 172], lt: [190, 255], aw: 'middle' },
+    { a: 'shops', b: 'players', l: 'pay for raw goods', at: 'end', w: 'M710 206 L 770 206', t: 'M165 350 V430', lw: [700, 172], lt: [157, 395] },
+    { a: 'players', b: 'shops', l: 'buy food and tools', w: 'M770 236 L 710 236', t: 'M195 430 V350', lw: [700, 276], lt: [203, 395] },
+    { a: 'players', b: 'treasury', l: 'crafting fees', w: 'M855 186 C 855 40 420 30 220 40', t: 'M105 460 H40 V80', lw: [560, 46], lt: [48, 270] },
+    { a: 'shops', b: 'treasury', l: '', w: 'M615 186 C 615 100 380 70 220 74', t: 'M105 320 H40', lw: [0, 0], lt: [0, 0] },
+    { a: 'players', b: 'market', l: 'sell to each other', w: 'M855 254 L 855 342', t: 'M150 490 V540 H91 V590', lw: [843, 304], lt: [160, 556], aw: 'end' },
+    { a: 'market', b: 'burn', l: '5% of each sale', at: 'middle', k: 'sink', w: 'M770 376 L 710 376', t: 'M166 620 H194', lw: [740, 444], lt: [180, 676], aw: 'middle' }
   ];
   var fSvg = $('[data-flow-svg]'), fPick = 'players', fLayout = '', coins = [];
   function drawFlow() {
     if (!fSvg) return;
     var tall = fSvg.parentNode.clientWidth < 640, L = tall ? 't' : 'w';
     if (L === fLayout) return; fLayout = L;
-    fSvg.setAttribute('viewBox', tall ? '0 0 360 740' : '0 0 960 460');
+    fSvg.setAttribute('viewBox', tall ? '0 0 360 700' : '0 0 960 460'); fSvg.classList.toggle('tall', tall);
     fSvg.textContent = ''; coins = [];
     var gE = el('g', {}, fSvg), gL = el('g', {}, fSvg), gC = el('g', {}, fSvg), gN = el('g', {}, fSvg);
     FE.forEach(function (e, i) {
       e.path = el('path', { d: e[L], class: 'edge' + (e.k ? ' ' + e.k : '') }, gE);
-      if (e.l) { var lp = e['l' + L]; e.label = el('text', { x: lp[0], y: lp[1], class: 'elabel', 'text-anchor': (L === 'w' && e.aw) || 'start' }, gL); e.label.textContent = e.l; } else e.label = null;
+      e.beam = el('path', { d: e[L], class: 'beam' + (e.k === 'sink' ? ' sink' : ''), pathLength: 100 }, gE);
+      if (e.l) { var lp = e['l' + L]; e.label = el('text', { x: lp[0], y: lp[1], class: 'elabel', 'text-anchor': L === 'w' ? (e.aw || 'start') : (e.at || 'start') }, gL); e.label.textContent = e.l; } else e.label = null;
       e.len = e.path.getTotalLength();
       for (var c = 0; c < 2; c++) coins.push({ e: e, o: (c * 0.5 + i * 0.13) % 1, dot: el('circle', { r: 5, class: 'coin' + (e.k === 'sink' ? ' burn' : '') }, gC) });
     });
@@ -460,7 +467,7 @@
     fPick = k; var n = FN[k];
     Object.keys(FN).forEach(function (j) { if (FN[j].g) FN[j].g.classList.toggle('on', j === k); });
     fSvg.classList.add('is-pick');
-    FE.forEach(function (e) { var on = e.a === k || e.b === k; e.path.classList.toggle('on', on); if (e.label) e.label.classList.toggle('on', on); e.on = on; });
+    FE.forEach(function (e) { var on = e.a === k || e.b === k; e.path.classList.toggle('on', on); e.beam.classList.toggle('on', on); if (e.label) e.label.classList.toggle('on', on); e.on = on; });
     coins.forEach(function (c) { c.dot.classList.toggle('on', c.e.on); });
     $('[data-flow-name]').textContent = n.n; $('[data-flow-text]').textContent = n.text;
     $('[data-flow-list]').innerHTML = FE.filter(function (e) { return e.on && e.l; }).map(function (e) {
@@ -499,6 +506,87 @@
   });
   setInterval(paintPipe, 1000);
 
+  /* ===== motion layer (styles in site.css, each effect after a 21st.dev component) ===== */
+  var hoverable = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  function onceSeen(target, fn, margin) {
+    if (!target) return;
+    if (!('IntersectionObserver' in window)) { fn(); return; }
+    var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); fn(); } }, { rootMargin: margin || '0px 0px -15% 0px' });
+    io.observe(target);
+  }
+  // 1 scroll progress
+  var prog = $('[data-progress]'), pt = 0;
+  if (prog) window.addEventListener('scroll', function () { if (pt) return; pt = requestAnimationFrame(function () { pt = 0; var h = document.documentElement.scrollHeight - innerHeight; prog.style.setProperty('--p', h > 0 ? (scrollY / h).toFixed(4) : 0); }); }, { passive: true });
+  // 2 the live price ticker: two copies of the row so it can loop
+  window.paintTicker = function () {
+    var tr = $('[data-ticker-track]'); if (!tr) return;
+    var best = {};
+    (live.market || []).forEach(function (m) { if (m.open === false) return; (m.items || []).forEach(function (i) {
+      var b = best[i.token] || (best[i.token] = { ask: null, bid: null });
+      if (i.ask != null && (b.ask == null || i.ask < b.ask)) b.ask = i.ask;
+      if (i.bid != null && (b.bid == null || i.bid > b.bid)) b.bid = i.bid;
+    }); });
+    var row = Object.keys(BASE).map(function (k) {
+      var b = best && best[k], p = BASE[k], chg = 'usual price', cls = '';
+      if (b && b.ask != null) { p = b.ask; var pc = Math.round((p - BASE[k]) / BASE[k] * 100); chg = pc > 0 ? pc + '% over usual' : pc < 0 ? -pc + '% under usual' : 'usual price'; cls = pc > 0 ? 'up' : pc < 0 ? 'down' : ''; }
+      else if (b && b.bid != null) { p = b.bid; chg = 'what shops pay'; }
+      return '<span class="ticker__item"><img class="px" src="img/item-' + k + '.png" width="48" height="48" alt="">' + NAME[k] + ' <b>' + p + '</b> coin <span class="chg ' + cls + '">' + chg + '</span></span>';
+    }).join('');
+    tr.innerHTML = row + '<span aria-hidden="true" style="display:contents">' + row + '</span>';
+  };
+  window.paintTicker();
+  // 4 the board lists its rows in order
+  var boardEl = $('[data-board]'); onceSeen(boardEl, function () { boardEl.classList.add('is-in'); });
+  // 5 the lab's curve draws in the first time it is seen
+  var labFig = $('.lab__fig'); onceSeen(labFig, function () { setTimeout(function () { labFig.classList.add('drawn'); }, 120); });
+  // 6 the flow's beams run only while the diagram is on screen
+  var flowSvg = $('[data-flow-svg]');
+  if (flowSvg && 'IntersectionObserver' in window) new IntersectionObserver(function (es) { flowSvg.classList.toggle('is-seen', es[0].isIntersecting); }).observe(flowSvg);
+  // 7 each chat command types itself out, row after row
+  $$('.cmds__list dt code').forEach(function (c, row) {
+    var t = c.textContent; c.setAttribute('aria-label', t); c.innerHTML = t.split('').map(function (ch, i) { return '<span class="ch" aria-hidden="true" style="--c:' + i + ';--row:' + row + '">' + (ch === ' ' ? '&nbsp;' : ch) + '</span>'; }).join('');
+  });
+  var cmds = $('.cmds'); onceSeen(cmds, function () { cmds.classList.add('is-in'); });
+  // 10 a pixel trail on the live world, for a mouse only
+  var stageEl = $('[data-stage]'), lastCell = '';
+  if (stageEl && hoverable && !still) stageEl.addEventListener('pointermove', function (e) {
+    if (e.pointerType !== 'mouse' || stageEl.classList.contains('is-drag')) return;
+    var r = stageEl.getBoundingClientRect(), x = Math.floor((e.clientX - r.left) / 16) * 16, y = Math.floor((e.clientY - r.top) / 16) * 16, key = x + ',' + y;
+    if (key === lastCell) return; lastCell = key;
+    var d = document.createElement('i'); d.className = 'trail'; d.style.left = x + 'px'; d.style.top = y + 'px'; stageEl.appendChild(d);
+    setTimeout(function () { d.remove(); }, 720);
+  });
+  // 11 tilt toward the pointer
+  if (hoverable && !still) $$('[data-tilt], .extras .pic, .step__pic').forEach(function (t) {
+    t.addEventListener('pointermove', function (e) { var r = t.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      t.style.transform = 'perspective(900px) rotateX(' + (-y * 6).toFixed(2) + 'deg) rotateY(' + (x * 8).toFixed(2) + 'deg)'; });
+    t.addEventListener('pointerleave', function () { t.style.transform = ''; });
+  });
+  // 12 parallax: pictures drift against the scroll
+  var par = $$('.extras .pic img, .step__pic img'), pp = 0;
+  if (par.length && !still) {
+    var parallax = function () { pp = 0; par.forEach(function (im) { var r = im.parentNode.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return; var c = (r.top + r.height / 2 - innerHeight / 2) / innerHeight; im.style.setProperty('--py', (c * -24).toFixed(1) + 'px'); }); };
+    window.addEventListener('scroll', function () { if (!pp) pp = requestAnimationFrame(parallax); }, { passive: true }); parallax();
+  }
+  // 13 magnetic primary buttons
+  if (hoverable && !still) $$('.btn--primary').forEach(function (b) {
+    b.addEventListener('pointermove', function (e) { var r = b.getBoundingClientRect(); b.style.transform = 'translate(' + ((e.clientX - r.left - r.width / 2) * .18).toFixed(1) + 'px,' + ((e.clientY - r.top - r.height / 2) * .3).toFixed(1) + 'px)'; });
+    b.addEventListener('pointerleave', function () { b.style.transform = ''; });
+  });
+  // 14 scramble: a building's name and the nav links settle out of shuffled letters
+  var POOL = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+  window.scramble = function (el, text) {
+    if (still) { el.textContent = text; return; }
+    var n = 0, f = 0; el.setAttribute('aria-label', text);
+    (function step() {
+      el.textContent = text.split('').map(function (c, i) { return i < n || c === ' ' ? c : POOL[(Math.random() * POOL.length) | 0]; }).join('');
+      if (n < text.length) { if (++f % 2 === 0) n++; requestAnimationFrame(step); } else el.removeAttribute('aria-label');
+    })();
+  };
+  if (hoverable) $$('.bar__links a').forEach(function (a) { var t = a.textContent; a.addEventListener('pointerenter', function () { window.scramble(a, t); }); });
+  // 15 number ticker: every live figure counts to its value the first time it is seen
+  $$('[data-isle-th], [data-lab-ask], [data-lab-bid]').forEach(function (d) { onceSeen(d, function () { var v = parseFloat(d.textContent); if (!isNaN(v)) { d.textContent = '0'; tick(d, v); } }); });
+
   /* ---- live: the clock and the settled day, the shelves and the middle prices */
   function hour() { return live.time ? (live.time.hour + (Date.now() - live.at) / 60000) % 24 : null; }
   function paintClock() {
@@ -519,7 +607,7 @@
       var s = sarah(), bid = $('[data-fish-bid]'); if (s.fish.bid != null) tick(bid, s.fish.bid);
       var first = $('[data-chat-first]'); if (first) first.textContent = ANSWER.price(s);
       $('[data-shelf-note]').textContent = 'Live from the game server at ' + new Date().toTimeString().slice(0, 5) + '. Stock against what the shop likes to keep.';
-      paintShelf(false); paintCalc(false);
+      paintShelf(false); paintCalc(false); window.paintTicker();
       $('[data-live-note]').textContent = COPY.live(new Date().toTimeString().slice(0, 5));
     }).catch(function () {});
   }

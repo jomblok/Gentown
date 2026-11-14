@@ -417,7 +417,7 @@ kbd { display: inline-grid; place-items: center; min-width: 22px; height: 22px; 
 /* ---- close and footer: the name returns at full width */
 .final { padding: calc(var(--gap) * .6) 0; background: var(--accent); color: var(--accent-ink); }
 .final .wrap { display: grid; justify-items: start; gap: 24px; }
-.final h2 { font-size: clamp(52px, 11vw, 148px); line-height: .92; letter-spacing: -0.045em; }
+.final h2 { font-size: clamp(48px, 6.4vw, 104px); line-height: .92; letter-spacing: -0.045em; }
 .final p { max-width: 32em; font-size: 20px; }
 .kit { display: flex; flex-wrap: wrap; gap: 8px; }
 .kit li { display: inline-flex; align-items: center; gap: 8px; padding: 4px 16px 4px 6px; border-radius: 999px; background: rgb(6 18 28 / .12); font-weight: 600; }
@@ -553,3 +553,121 @@ kbd { display: inline-grid; place-items: center; min-width: 22px; height: 22px; 
 .lab__key span::before { content: ""; width: 18px; height: 4px; border-radius: 2px; }
 .lab__key .k-ask::before { background: var(--accent); }
 .lab__key .k-bid::before { background: var(--coin); }
+
+/* ---- the bar on a narrow phone: name, action and menu always fit side by side */
+.brand { min-width: 0; flex-shrink: 1; }
+.brand span { overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 1099px) { .bar__in { gap: 10px; } .bar__cta { padding: 8px 16px; } }
+@media (max-width: 380px) { .brand { font-size: 16px; gap: 8px; } .brand img { width: 20px; height: 20px; } .bar__cta { padding: 8px 14px; font-size: 15px; } }
+.lab__presets { display: flex; flex-wrap: wrap; gap: 8px; }
+.lab__presets .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.lab__ends { display: flex; justify-content: space-between; font-size: 15px; color: var(--soft); }
+.lab__reason { display: grid; gap: 6px; }
+.lab__reason [data-lab-sentence] { font-size: 20px; font-weight: 600; }
+.lab__quote { font-size: 15px; color: var(--soft); }
+.flow__svg .edge { stroke-linejoin: round; stroke-linecap: round; }
+.flow__svg.tall .elabel:not(.on) { opacity: 0; }
+.flow__svg.tall .elabel { font-size: 13px; }
+
+/* ---- type: League Spartan (compact geometric, the town's signboard voice) over Figtree (an open, friendly text face) */
+:root { --font: "Figtree", system-ui, sans-serif; --display: "League Spartan", "Figtree", system-ui, sans-serif; }
+h1, h2, .h-sub, .statement__p, .calc__sum strong, .lab__out dd, .footer__name, .viewer__text h3, .day__top h3, .flow__panel h3 {
+  font-family: var(--display); font-weight: 700; letter-spacing: -0.035em; }
+.hero__h { line-height: .88; letter-spacing: -0.045em; }
+h2 { line-height: .95; }
+.h-sub { line-height: 1; }
+
+/* ---- the motif: the stepped edge of a voxel island. Every picture, panel, button and chip is cut with it instead of a
+   rounded corner; the step grows with the size of the thing */
+:root { --px: 4px; }
+.btn, .chip, .tab, .segs button, .chipset, .chipset button, .viewer__tabs button, .theme, .bar__toggle, .bar__links a,
+.panel, .pic, .step__pic, .viewer__pic, .extras .pic, .part, .season, .isle, .isle__out div, .day, .pipe, .pipe__steps li, .faq details,
+.own__list div, .cmds__list div, .flow__fig, .flow__list li, .lab__reason, .lab__out div, .trade__side, .trade__item, .trade__foot,
+.recipe li:not(.op), .calc__lines li.out, .board li, .shelf__cash, kbd, .stage__hint {
+  border-radius: 0;
+  clip-path: polygon(0 calc(var(--px) * 2), var(--px) calc(var(--px) * 2), var(--px) var(--px), calc(var(--px) * 2) var(--px), calc(var(--px) * 2) 0,
+    calc(100% - var(--px) * 2) 0, calc(100% - var(--px) * 2) var(--px), calc(100% - var(--px)) var(--px), calc(100% - var(--px)) calc(var(--px) * 2), 100% calc(var(--px) * 2),
+    100% calc(100% - var(--px) * 2), calc(100% - var(--px)) calc(100% - var(--px) * 2), calc(100% - var(--px)) calc(100% - var(--px)), calc(100% - var(--px) * 2) calc(100% - var(--px)), calc(100% - var(--px) * 2) 100%,
+    calc(var(--px) * 2) 100%, calc(var(--px) * 2) calc(100% - var(--px)), var(--px) calc(100% - var(--px)), var(--px) calc(100% - var(--px) * 2), 0 calc(100% - var(--px) * 2));
+}
+.panel, .pic, .step__pic, .viewer__pic, .extras .pic, .isle, .day, .pipe, .flow__fig { --px: 8px; }
+.btn--lg { --px: 6px; }
+/* a clipped control keeps its focus ring inside its own shape */
+.btn:focus-visible, .chip:focus-visible, .tab:focus-visible, .segs button:focus-visible, .chipset button:focus-visible, .viewer__tabs button:focus-visible,
+.theme:focus-visible, .bar__toggle:focus-visible, .bar__links a:focus-visible, .part:focus-visible, .season:focus-visible, .pipe__steps li:focus-visible { outline-offset: -4px; outline-width: 3px; }
+
+/* the hero's world stands on a stepped rock underside, like the islands in the game */
+.stage { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 56px), 93% calc(100% - 56px), 93% calc(100% - 40px), 81% calc(100% - 40px), 81% calc(100% - 24px), 66% calc(100% - 24px),
+  66% calc(100% - 8px), 58% calc(100% - 8px), 58% 100%, 41% 100%, 41% calc(100% - 8px), 33% calc(100% - 8px), 33% calc(100% - 24px), 19% calc(100% - 24px), 19% calc(100% - 40px), 8% calc(100% - 40px), 8% calc(100% - 56px), 0 calc(100% - 56px)); }
+.stage__bar { bottom: 72px; }
+@media (max-width: 767px) { .stage { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 40px), 88% calc(100% - 40px), 88% calc(100% - 24px), 70% calc(100% - 24px), 70% calc(100% - 8px), 58% calc(100% - 8px), 58% 100%, 40% 100%, 40% calc(100% - 8px), 28% calc(100% - 8px), 28% calc(100% - 24px), 12% calc(100% - 24px), 12% calc(100% - 40px), 0 calc(100% - 40px)); } .stage__bar { bottom: 52px; } }
+
+/* ===== motion layer: each effect reworked in plain CSS and JS after a 21st.dev component (credited in the footer) ===== */
+/* 1 scroll progress (after Tracing Beam): a line under the bar fills with the page */
+.progress { position: fixed; top: 0; left: 0; right: 0; z-index: 60; height: 3px; pointer-events: none; }
+.progress i { display: block; height: 100%; background: var(--accent); transform-origin: left; transform: scaleX(var(--p, 0)); }
+/* 2 live price ticker (after Marquee): every good with its price now, pausing under the pointer */
+.ticker { position: relative; overflow: hidden; background: var(--s1); }
+.ticker__track { display: flex; width: max-content; animation: marquee 48s linear infinite; }
+.ticker:hover .ticker__track, .ticker:focus-within .ticker__track { animation-play-state: paused; }
+.ticker__item { display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px; font-weight: 500; white-space: nowrap; }
+.ticker__item img { width: 28px; height: 28px; }
+.ticker__item b { font-family: var(--display); font-size: 20px; }
+.ticker__item .chg { font-size: 15px; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+/* 3 blur fade (after Blur Fade): on a wide screen a rising part also comes out of a slight blur */
+@media (min-width: 1024px) {
+  .js .rv { filter: blur(6px); transition: opacity .7s var(--ease), transform .7s var(--ease), filter .7s var(--ease); transition-delay: calc(var(--d, 0) * 80ms); }
+  .js .rv.is-in { filter: none; }
+}
+/* 4 animated list (after Animated List): the price rows pop in one after another */
+.js .board li { opacity: 0; transform: translateY(12px) scale(.98); transition: opacity .5s var(--ease), transform .6s var(--ease); transition-delay: calc(var(--n, 0) * 55ms); }
+.js .board.is-in li, .js .is-in .board li { opacity: 1; transform: none; }
+/* 5 path drawing (after Motion Path Drawing): the price curves draw themselves in */
+.lab__svg .ask, .lab__svg .bid { stroke-dashoffset: 0; }
+.js .lab__fig:not(.drawn) .lab__svg .ask { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.js .lab__fig:not(.drawn) .lab__svg .bid, .js .lab__fig:not(.drawn) .lab__svg .band { opacity: 0; }
+.lab__svg .ask { transition: stroke-dashoffset 1.4s var(--ease); }
+.lab__svg .bid, .lab__svg .band { transition: opacity .8s var(--ease) .6s; }
+/* 6 animated beam: a short bright dash runs along every flow of the picked part */
+.flow__svg .beam { fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 6 94; opacity: 0; animation: beam 2.4s linear infinite; animation-play-state: paused; }
+.flow__svg .beam.sink { stroke: var(--up); }
+.flow__svg .beam.on { opacity: .9; }
+.flow__svg.is-seen .beam { animation-play-state: running; }
+@keyframes beam { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+/* 7 typewriter (after Typewriter Effect): each chat command types itself out */
+.js .cmds__list code .ch { opacity: 0; }
+.js .cmds.is-in .cmds__list code .ch { animation: ch .01s steps(1) forwards; animation-delay: calc(var(--c) * 34ms + var(--row) * 260ms); }
+@keyframes ch { to { opacity: 1; } }
+/* 8 text generate (after Text Generate Effect): Sarah's answers arrive word by word */
+.chat__log .w8 { display: inline-block; opacity: 0; filter: blur(4px); animation: gen .45s var(--ease) forwards; animation-delay: calc(var(--k) * 45ms); }
+@keyframes gen { to { opacity: 1; filter: none; } }
+/* 9 shimmer (after Shimmer Button): a light sweeps across a primary button under the pointer */
+.btn--primary { position: relative; overflow: hidden; isolation: isolate; }
+.btn--primary::after { content: ""; position: absolute; z-index: -1; top: 0; bottom: 0; left: 0; width: 40%; background: rgb(255 255 255 / .28); transform: translateX(-160%) skewX(-20deg); transition: transform .8s var(--ease); }
+.btn--primary:hover::after { transform: translateX(320%) skewX(-20deg); }
+/* 10 pixel trail (after Pixel Trail): squares light up under the pointer on the live world and fade in steps */
+.trail { position: absolute; z-index: 1; width: 16px; height: 16px; background: #ffffff; pointer-events: none; animation: trail .7s steps(4) forwards; }
+@keyframes trail { from { opacity: .7; } to { opacity: 0; } }
+/* 11 tilt (after 3D Card Effect): a picture leans toward the pointer */
+[data-tilt] { transition: transform .5s var(--ease); will-change: transform; }
+/* 12 parallax (after Parallax Scroll): pictures drift a little slower than the page */
+.extras .pic img, .step__pic img { height: calc(100% + 32px); margin-top: -16px; translate: 0 var(--py, 0px); }
+/* 13 magnetic (after Magnetic Button) and 14 scramble (after Text Scramble, Hyper Text) and 15 number ticker are in site.js */
+@media (prefers-reduced-motion: reduce) {
+  .ticker__track { animation: none; } .ticker { overflow-x: auto; }
+  .js .rv, .js .rv.is-in { filter: none; }
+  .js .board li { opacity: 1; transform: none; transition: none; }
+  .js .lab__fig:not(.drawn) .lab__svg .ask { stroke-dasharray: none; } .js .lab__fig:not(.drawn) .lab__svg .bid, .js .lab__fig:not(.drawn) .lab__svg .band { opacity: 1; }
+  .flow__svg .beam { display: none; }
+  .js .cmds__list code .ch { opacity: 1; animation: none; }
+  .chat__log .w8 { opacity: 1; filter: none; animation: none; }
+  .btn--primary::after, .trail { display: none; }
+  [data-tilt] { transform: none !important; }
+  .extras .pic img, .step__pic img { translate: none; }
+}
+.final__in { display: grid; gap: 40px; }
+.final__text { display: grid; justify-items: start; gap: 24px; }
+@media (min-width: 1024px) { .final__in { grid-template-columns: 6fr 6fr; gap: 56px; align-items: center; } }
+.final__pic { aspect-ratio: 4 / 3; background: var(--sky); }
+.final__pic img { object-position: 50% 50%; }
