@@ -17,7 +17,8 @@
     joko: { shop: 'Jack’s General Store', line: 'Buys wood, wheat and fish. Sells wood and bread.', items: [it('wood', 25, 7, 5), it('wheat', 15, null, 4), it('fish', 10, null, 7), it('bread', 6, 18, null)] }
   };
   var live = { time: null, at: 0, market: null, view: null, pinSeason: null, night: false };
-  function $(q, r) { return (r || document).querySelector(q); }
+  var NIL = document.createElement('div'); // stands in for a part this page no longer has, so its code can run and do nothing
+  function $(q, r) { return (r || document).querySelector(q) || NIL; }
   function $$(q, r) { return Array.prototype.slice.call((r || document).querySelectorAll(q)); }
   function get(p) { return fetch(API + p, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }); }
   function pad(n) { return (n < 10 ? '0' : '') + n; }
@@ -28,6 +29,17 @@
     if (still || isNaN(from) || from === to) { el.textContent = to; return; }
     var t0 = performance.now();
     (function step(now) { var k = Math.min(1, (now - t0) / 700), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(from + (to - from) * e); if (k < 1) requestAnimationFrame(step); })(t0);
+  }
+
+  /* ---- a closed-form spring: x(t) = 1 - e^(-zwt) (cos(wd t) + z/sqrt(1-z^2) sin(wd t)), written to one value per frame */
+  function springTo(from, to, apply, done, z, w) {
+    z = z || 0.55; w = w || 16; var wd = w * Math.sqrt(1 - z * z), t0 = performance.now();
+    if (still) { apply(to); if (done) done(); return; }
+    (function step(now) {
+      var t = (now - t0) / 1000, x = 1 - Math.exp(-z * w * t) * (Math.cos(wd * t) + (z / Math.sqrt(1 - z * z)) * Math.sin(wd * t));
+      apply(from + (to - from) * x);
+      if (t < 1.4 && Math.abs(1 - x) > 0.002) requestAnimationFrame(step); else { apply(to); if (done) done(); }
+    })(t0);
   }
 
   /* ---- nav: the current section is marked; the phone menu opens as a full panel */
@@ -85,6 +97,21 @@
       }, { rootMargin: '0px 0px -40% 0px' });
       ws.forEach(function (w) { wIO.observe(w); });
     }
+  }
+
+  /* ---- the title types itself into place: letters rise out of their own mask, 34 ms apart, the second line after the first */
+  var h1 = $('.hero__h');
+  if (h1 !== NIL) {
+    h1.setAttribute('aria-label', h1.textContent.replace(/\s+/g, ' ').trim());
+    $$('.ln > span', h1).forEach(function (sp, ln) {
+      var k = 0, text = sp.textContent; sp.textContent = ''; sp.setAttribute('aria-hidden', 'true');
+      text.split(' ').forEach(function (word, wi, all) {
+        var w = document.createElement('span'); w.className = 'wd'; w.style.cssText = 'display:inline-block;white-space:nowrap';
+        word.split('').forEach(function (ch) { var l = document.createElement('span'); l.className = 'l'; l.style.setProperty('--k', k++); l.style.setProperty('--ln', ln); l.textContent = ch; w.appendChild(l); });
+        sp.appendChild(w); if (wi < all.length - 1) { sp.appendChild(document.createTextNode(' ')); k++; }
+      });
+    });
+    h1.classList.add('is-split');
   }
 
   /* ---- the hero's world: the game's 2.5D Homeland, live; the poster stays without WebGL or under reduced motion */
@@ -173,8 +200,16 @@
     }).join('');
     if (animate && !still) { shelf.classList.remove('is-swap'); void shelf.offsetWidth; shelf.classList.add('is-swap'); }
   }
-  var shopList = $('.tabs[aria-label="Shops"]'), selShop = tabs(shopList, function (b) {
-    if (b.getAttribute('data-shop') === shop) return; selShop(b); shop = b.getAttribute('data-shop'); shelf.setAttribute('aria-labelledby', b.id); paintShelf(true);
+  var shopList = $('.tabs[aria-label="Shops"]'), ind = document.createElement('span'), indAt = 0;
+  ind.className = 'tab-ind'; ind.setAttribute('aria-hidden', 'true');
+  function moveInd(tab, animate) {
+    var left = tab.offsetLeft, right = shopList.scrollWidth - (tab.offsetLeft + tab.offsetWidth), dir = left > indAt ? 1 : -1;
+    ind.style.transition = !animate || still ? 'none' : dir > 0 ? 'left .5s var(--ease), right .28s var(--ease)' : 'left .28s var(--ease), right .5s var(--ease)';
+    ind.style.left = left + 'px'; ind.style.right = right + 'px'; indAt = left;
+  }
+  if (shopList !== NIL) { shopList.insertBefore(ind, shopList.firstChild); shopList.classList.add('has-ind'); requestAnimationFrame(function () { moveInd($('.tab[aria-selected="true"]', shopList), false); }); addEventListener('resize', function () { moveInd($('.tab[aria-selected="true"]', shopList), false); }); }
+  var selShop = tabs(shopList, function (b) {
+    if (b.getAttribute('data-shop') === shop) return; selShop(b); shop = b.getAttribute('data-shop'); shelf.setAttribute('aria-labelledby', b.id); paintShelf(true); moveInd(b, true);
   });
   paintShelf(false);
 
@@ -196,10 +231,15 @@
   $$('[data-ask]').forEach(function (b) {
     b.addEventListener('click', function () {
       if (busy) return; busy = true; var k = b.getAttribute('data-ask'), chips = $$('[data-ask]');
-      chips.forEach(function (c) { c.disabled = true; }); say('me', Q[k]);
-      var dots = document.createElement('li'); dots.className = 'them typing new'; dots.setAttribute('aria-label', 'Sarah is typing'); dots.innerHTML = '<i></i><i></i><i></i>';
-      setTimeout(function () { log.appendChild(dots); }, still ? 0 : 250);
-      setTimeout(function () { if (dots.parentNode) dots.parentNode.removeChild(dots); say('them', ANSWER[k](sarah())); chips.forEach(function (c) { c.disabled = false; }); busy = false; }, still ? 0 : 1200);
+      chips.forEach(function (c) { c.disabled = true; });
+      var me = say('me', ''), n = 0, text = Q[k];
+      function answer() {
+        var dots = document.createElement('li'); dots.className = 'them typing new'; dots.setAttribute('aria-label', 'Sarah is typing'); dots.innerHTML = '<i></i><i></i><i></i>';
+        log.appendChild(dots);
+        setTimeout(function () { if (dots.parentNode) dots.parentNode.removeChild(dots); say('them', ANSWER[k](sarah())); chips.forEach(function (c) { c.disabled = false; }); busy = false; }, still ? 0 : 900);
+      }
+      if (still) { me.textContent = text; answer(); return; }
+      (function type() { n++; me.textContent = text.slice(0, n); if (n < text.length) setTimeout(type, n % 3 === 0 ? 70 : 30); else setTimeout(answer, 220); })();
     });
   });
 
@@ -305,6 +345,8 @@
     mall: ['Genesis Mall', '28 outfits, hats and capes in seven slots, from 20 to 400 coin, and everyone sees what you wear. Work gloves, boots and a hard hat also make your workers faster.'],
     news: ['News Hall', 'The town’s notice board and its news. It is where to read what changed in town today.'],
     casino: ['Genesis Casino', 'A pass lets you in for 30 minutes to the Luck Table, slots, dice and cards. Chips are bought with coin, and what you win is chips and titles that never turn back into coin.'],
+    carousel: ['Carousel', 'Ride it and the camera circles low while a fairground waltz plays.'],
+    boat: ['Public boat', 'It glows when you can board. Steer it yourself to the island no path reaches.'],
     mine: ['Public Mine', 'A mine beside a public forest and rock field, so new players can gather from the first day, before their own islands open up.']
   };
   var vTabs = $('.viewer__tabs'), vText = $('[data-bld-text]');
@@ -388,7 +430,8 @@
     for (var s = 0; s <= 60; s++) { var p = labPrice(s, net); a += (s ? 'L' : 'M') + x(s).toFixed(1) + ' ' + y(p.ask).toFixed(1); b += (s ? 'L' : 'M') + x(s).toFixed(1) + ' ' + y(p.bid).toFixed(1); }
     for (var s2 = 60; s2 >= 0; s2--) band += 'L' + x(s2).toFixed(1) + ' ' + y(labPrice(s2, net).bid).toFixed(1);
     el('path', { d: a + band + 'Z', class: 'band' }, labSvg);
-    el('path', { d: b, class: 'bid' }, labSvg); el('path', { d: a, class: 'ask', pathLength: 1 }, labSvg);
+    var bidP = el('path', { d: b, class: 'bid', pathLength: 1 }, labSvg), askP = el('path', { d: a, class: 'ask', pathLength: 1 }, labSvg);
+    var dp = window.labDraw; if (dp != null && dp < 1) { askP.setAttribute('stroke-dasharray', dp.toFixed(3) + ' 1'); bidP.setAttribute('stroke-dasharray', dp.toFixed(3) + ' 1'); stock = Math.round(60 * dp); }
     var now = labPrice(stock, net);
     el('circle', { cx: x(stock), cy: y(now.bid), r: 7, class: 'pt2' }, labSvg);
     el('circle', { cx: x(stock), cy: y(now.ask), r: 9, class: 'pt' }, labSvg);
@@ -404,6 +447,13 @@
     else if (se >= de) why = now.fs < 1 ? 'My fish stock is ' + stock + ', target 20.' : 'My fish stock is down to ' + stock + ', target 20.';
     else why = now.fd > 1 ? 'Lots of people have been buying fish lately.' : 'Lots of people have been selling fish to me lately.';
     $('[data-lab-reason]').textContent = 'Her shop window: “' + why + ' ' + (pct > 0 ? 'Price up.' : pct < 0 ? 'Price down.' : 'Price steady.') + '”';
+  };
+  window.labIntro = function () {
+    if (still || !labS || labS === NIL) return; var to = +labS.value, t0 = performance.now();
+    (function draw(now) {
+      var p = Math.min(1, (now - t0) / 1500), e = 1 - Math.pow(1 - p, 3); window.labDraw = e; window.paintLab();
+      if (p < 1) requestAnimationFrame(draw); else { window.labDraw = null; springTo(60, to, function (v) { labS.value = Math.round(v); window.paintLab(); }, function () { labS.value = to; window.paintLab(); }, 0.6, 14); }
+    })(t0);
   };
   if (labS) {
     labS.addEventListener('input', window.paintLab); labD.addEventListener('input', window.paintLab);
@@ -520,6 +570,19 @@
     var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); fn(); } }, { rootMargin: margin || '0px 0px -15% 0px' });
     io.observe(target);
   }
+  // 0 the coin thread: one gold coin follows the scroll, flips as it goes, and drops with a little spring each time a new section arrives
+  var coin = $('[data-coin]'), coinY = 0, bounce = 0, lastSec = '', ct = 0, secs = $$('main > section');
+  function coinFrame() {
+    ct = 0; var h = document.documentElement.scrollHeight - innerHeight, p = h > 0 ? Math.min(1, Math.max(0, scrollY / h)) : 0;
+    coinY = 96 + p * (innerHeight - 190);
+    coin.style.setProperty('--flip', Math.cos(scrollY / 90).toFixed(3));
+    var cur = ''; secs.forEach(function (sc) { var r = sc.getBoundingClientRect(); if (r.top < innerHeight * 0.5 && r.bottom > innerHeight * 0.5) cur = sc.id || sc.className; });
+    if (cur && cur !== lastSec) { if (lastSec) springTo(-26, 0, function (v) { bounce = v; place(); }, null, 0.38, 15); lastSec = cur; }
+    place();
+  }
+  function place() { coin.style.transform = 'translate3d(0,' + (coinY + bounce).toFixed(1) + 'px,0)'; }
+  if (coin !== NIL && !still) { addEventListener('scroll', function () { if (!ct) ct = requestAnimationFrame(coinFrame); }, { passive: true }); coinFrame(); }
+
   // 1 scroll progress
   var prog = $('[data-progress]'), pt = 0;
   if (prog) window.addEventListener('scroll', function () { if (pt) return; pt = requestAnimationFrame(function () { pt = 0; var h = document.documentElement.scrollHeight - innerHeight; prog.style.setProperty('--p', h > 0 ? (scrollY / h).toFixed(4) : 0); }); }, { passive: true });
@@ -544,7 +607,7 @@
   // 4 the board lists its rows in order
   var boardEl = $('[data-board]'); onceSeen(boardEl, function () { boardEl.classList.add('is-in'); });
   // 5 the lab's curve draws in the first time it is seen
-  var labFig = $('.lab__fig'); onceSeen(labFig, function () { setTimeout(function () { labFig.classList.add('drawn'); }, 120); });
+  var labFig = $('.lab__fig'); onceSeen(labFig, function () { labFig.classList.add('drawn'); if (window.labIntro) window.labIntro(); });
   // 6 the flow's beams run only while the diagram is on screen
   var flowSvg = $('[data-flow-svg]');
   if (flowSvg && 'IntersectionObserver' in window) new IntersectionObserver(function (es) { flowSvg.classList.toggle('is-seen', es[0].isIntersecting); }).observe(flowSvg);
@@ -590,6 +653,8 @@
     })();
   };
   if (hoverable) $$('.bar__links a').forEach(function (a) { var t = a.textContent; a.addEventListener('pointerenter', function () { window.scramble(a, t); }); });
+  // the facts strip counts to its numbers the first time it is seen
+  $$('.facts dt').forEach(function (d) { onceSeen(d, function () { var v = +d.getAttribute('data-count'); d.textContent = '0'; tick(d, v); }); });
   // 15 number ticker: every live figure counts to its value the first time it is seen
   $$('[data-isle-th], [data-lab-ask], [data-lab-bid]').forEach(function (d) { onceSeen(d, function () { var v = parseFloat(d.textContent); if (!isNaN(v)) { d.textContent = '0'; tick(d, v); } }); });
 

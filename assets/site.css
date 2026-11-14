@@ -715,4 +715,37 @@ h2 { line-height: .95; }
 .footer__brand .footer__name { margin-top: 0; padding-bottom: .12em; font-size: clamp(44px, 9.6vw, 148px); }
 @media (max-width: 599px) { .footer__brand { flex-direction: column; align-items: flex-start; } .footer__brand .footer__name { white-space: normal; font-size: clamp(44px, 16vw, 72px); } }
 .hero__copy .hero__h { pointer-events: auto; }
-.final__pic { clip-path: none; border-radius: 0; box-shadow: none; }
+.final__pic { clip-path: none; border-radius: 0; }
+
+/* ===== shorter page ===== */
+@media (min-width: 1280px) { :root { --gap: 128px; } }
+@media (min-width: 768px) and (max-width: 1279px) { :root { --gap: 112px; } }
+.pipe { margin-top: 56px; }
+.pipe__foot { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; color: var(--soft); font-size: 16px; }
+.facts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px 24px; margin-bottom: 64px; }
+@media (min-width: 900px) { .facts { grid-template-columns: repeat(4, 1fr); gap: 32px; } }
+.facts dt { font: 700 clamp(64px, 9vw, 120px)/.9 var(--display); letter-spacing: -0.045em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.facts dd { margin-top: 12px; max-width: 14em; font-size: 17px; line-height: 1.35; }
+.viewer__tabs button { min-height: 44px; }
+@media (min-width: 1024px) { .viewer__tabs button { min-height: 52px; font-size: 18px; } }
+
+/* ===== motion after prompt-motion.com (its prompts, rebuilt in plain CSS and JS) ===== */
+/* kinetic letters: the title types itself into place, letter by letter, out of its own mask */
+.js .hero__h .l { display: inline-block; animation: letter .8s var(--ease) backwards; animation-delay: calc(var(--k) * 34ms + var(--ln) * 260ms); }
+@keyframes letter { from { transform: translateY(105%) rotate(4deg); } }
+.js .ln > span { animation: none; }
+/* the coin that travels the page: one gold coin follows the scroll and flips as it goes */
+.coin-thread { position: fixed; z-index: 45; right: 20px; top: 0; width: 28px; height: 28px; pointer-events: none; will-change: transform; display: none; }
+@media (min-width: 1100px) { .coin-thread { display: block; } }
+.coin-thread i { display: block; width: 100%; height: 100%; background: var(--coin); clip-path: polygon(25% 0, 75% 0, 75% 12.5%, 87.5% 12.5%, 87.5% 25%, 100% 25%, 100% 75%, 87.5% 75%, 87.5% 87.5%, 75% 87.5%, 75% 100%, 25% 100%, 25% 87.5%, 12.5% 87.5%, 12.5% 75%, 0 75%, 0 25%, 12.5% 25%, 12.5% 12.5%, 25% 12.5%); transform: scaleX(var(--flip, 1)); }
+.coin-thread i::after { content: ""; position: absolute; left: 31%; top: 25%; width: 13%; height: 38%; background: rgb(255 255 255 / .55); }
+/* liquid tab indicator: the leading edge runs ahead of the trailing edge */
+.tabs { position: relative; isolation: isolate; }
+.tab-ind { position: absolute; z-index: -1; top: 8px; bottom: 8px; left: 0; right: 0; background: var(--ink); border-radius: 999px; pointer-events: none; }
+.tabs.has-ind .tab[aria-selected="true"] { background: transparent; }
+.tabs.has-ind .tab:hover:not([aria-selected="true"]) { background: var(--s3); }
+@media (prefers-reduced-motion: reduce) { .js .hero__h .l { animation: none; } .coin-thread { display: none; } .tab-ind { transition: none !important; } }
+.js .hero__h:not(.is-split) { opacity: 0; animation: titlefallback 0s 1s forwards; }
+@keyframes titlefallback { to { opacity: 1; } }
+.tab-ind { background: var(--bg); }
+.tabs.has-ind .tab[aria-selected="true"] { color: var(--ink); }
