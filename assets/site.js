@@ -647,9 +647,13 @@
   window.scramble = function (el, text) {
     if (still) { el.textContent = text; return; }
     var n = 0, f = 0; el.setAttribute('aria-label', text);
+    // a letter settles every 5 frames (about 80 ms) and the shuffled ones change every 3, so the word can be followed
+    var shown = text.split('');
     (function step() {
-      el.textContent = text.split('').map(function (c, i) { return i < n || c === ' ' ? c : POOL[(Math.random() * POOL.length) | 0]; }).join('');
-      if (n < text.length) { if (++f % 2 === 0) n++; requestAnimationFrame(step); } else el.removeAttribute('aria-label');
+      if (f % 3 === 0) shown = text.split('').map(function (c, i) { return i < n || c === ' ' ? c : POOL[(Math.random() * POOL.length) | 0]; });
+      else shown = shown.map(function (c, i) { return i < n ? text[i] : c; });
+      el.textContent = shown.join('');
+      if (n < text.length) { if (++f % 5 === 0) n++; requestAnimationFrame(step); } else { el.textContent = text; el.removeAttribute('aria-label'); }
     })();
   };
   if (hoverable) $$('.bar__links a').forEach(function (a) { var t = a.textContent; a.addEventListener('pointerenter', function () { window.scramble(a, t); }); });

@@ -749,3 +749,16 @@ h2 { line-height: .95; }
 @keyframes titlefallback { to { opacity: 1; } }
 .tab-ind { background: var(--bg); }
 .tabs.has-ind .tab[aria-selected="true"] { color: var(--ink); }
+
+/* the logo is the G: the name reads logo + "enesis Town", the letters sitting on the logo's foot like a drop cap */
+.brand { gap: 3px; align-items: flex-end; }
+.brand__logo { height: 42px; }
+.brand__rest { font-family: var(--display); font-weight: 700; font-size: 22px; line-height: 1; letter-spacing: -0.02em; padding-bottom: 6px; }
+@media (max-width: 380px) { .brand { gap: 2px; } .brand__logo { height: 36px; } .brand__rest { font-size: 19px; padding-bottom: 5px; } }
+.footer__brand { gap: clamp(2px, .6vw, 10px); }
+.footer__brand .footer__name { padding-bottom: .08em; }
+@media (max-width: 599px) { .footer__brand { flex-direction: row; align-items: flex-end; } .footer__brand img { width: clamp(64px, 20vw, 96px); } .footer__brand .footer__name { font-size: clamp(36px, 11vw, 64px); white-space: nowrap; } }
+.brand__logo { flex: none; }
+.brand__rest { min-width: 0; overflow: hidden; white-space: nowrap; }
+.brand .brand__logo { width: auto; height: 42px; }
+@media (max-width: 380px) { .brand .brand__logo { height: 38px; } }
