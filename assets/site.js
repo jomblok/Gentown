@@ -328,6 +328,177 @@
   }
   if (range) { range.addEventListener('input', paintIsle); paintIsle(); }
 
+  /* ---- theme: light or dark, remembered on this device */
+  var root = document.documentElement;
+  function paintTheme() {
+    var light = root.getAttribute('data-theme') === 'light';
+    $$('[data-theme-toggle]').forEach(function (b) { b.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode'); });
+    $$('[data-theme-label]').forEach(function (l) { l.textContent = light ? 'Dark mode' : 'Light mode'; });
+  }
+  $$('[data-theme-toggle]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var t = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      root.setAttribute('data-theme', t); try { localStorage.setItem('gt.theme', t); } catch (e) { /* private mode */ }
+      paintTheme(); if (window.paintLab) window.paintLab();
+    });
+  });
+  paintTheme();
+
+  /* ---- motion: every section's heading and lead rise in turn; the hero world settles as the page scrolls */
+  $$('.section .head, .section .faq__h').forEach(function (h) {
+    var kids = h.classList.contains('faq__h') ? [h] : $$(':scope > *', h);
+    kids.forEach(function (k, i) { if (!k.classList.contains('rv') && !k.querySelector('.rv')) { k.classList.add('rv'); k.style.setProperty('--d', i); if (rvIO) rvIO.observe(k); else k.classList.add('is-in'); rvs.push(k); } });
+  });
+  var stg = $('[data-stage] video');
+  if (stg && !still) {
+    var zt = 0;
+    function zoom() { zt = 0; var r = stg.parentNode.getBoundingClientRect(), p = Math.min(1, Math.max(0, 1 - r.top / innerHeight)); stg.style.setProperty('--zoom', (1.1 - 0.1 * p).toFixed(4)); }
+    window.addEventListener('scroll', function () { if (!zt) zt = requestAnimationFrame(zoom); }, { passive: true }); zoom();
+  }
+
+  /* ---- the price lab: the game's own rule (economy/pricing.ts) for Sarah's fish: base 8, target 20, a fair keeper */
+  var LAB = { base: 8, target: 20, spread: 0.2, el: 0.5, fsMin: 0.5, fsMax: 2.5, w: 0.4, damp: 5, fdMin: 0.7, fdMax: 1.4, minM: 0.25, maxM: 4 };
+  function clampN(x, a, b) { return Math.min(b, Math.max(a, x)); }
+  function labPrice(stock, net) {
+    var fs = clampN(Math.pow(LAB.target / Math.max(stock, 1), LAB.el), LAB.fsMin, LAB.fsMax);
+    var sold = Math.max(net, 0), bought = Math.max(-net, 0);
+    var fd = clampN(1 + LAB.w * (sold - bought) / (sold + bought + LAB.damp), LAB.fdMin, LAB.fdMax);
+    var mid = clampN(LAB.base * fs * fd, LAB.minM * LAB.base, LAB.maxM * LAB.base);
+    var ask = Math.max(1, Math.ceil(mid * (1 + LAB.spread / 2)));
+    var bid = Math.min(ask - 1 > 0 ? ask - 1 : 1, Math.max(1, Math.floor(mid * (1 - LAB.spread / 2))));
+    return { fs: fs, fd: fd, mid: mid, ask: ask, bid: bid };
+  }
+  var labSvg = $('[data-lab-svg]'), labS = $('[data-lab-stock]'), labD = $('[data-lab-dem]');
+  var NS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs, parent) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+  window.paintLab = function () {
+    if (!labSvg) return;
+    var stock = +labS.value, net = +labD.value, X0 = 48, X1 = 540, Y0 = 290, Y1 = 20, PMAX = 36;
+    function x(s) { return X0 + (X1 - X0) * s / 60; } function y(v) { return Y0 - (Y0 - Y1) * Math.min(v, PMAX) / PMAX; }
+    labSvg.textContent = '';
+    [0, 9, 18, 27, 36].forEach(function (v) { el('line', { x1: X0, x2: X1, y1: y(v), y2: y(v), class: 'grid' }, labSvg); el('text', { x: X0 - 10, y: y(v) + 5, 'text-anchor': 'end' }, labSvg).textContent = v; });
+    [0, 20, 40, 60].forEach(function (s) { el('text', { x: x(s), y: Y0 + 26, 'text-anchor': 'middle' }, labSvg).textContent = s; });
+    el('text', { x: X1, y: Y0 + 46, 'text-anchor': 'end' }, labSvg).textContent = 'Fish on ice';
+    el('line', { x1: X0, x2: X1, y1: Y0, y2: Y0, class: 'axis' }, labSvg);
+    el('line', { x1: x(LAB.target), x2: x(LAB.target), y1: Y1, y2: Y0, class: 'target' }, labSvg);
+    el('text', { x: x(LAB.target) + 8, y: Y1 + 14 }, labSvg).textContent = 'Sarah’s target';
+    var a = '', b = '', band = '';
+    for (var s = 0; s <= 60; s++) { var p = labPrice(s, net); a += (s ? 'L' : 'M') + x(s).toFixed(1) + ' ' + y(p.ask).toFixed(1); b += (s ? 'L' : 'M') + x(s).toFixed(1) + ' ' + y(p.bid).toFixed(1); }
+    for (var s2 = 60; s2 >= 0; s2--) band += 'L' + x(s2).toFixed(1) + ' ' + y(labPrice(s2, net).bid).toFixed(1);
+    el('path', { d: a + band + 'Z', class: 'band' }, labSvg);
+    el('path', { d: b, class: 'bid' }, labSvg); el('path', { d: a, class: 'ask' }, labSvg);
+    var now = labPrice(stock, net);
+    el('circle', { cx: x(stock), cy: y(now.bid), r: 7, class: 'pt2' }, labSvg);
+    el('circle', { cx: x(stock), cy: y(now.ask), r: 9, class: 'pt' }, labSvg);
+    $('[data-lab-stock-v]').textContent = stock;
+    $('[data-lab-dem-v]').textContent = net > 2 ? 'buying fish from her' : net < -2 ? 'selling fish to her' : 'buying and selling evenly';
+    tick($('[data-lab-ask]'), now.ask); tick($('[data-lab-bid]'), now.bid);
+    var pct = Math.round((now.mid - LAB.base) / LAB.base * 100), pe = $('[data-lab-pct]');
+    pe.textContent = pct > 0 ? pct + '% over' : pct < 0 ? -pct + '% under' : 'Usual'; pe.className = pct > 0 ? 'up' : pct < 0 ? 'down' : '';
+    var se = Math.abs(Math.log(now.fs)), de = Math.abs(Math.log(now.fd)), why;
+    if (se < 0.03 && de < 0.03) why = 'My fish stock is just right (' + stock + ', target 20).';
+    else if (se >= de) why = now.fs < 1 ? 'My fish stock is ' + stock + ', target 20.' : 'My fish stock is down to ' + stock + ', target 20.';
+    else why = now.fd > 1 ? 'Lots of people have been buying fish lately.' : 'Lots of people have been selling fish to me lately.';
+    $('[data-lab-reason]').textContent = '“' + why + ' ' + (pct > 0 ? 'Price up.' : pct < 0 ? 'Price down.' : 'Price steady.') + '” Sarah, in the shop window';
+  };
+  if (labS) { labS.addEventListener('input', window.paintLab); labD.addEventListener('input', window.paintLab); window.paintLab(); }
+
+  /* ---- the coin flow: nodes and flows from the game's economy (README, docs/economy.md §3a); two layouts, wide and tall */
+  var FN = {
+    treasury: { n: 'Town treasury', sub: 'fees land here', w: [30, 30, 190, 68], t: [16, 16, 158, 64],
+      text: 'Holds the town’s coin. Crafting fees from players and shopkeepers land here, and it hands coin to the townsfolk while it holds more than 2,000.' },
+    faucet: { n: 'Coin faucet', sub: 'capped per day', w: [30, 342, 190, 68], t: [186, 16, 158, 64],
+      text: 'The only place new coin is made. The contract mints a capped amount each day, and only when the treasury cannot cover the townsfolk.' },
+    folk: { n: 'Townsfolk', sub: 'one shared wallet', w: [280, 186, 180, 68], t: [101, 166, 158, 64],
+      text: 'Dewi, Agus, Rina, Bayu and Intan walk the village for everyone and buy finished goods at the stalls. That is how new coin reaches the market.' },
+    shops: { n: 'Shopkeepers', sub: 'Sarah, Ben, Wendy, Jack', w: [520, 186, 190, 68], t: [101, 316, 158, 64],
+      text: 'They buy your raw goods and sell you food, goods and tools, pricing each from their own shelf. They also buy cheap listings on the player market.' },
+    players: { n: 'Players', sub: 'you and your friends', w: [770, 186, 170, 68], t: [101, 466, 158, 64],
+      text: 'You earn coin by selling raw goods to the shops and to other players, and spend it on food, tools, repairs and fees.' },
+    market: { n: 'Player market', sub: 'held in the contract', w: [770, 342, 170, 68], t: [16, 626, 158, 64],
+      text: 'Players sell to each other at their own price, named on the Stalls or anonymous on the Black Market. Goods wait in the contract until someone buys.' },
+    burn: { n: 'Burned', sub: 'gone for good', w: [520, 342, 190, 68], t: [186, 626, 158, 64],
+      text: 'Five percent of every player market sale is burned, so coin leaves the game as it is used and prices keep their meaning.' }
+  };
+  var FE = [
+    { a: 'treasury', b: 'folk', l: 'handouts above 2,000', w: 'M220 64 C 280 64 300 120 345 186', t: 'M95 80 C 95 120 150 130 160 166', lw: [282, 104], lt: [8, 128] },
+    { a: 'faucet', b: 'folk', l: 'new coin', k: 'new', w: 'M220 376 C 280 376 300 320 345 254', t: 'M265 80 C 265 120 210 130 200 166', lw: [270, 352], lt: [240, 128] },
+    { a: 'folk', b: 'shops', l: 'buy finished goods', w: 'M460 220 L 520 220', t: 'M180 230 L 180 316', lw: [490, 172], lt: [188, 278], aw: 'middle' },
+    { a: 'shops', b: 'players', l: 'pay for raw goods', w: 'M710 206 L 770 206', t: 'M165 380 L 165 466', lw: [700, 172], lt: [16, 428] },
+    { a: 'players', b: 'shops', l: 'buy food and tools', w: 'M770 236 L 710 236', t: 'M195 466 L 195 380', lw: [700, 276], lt: [204, 428] },
+    { a: 'players', b: 'treasury', l: 'crafting fees', w: 'M855 186 C 855 40 420 30 220 40', t: 'M101 498 C 0 498 0 120 40 80', lw: [560, 46], lt: [6, 300] },
+    { a: 'shops', b: 'treasury', l: '', w: 'M615 186 C 615 100 380 70 220 74', t: 'M101 348 C 30 348 30 120 60 80', lw: [0, 0], lt: [0, 0] },
+    { a: 'players', b: 'market', l: 'sell to each other', w: 'M855 254 L 855 342', t: 'M150 530 C 150 580 95 590 95 626', lw: [843, 304], lt: [20, 590], aw: 'end' },
+    { a: 'market', b: 'burn', l: '5% of each sale', k: 'sink', w: 'M770 376 L 710 376', t: 'M174 658 L 186 658', lw: [740, 444], lt: [186, 718], aw: 'middle' }
+  ];
+  var fSvg = $('[data-flow-svg]'), fPick = 'players', fLayout = '', coins = [];
+  function drawFlow() {
+    if (!fSvg) return;
+    var tall = fSvg.parentNode.clientWidth < 640, L = tall ? 't' : 'w';
+    if (L === fLayout) return; fLayout = L;
+    fSvg.setAttribute('viewBox', tall ? '0 0 360 740' : '0 0 960 460');
+    fSvg.textContent = ''; coins = [];
+    var gE = el('g', {}, fSvg), gL = el('g', {}, fSvg), gC = el('g', {}, fSvg), gN = el('g', {}, fSvg);
+    FE.forEach(function (e, i) {
+      e.path = el('path', { d: e[L], class: 'edge' + (e.k ? ' ' + e.k : '') }, gE);
+      if (e.l) { var lp = e['l' + L]; e.label = el('text', { x: lp[0], y: lp[1], class: 'elabel', 'text-anchor': (L === 'w' && e.aw) || 'start' }, gL); e.label.textContent = e.l; } else e.label = null;
+      e.len = e.path.getTotalLength();
+      for (var c = 0; c < 2; c++) coins.push({ e: e, o: (c * 0.5 + i * 0.13) % 1, dot: el('circle', { r: 5, class: 'coin' + (e.k === 'sink' ? ' burn' : '') }, gC) });
+    });
+    Object.keys(FN).forEach(function (k) {
+      var n = FN[k], r = n[L], g = el('g', { class: 'node', tabindex: 0, role: 'button', 'aria-label': n.n + ': ' + n.text, 'data-node': k }, gN);
+      el('rect', { x: r[0], y: r[1], width: r[2], height: r[3], rx: 16 }, g);
+      el('text', { x: r[0] + 16, y: r[1] + 28 }, g).textContent = n.n;
+      el('text', { x: r[0] + 16, y: r[1] + 50, class: 'sub' }, g).textContent = n.sub;
+      g.addEventListener('click', function () { pickFlow(k); });
+      g.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); pickFlow(k); } });
+      n.g = g;
+    });
+    pickFlow(fPick, true);
+  }
+  function pickFlow(k, quiet) {
+    fPick = k; var n = FN[k];
+    Object.keys(FN).forEach(function (j) { if (FN[j].g) FN[j].g.classList.toggle('on', j === k); });
+    fSvg.classList.add('is-pick');
+    FE.forEach(function (e) { var on = e.a === k || e.b === k; e.path.classList.toggle('on', on); if (e.label) e.label.classList.toggle('on', on); e.on = on; });
+    coins.forEach(function (c) { c.dot.classList.toggle('on', c.e.on); });
+    $('[data-flow-name]').textContent = n.n; $('[data-flow-text]').textContent = n.text;
+    $('[data-flow-list]').innerHTML = FE.filter(function (e) { return e.on && e.l; }).map(function (e) {
+      var out = e.a === k; return '<li class="' + (e.k === 'sink' ? 'sink' : '') + '"><b>' + (out ? 'Out' : 'In') + '</b><span>' + e.l.charAt(0).toUpperCase() + e.l.slice(1) + (out ? ', to ' + FN[e.b].n.toLowerCase() : ', from ' + FN[e.a].n.toLowerCase()) + '</span></li>';
+    }).join('');
+    var pnl = $('.flow__panel'); if (!quiet && !still) { pnl.classList.remove('swap'); void pnl.offsetWidth; pnl.classList.add('swap'); }
+  }
+  if (fSvg) {
+    drawFlow(); window.addEventListener('resize', function () { drawFlow(); });
+    var fSeen = false;
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { fSeen = es[0].isIntersecting; }, { rootMargin: '100px' }).observe(fSvg);
+    var last = performance.now();
+    (function run(t) {
+      var dt = Math.min(64, t - last); last = t;
+      if (fSeen && !still) coins.forEach(function (c) { c.o = (c.o + dt / 4200) % 1; var pt = c.e.path.getPointAtLength(c.o * c.e.len); c.dot.setAttribute('cx', pt.x); c.dot.setAttribute('cy', pt.y); });
+      requestAnimationFrame(run);
+    })(last);
+    if (still) coins.forEach(function (c) { var pt = c.e.path.getPointAtLength(c.o * c.e.len); c.dot.setAttribute('cx', pt.x); c.dot.setAttribute('cy', pt.y); });
+  }
+
+  /* ---- the daily save: the track fills with the game day since the last 06:00; the step for the hour lights */
+  function paintPipe() {
+    var h = hour(), fill = $('[data-pipe-fill]'); if (h == null || !fill) return;
+    var since = ((h - 6) % 24 + 24) % 24, left = 24 - since;
+    fill.style.setProperty('--p', (since / 24).toFixed(4));
+    var m = Math.floor(left), s = Math.round((left - m) * 60);
+    var txt = 'Next save in ' + m + ' min ' + (s < 10 ? '0' : '') + s + ' s, at 06:00 game time.';
+    if (live.time && live.time.settledThrough != null) txt += ' Saved through game day ' + live.time.settledThrough + '.';
+    $('[data-pipe-live]').textContent = txt;
+    var step = since < 0.5 ? 3 : 0; // just after dawn the day is being written; the rest of the day is play
+    $$('.pipe__steps li').forEach(function (li) { li.classList.toggle('on', +li.getAttribute('data-step') === step && !li.matches(':hover')); });
+  }
+  $$('.pipe__steps li').forEach(function (li) {
+    function on() { $$('.pipe__steps li').forEach(function (o) { o.classList.toggle('on', o === li); }); }
+    li.addEventListener('pointerenter', on); li.addEventListener('focus', on);
+  });
+  setInterval(paintPipe, 1000);
+
   /* ---- live: the clock and the settled day, the shelves and the middle prices */
   function hour() { return live.time ? (live.time.hour + (Date.now() - live.at) / 60000) % 24 : null; }
   function paintClock() {

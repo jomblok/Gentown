@@ -11,12 +11,13 @@
 <meta property="og:image" content="share.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<meta name="theme-color" content="#0c1018">
+<meta name="theme-color" content="#0c1018" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f8fb" media="(prefers-color-scheme: light)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css">
-<script>document.documentElement.classList.add('js')</script>
+<script>(function(){var d=document.documentElement,t;d.classList.add('js');try{t=localStorage.getItem('gt.theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';d.setAttribute('data-theme',t)})()</script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
 {"@type":"Question","name":"Does it cost anything?","acceptedAnswer":{"@type":"Answer","text":"No. Genesis Town is free in your browser. It runs on NEAR testnet, a test network, so coin and items have no cash value."}},
@@ -34,12 +35,14 @@
     <nav class="bar__links" aria-label="Main">
       <a href="#loop">How it works</a>
       <a href="#market">Market</a>
+      <a href="#economy">Economy</a>
       <a href="#homeland">Homeland</a>
       <a href="#friends">Friends</a>
       <a href="#town">Town</a>
       <a href="#world">World</a>
       <a href="#faq">Questions</a>
     </nav>
+    <button class="theme" type="button" data-theme-toggle aria-label="Switch to light mode"><svg class="ic theme__sun" aria-hidden="true"><use href="assets/icons/ph.svg#ph-sun"/></svg><svg class="ic theme__moon" aria-hidden="true"><use href="assets/icons/ph.svg#ph-moon"/></svg></button>
     <a class="btn btn--primary bar__cta" href="https://gentown.my.id/">Play free</a>
     <button class="bar__toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open the menu"><span></span><span></span></button>
   </div>
@@ -47,19 +50,21 @@
 <div class="menu" id="menu" aria-hidden="true">
   <a href="#loop" style="--i:0">How it works</a>
   <a href="#market" style="--i:1">Market</a>
+  <a href="#economy" style="--i:1">Economy</a>
   <a href="#homeland" style="--i:2">Homeland</a>
   <a href="#friends" style="--i:3">Friends</a>
   <a href="#town" style="--i:4">Town</a>
   <a href="#world" style="--i:5">World</a>
   <a href="#faq" style="--i:6">Questions</a>
-  <a class="btn btn--primary" href="https://gentown.my.id/" style="--i:7">Play free in your browser</a>
+  <button class="theme theme--menu" type="button" data-theme-toggle aria-label="Switch to light mode" style="--i:7"><svg class="ic theme__sun" aria-hidden="true"><use href="assets/icons/ph.svg#ph-sun"/></svg><svg class="ic theme__moon" aria-hidden="true"><use href="assets/icons/ph.svg#ph-moon"/></svg><span data-theme-label>Light mode</span></button>
+  <a class="btn btn--primary" href="https://gentown.my.id/" style="--i:8">Play free in your browser</a>
 </div>
 
 <main id="main">
   <!-- HERO: the name of the thing, one sentence, one action, then the game's own Homeland drawn live and large -->
   <section class="hero" id="top" aria-labelledby="hero-h">
     <div class="wrap">
-      <h1 class="hero__h" id="hero-h">A market town<br>in the sky.</h1>
+      <h1 class="hero__h" id="hero-h"><span class="ln"><span>A market town</span></span><span class="ln"><span>in the sky.</span></span></h1>
       <div class="hero__row">
         <p class="hero__sub">Fish, farm and craft on your own floating islands, then sell to four shopkeepers whose prices move with their stock. Free in your browser, with Google sign in.</p>
         <div class="hero__act">
@@ -203,17 +208,57 @@
         </div>
       </div>
 
-      <dl class="rules">
-        <div class="rv"><dt>Stock and demand set the price.</dt><dd>A price moves at most 10% in a game hour and stays between a quarter and four times its usual level. Each move comes with a one line reason in the shop window.</dd></div>
-        <div class="rv"><dt>Sell to players, named or not.</dt><dd>List up to 50 of a good at your own price. On the Stalls side your name shows and every sale earns popularity. On the Black Market you sell anonymously. The shopkeepers shop there too, buying listings at or below their fair price.</dd></div>
-        <div class="rv"><dt>Five townsfolk do the shopping.</dt><dd>Dewi, Agus, Rina, Bayu and Intan walk the village for every player and buy finished goods from one shared wallet. That is the only way new coin enters the game, and fees, food, repairs and a 5% burn on player sales take it back out.</dd></div>
-      </dl>
+      <div class="lab" id="lab">
+        <div class="lab__text rv">
+          <h3 class="h-sub">Why a price moves.</h3>
+          <p>Sarah likes to keep about 20 fish on ice. Move her stock and how busy her stall has been, and the game’s own pricing rule sets the price. In town the price walks there at most 10% per game hour.</p>
+          <div class="lab__ctl">
+            <label for="lab-stock">Fish on ice: <b data-lab-stock-v>20</b></label>
+            <input id="lab-stock" type="range" min="0" max="60" step="1" value="20" data-lab-stock>
+          </div>
+          <div class="lab__ctl">
+            <label for="lab-dem">Lately players have been <b data-lab-dem-v>buying and selling evenly</b></label>
+            <input id="lab-dem" type="range" min="-20" max="20" step="1" value="0" data-lab-dem>
+          </div>
+          <p class="lab__reason" data-lab-reason aria-live="polite">My fish stock is just right (20, target 20). Price steady.</p>
+        </div>
+        <figure class="lab__fig panel rv" style="--d:1" data-ui>
+          <svg class="lab__svg" viewBox="0 0 560 340" role="img" aria-label="Sarah’s fish price against her stock: the price falls as her stock grows" data-lab-svg></svg>
+          <p class="lab__key"><span class="k-ask">You buy at</span><span class="k-bid">She pays you</span></p>
+          <dl class="lab__out">
+            <div><dt>You buy at</dt><dd data-lab-ask>9</dd></div>
+            <div><dt>She pays you</dt><dd data-lab-bid>7</dd></div>
+            <div><dt>Against usual</dt><dd data-lab-pct>Usual</dd></div>
+          </dl>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ECONOMY: where every coin comes from and where it goes, as a live diagram of the game's coin flow (README,
+       docs/economy.md §3a); a node picks its flows and says what happens there -->
+  <section class="section section--tone" id="economy" aria-labelledby="economy-h">
+    <div class="wrap">
+      <div class="head head--split">
+        <h2 id="economy-h">Where every coin comes from.</h2>
+        <p>New coin only enters when the townsfolk buy finished goods, and fees and a burn take it back out, so the town’s money keeps its worth. Pick a part of the town to follow its coin.</p>
+      </div>
+      <div class="flow">
+        <figure class="flow__fig rv" data-ui>
+          <svg class="flow__svg" data-flow-svg role="group" aria-label="The coin flow of Genesis Town"></svg>
+        </figure>
+        <div class="flow__panel rv" style="--d:1" aria-live="polite">
+          <h3 data-flow-name>Players</h3>
+          <p data-flow-text>You earn coin by selling raw goods to the shops and to other players, and spend it on food, tools, repairs and fees.</p>
+          <ul class="flow__list" data-flow-list></ul>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- HOMELAND: the islands picture with its key beside it, then the island ladder: pick how many islands are open and
        read what the next one costs (economy/config.json homeland.chunks) -->
-  <section class="section section--tone" id="homeland" aria-labelledby="home-h">
+  <section class="section" id="homeland" aria-labelledby="home-h">
     <div class="wrap">
       <div class="head head--split">
         <h2 id="home-h">Nine islands, all yours.</h2>
@@ -257,7 +302,7 @@
   </section>
 
   <!-- FRIENDS: what a friend can do in your Homeland, the trade window playing once, and the chat commands -->
-  <section class="section" id="friends" aria-labelledby="friends-h">
+  <section class="section section--tone" id="friends" aria-labelledby="friends-h">
     <div class="wrap">
       <div class="friends">
         <div class="friends__l">
@@ -300,7 +345,7 @@
           <div><dt><code>/msg name hello</code></dt><dd>A private line to anyone, in any world.</dd></div>
           <div><dt><code>/p on my way</code></dt><dd>Talk only to your party, wherever they are.</dd></div>
           <div><dt><code>/party name#tag</code></dt><dd>Invite someone to your party.</dd></div>
-          <div><dt><code>/dagang name#tag</code></dt><dd>Open a trade window with them.</dd></div>
+          <div><dt><code>/trade name#tag</code></dt><dd>Open a trade window with them.</dd></div>
           <div><dt><code>/name NewName</code></dt><dd>Change the name over your head.</dd></div>
           <div><dt><code>/block name</code></dt><dd>Hide someone’s messages. <code>/unblock</code> undoes it.</dd></div>
         </dl>
@@ -309,7 +354,7 @@
   </section>
 
   <!-- TOWN: a viewer of the public buildings, each in the game's own 2.5D render, then the small touches -->
-  <section class="section section--tone" id="town" aria-labelledby="town-h">
+  <section class="section" id="town" aria-labelledby="town-h">
     <div class="wrap">
       <div class="head head--split">
         <h2 id="town-h">Walk the town together.</h2>
@@ -351,7 +396,7 @@
   </section>
 
   <!-- WORLD: seasons over one picture, the weather, the shared 24 minute day with the live hour, and evenings -->
-  <section class="section" id="world" aria-labelledby="world-h">
+  <section class="section section--tone" id="world" aria-labelledby="world-h">
     <div class="wrap">
       <div class="head head--split">
         <h2 id="world-h">One clock for every player.</h2>
@@ -399,7 +444,7 @@
   </section>
 
   <!-- OWNERSHIP: the chain in plain words beside the three facts, with the live settled day and the links to check it -->
-  <section class="section section--tone" id="own" aria-labelledby="own-h">
+  <section class="section" id="own" aria-labelledby="own-h">
     <div class="wrap own">
       <div class="own__l">
         <h2 id="own-h">Your goods are really yours.</h2>
@@ -416,10 +461,25 @@
         <div><dt>A test network for now.</dt><dd>Genesis Town runs on NEAR testnet. Coin and items have no cash value, so play for the town, not for profit.</dd></div>
       </dl>
     </div>
+    <div class="wrap">
+      <div class="pipe rv" data-pipe>
+        <div class="pipe__top">
+          <h3 class="h-sub">How a day reaches NEAR.</h3>
+          <p class="pipe__live"><span class="dot" aria-hidden="true"></span><span data-pipe-live>The next save is at 06:00 game time.</span></p>
+        </div>
+        <div class="pipe__track" aria-hidden="true"><i data-pipe-fill></i></div>
+        <ol class="pipe__steps">
+          <li tabindex="0" data-step="0"><h4>You play</h4><p>Every catch, craft and shop trade is written to the game’s ledger at once, off the chain, so play never waits for a transaction.</p></li>
+          <li tabindex="0" data-step="1"><h4>06:00, the day closes</h4><p>At dawn the server adds up the day for every player: what each one gained and spent.</p></li>
+          <li tabindex="0" data-step="2"><h4>A fingerprint</h4><p>The whole day’s ledger is folded into one short fingerprint, a Merkle root, so any single line can be proved later.</p></li>
+          <li tabindex="0" data-step="3"><h4>Written to NEAR</h4><p>Balances and the fingerprint go to the game contract in one transaction. Player market sales and gifts skip the wait and go on chain right away.</p></li>
+        </ol>
+      </div>
+    </div>
   </section>
 
   <!-- FAQ: two columns of open questions -->
-  <section class="section" id="faq" aria-labelledby="faq-h">
+  <section class="section section--tone" id="faq" aria-labelledby="faq-h">
     <div class="wrap">
       <h2 id="faq-h" class="faq__h">Before you move in</h2>
       <div class="faq">
