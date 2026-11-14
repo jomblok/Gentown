@@ -603,9 +603,6 @@ h2 { line-height: .95; }
 @media (max-width: 767px) { .stage { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 40px), 88% calc(100% - 40px), 88% calc(100% - 24px), 70% calc(100% - 24px), 70% calc(100% - 8px), 58% calc(100% - 8px), 58% 100%, 40% 100%, 40% calc(100% - 8px), 28% calc(100% - 8px), 28% calc(100% - 24px), 12% calc(100% - 24px), 12% calc(100% - 40px), 0 calc(100% - 40px)); } .stage__bar { bottom: 52px; } }
 
 /* ===== motion layer: each effect reworked in plain CSS and JS after a 21st.dev component (credited in the footer) ===== */
-/* 1 scroll progress (after Tracing Beam): a line under the bar fills with the page */
-.progress { position: fixed; top: 0; left: 0; right: 0; z-index: 60; height: 3px; pointer-events: none; }
-.progress i { display: block; height: 100%; background: var(--accent); transform-origin: left; transform: scaleX(var(--p, 0)); }
 /* 2 live price ticker (after Marquee): every good with its price now, pausing under the pointer */
 .ticker { position: relative; overflow: hidden; background: var(--s1); }
 .ticker__track { display: flex; width: max-content; animation: marquee 48s linear infinite; }

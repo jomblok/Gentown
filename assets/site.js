@@ -583,9 +583,6 @@
   function place() { coin.style.transform = 'translate3d(0,' + (coinY + bounce).toFixed(1) + 'px,0)'; }
   if (coin !== NIL && !still) { addEventListener('scroll', function () { if (!ct) ct = requestAnimationFrame(coinFrame); }, { passive: true }); coinFrame(); }
 
-  // 1 scroll progress
-  var prog = $('[data-progress]'), pt = 0;
-  if (prog) window.addEventListener('scroll', function () { if (pt) return; pt = requestAnimationFrame(function () { pt = 0; var h = document.documentElement.scrollHeight - innerHeight; prog.style.setProperty('--p', h > 0 ? (scrollY / h).toFixed(4) : 0); }); }, { passive: true });
   // 2 the live price ticker: two copies of the row so it can loop
   window.paintTicker = function () {
     var tr = $('[data-ticker-track]'); if (!tr) return;
