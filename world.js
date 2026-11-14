@@ -85,10 +85,11 @@
     function size() {
       var box = host.getBoundingClientRect(), w = Math.max(2, Math.round(box.width)), h = Math.max(2, Math.round(box.height));
       // a tall screen (a phone) frames the islands from its own spot
-      var tall = h > w * 1.05, src = tall && base.phone ? base.phone : w < h * 1.8 && base.narrow ? base.narrow : {};
+      // a tall tablet (an iPad held upright) is tall but wide enough to need its own, further spot
+      var tall = h > w * 1.05, src = tall && w >= 640 && base.tablet ? base.tablet : tall && base.phone ? base.phone : w < h * 1.8 && base.narrow ? base.narrow : {};
       ['tx', 'tz', 'ty', 'dist', 'yaw', 'pitch'].forEach(function (n) { shot[n] = src[n] != null ? src[n] : base[n]; });
       sky.fogRange(shot.dist * 1.05, shot.dist * 3.2); // the haze starts past the islands at any framing
-      if (!sized && (!tall || !base.phone || !base.phone.yaw)) yawWant = shot.yaw || 0; // a turn the viewer made outlives a resize
+      if (!sized && (!tall || !src.yaw)) yawWant = shot.yaw || 0; // a turn the viewer made outlives a resize
       sized = true;
       // about 1.6 megapixels at most, and never more than 1.5 device pixels a CSS pixel
       var pr = Math.min(window.devicePixelRatio || 1, 1.5, Math.sqrt(1.6e6 / (w * h)));

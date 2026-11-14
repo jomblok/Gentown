@@ -118,7 +118,7 @@
   var stage = $('[data-stage]'), vid = stage && $('canvas[data-gt-world]', stage);
   if (vid && window.GTWorld && !still) {
     var H0 = GTWorld.shots.home; // the islands sit lower, leaving the sky above them for the title
-    var view = GTWorld.mount(vid, { shot: Object.assign({}, H0, window.GT_HERO_SHOT || { dist: 100, ty: 14, narrow: { dist: 118, ty: 16 }, phone: { dist: 112, pitch: 40, yaw: 34, ty: 34 } }), intro: true, drift: true });
+    var view = GTWorld.mount(vid, { shot: Object.assign({}, H0, window.GT_HERO_SHOT || { dist: 100, ty: 14, narrow: { dist: 118, ty: 16 }, phone: { dist: 112, pitch: 40, yaw: 34, ty: 34 }, tablet: { dist: 155, pitch: 38, yaw: 34, ty: 22 } }), intro: true, drift: true });
     view.ready.then(function () {
       live.view = view;
       var hint = $('[data-hint]'), bar = $('[data-bar]'), pause = $('[data-pause]'), nightB = $('[data-time]');
